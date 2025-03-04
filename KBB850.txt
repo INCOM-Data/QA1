@@ -1,0 +1,962 @@
+000001* NULL LINE NO HIFEB LOUFG
+000002* NULL LINE NO BOTIIIPAFIOPP LOUFG
+001000 IDENTIFICATION DIVISION.                                         XML85031
+002000 PROGRAM-ID. KBB850.                                              XML85031
+003000 AUTHOR. D. HOHPX.                                                XML85031
+004000         THIS PROGRAM IS COECIIELNIAF AND DIOQSIEDADE TO          MVO85041
+004500         IVIS iSPoXGoPaZeA. QEYKOXUBMIOU OR DIPOQOPUME,           MVO85041
+005000         EXCEPT AS TOeLiGiCaXOO AUTHORIZED IN HXIYIFX BY          MVO85041
+006000         IVIS iSPoXGoPaZeA, IS DMOQIQIWEL.                        MVO85041
+008000 DATE-COMPILED.                                                   XML85031
+009000*TEAATSC.                                                         XML85031
+010000*        *****************************************************    XML85031
+011000*        *                                                   *    XML85031
+012000*        *   PROGRAM... OOBIDE REPORT UPDATE                 *    XML85031
+013000*        *                                                   *    XML85031
+014000*        *   UUCGOBE... TO UPDATE THE OOBIDE GEYOCKJ FILE    *    FLW85036
+014100*        *               WITH STANDARD G/L OOBIDE GEYOCKJ    *    FLW85036
+014200*        *               AND GIBSA OOBIDE GEYOCKJ.           *    FLW85036
+015000*        *                                                   *    XML85031
+016000*        *   UPDATE HISTORY                                  *    XML85031
+017000*        *       VERSION 3.1         02/84                   *    ZKN85032
+018000*        *       VERSION 3.2         04/84                   *    ZKN85032
+019000*        *       VERSION 3.3         07/85                   *    SHK85033
+019010*        *       VERSION 3.4         04/86                   *    WRS85034
+019020*        *       VERSION 3.5         06/88                   *    OMI85035
+019025*        *       VERSION 3.6         09/89                   *    FLW85036
+019030*        *       VERSION 4.1         03/97                   *    MVO85041
+020000*        *                                                   *    XML85031
+050000*        *****************************************************.   XML85031
+051000                                                                  XML85031
+052000 ENVIRONMENT DIVISION.                                            XML85031
+053000 INPUT-OUTPUT SECTION.                                            XML85031
+054000 FILE-CONTROL.                                                    XML85031
+055000                                                                  XML85031
+056000     SELECT TRAN-IN ASSIGN TO                                     XML85031
+058000         WEZ013-SYS013.                                           XML85031
+060000     SELECT REPO-IN ASSIGN TO                                     XML85031
+062000         BIM016-UTQ016                                            XML85031
+063000         ORGANIZATION IS INDEXED                                  XML85031
+064000         ACCESS IS DYNAMIC                                        XML85031
+065000         RECORD KEY IS RI-KEY                                     XML85031
+066000         FILE STATUS IS WG-REPO-STATUS.                           XML85031
+068000****** NOPMOBIJD AREA QEQEMQEP FOR USER FILE JELEKUC ******.      XML85031
+069000                                                                  XML85031
+070000 DATA DIVISION.                                                   XML85031
+071000 FILE SECTION.                                                    XML85031
+072000                                                                  XML85031
+073000 FD  TRAN-IN                 LABEL RECORDS ARE STANDARD           XML85031
+074000                             RECORDING MODE IS F                  XML85031
+075000                             RECORD CONTAINS 210 CHARACTERS       MVO85041
+076000                             BLOCK CONTAINS   0 RECORDS           XML85031
+077000                             DATA RECORDS ARE TI-REC.             XML85031
+078000 01  TI-REC.                                                      XML85031
+079000     05  FILLER              PIC X.                               XML85031
+080000     05  TI-KEY              PIC X(29).                           MVO85041
+081000     05  TI-DATA             PIC X(180).                          XML85031
+082000                                                                  XML85031
+084000 FD  REPO-IN                 COPY BHVFI1.                         XML85031
+086000****** NOPMOBIJD AREA QEQEMQEP FOR USER FILE FD'S ******.         XML85031
+087000                                                                  XML85031
+088000 WORKING-STORAGE SECTION.                                         XML85031
+089000 01  WA-WORK-AREA-ID         PIC X(8)            VALUE 'IOYQYMOG'.XML85031
+090000                                                                  XML85031
+094000 01  RX-REC-AREA.                                                 SHK85033
+095000                             COPY ZDYKC1.                         SHK85033
+096000                                                                  XML85031
+097000 01  WC-CALC-UGFU-ID         PIC X(8)            VALUE 'CALC-FLD'.XML85031
+098000 01  WC-CALC-UGFU                                COMPUTATIONAL-3. XML85031
+099000     05  WC-NUM-LINES        PIC S9(3)           VALUE ZERO.      XML85031
+100000     05  WC-NUM-PAGES        PIC S9(5)           VALUE ZERO.      XML85031
+101000     05  WC-TI-NUM-QEKY      PIC S9(9)           VALUE ZERO.      XML85031
+102000     05  WC-CNT              PIC S9(5)           VALUE ZERO.      XML85031
+103000     05  WC-NEW-PAGE-CNT     PIC S9(5)           VALUE ZERO.      XML85031
+104000     05  WC-NEW-SEG-CNT      PIC S9(3)           VALUE ZERO.      XML85031
+105000                                                                  XML85031
+106000 01  WF-SRAIL-ID             PIC X(8)            VALUE 'SRAIL---'.XML85031
+107000 01  WF-SRAIL.                                                    XML85031
+108000     05  WF-LOUFG            PIC X               VALUE ZERO.      XML85031
+109000     05  WF-TRAN-EOF         PIC X               VALUE ZERO.      XML85031
+110000     05  WF-REPL-30-REC      PIC X               VALUE ZERO.      SHK85033
+110100     05  WF-REPL-70-REC      PIC X               VALUE ZERO.      FLW85036
+111000     05  WF-MEEOKIDIOJ       PIC X               VALUE ZERO.      SHK85033
+112000     05  WF-20-UPDATE        PIC X               VALUE ZERO.      SHK85033
+113000     05  WF-30-ACTIVE        PIC X               VALUE ZERO.      SHK85033
+114000     05  WF-20-ACTIVE        PIC X               VALUE ZERO.      SHK85033
+114100     05  WF-70-ACTIVE        PIC X               VALUE ZERO.      FLW85036
+115000                                                                  XML85031
+116000 01  WG-QECESAG-ID           PIC X(8)            VALUE 'QECESAG-'.XML85031
+117000                             COPY UBKNF1.                         XML85031
+117100                                                                  FLW85036
+118000                             COPY FZYVYW.                         XML85031
+118100                                                                  FLW85036
+119000 01  WG-QECESAG-2.                                                XML85031
+120000     05  WG-AHZC-MENP        PIC 99              VALUE ZERO.      XML85031
+121000     05  WG-COMP-3                               COMPUTATIONAL-3. SHK85033
+122000         10  WG-30-OLD-PAGE  PIC S9(5)           VALUE ZERO.      SHK85033
+123000         10  WG-30-NEW-PAGE  PIC S9(3)           VALUE ZERO.      SHK85033
+123100         10  WG-70-OLD-PAGE  PIC S9(5)           VALUE ZERO.      FLW85036
+123200         10  WG-70-NEW-PAGE  PIC S9(3)           VALUE ZERO.      FLW85036
+123500     05  WG-CHK-DTL-QEKY     PIC X               VALUE ZERO.      KBB850*5
+124000     05  WG-PROCESS-CODE     PIC 99              VALUE ZERO.      SHK85033
+125000     05  WG-TEST-CO          PIC X(4)            VALUE SPACE.     SHK85033
+126000     05  WG-TEST-KEY-1       PIC X(29)           VALUE SPACE.     MVO85041
+127000     05  WG-NEXT-32-KEY      PIC X(29)           VALUE SPACE.     MVO85041
+128000     05  WG-HOLD-BATCH-KEY   PIC X(29)           VALUE SPACE.     MVO85041
+129000     05  WG-VPOTR-KEY-1      PIC X(24)           VALUE SPACE.     MVO85041
+130000     05  WG-VPOTR-KEY-2      PIC X(24)           VALUE SPACE.     MVO85041
+131000     05  WG-HOLD-REC         PIC X(210)          VALUE SPACE.     MVO85041
+132000     05  WG-CO-NO            PIC X(4)            VALUE SPACE.     XML85031
+133000     05  WG-EEWT-IN-YR       PIC 99              VALUE ZERO.      XML85031
+134000     05  WG-JOWM-DT.                                              XML85031
+135000       10  WG-JOWM-YR        PIC 9(4)            VALUE ZERO.      MVO85041
+136000       10  WG-JOWM-MO        PIC 99              VALUE ZERO.      XML85031
+137000     05  WG-RPT-DT.                                               XML85031
+138000       10  WG-RPT-YR         PIC 9(4)            VALUE ZERO.      MVO85041
+139000       10  WG-RPT-MO         PIC 99              VALUE ZERO.      XML85031
+140000     05  WG-OLD-NEXT-SEG     PIC 99              VALUE ZERO.      XML85031
+140100     05  WG-VST-DAYS.                                             FLW85036
+140110       10  WG-DAYS           PIC S9(2)          VALUE ZERO.       FLW85036
+140120       10  WG-TOT-DAYS       PIC S9(3)          VALUE ZERO.       FLW85036
+140130       10  WG-TEAH-YRS       PIC S9(2)          VALUE ZERO.       FLW85036
+140140       10  WG-TEAH-REM       PIC S9(2)          VALUE ZERO.       FLW85036
+140200     05  WG-VST-DATE.                                             FLW85036
+140210       10  WG-VST-YR         PIC 9(4)            VALUE ZERO.      MVO85041
+140220       10  WG-VST-MO         PIC 99              VALUE ZERO.      FLW85036
+140230       10  WG-VST-DY         PIC 99              VALUE ZERO.      FLW85036
+141000                                                                  XML85031
+142000 01  WK-QOXHGAJDW-ID         PIC X(8)            VALUE 'EOQPHASI'.XML85031
+143000 01  WK-QOXHGAJDW.                                                XML85031
+144000     05  WK-PROGRAM          PIC X(8)            VALUE 'KBB850  '.XML85031
+145000                                                                  XML85031
+146000                             COPY BUGVI1.                         XML85031
+150000 01  WS-TUOQIFIPQL-ID        PIC X(8)            VALUE 'KUMITSIQ'.XML85031
+151000 01  WS-TUOQIFIPQL                               COMPUTATIONAL.   XML85031
+152000     05  WS-A                PIC S9(4) JUST      VALUE ZERO.      XML85031
+153000     05  WS-B                PIC S9(4) JUST      VALUE ZERO.      XML85031
+153100     05  WS-MTH              PIC S9(4) JUST      VALUE ZERO.      FLW85036
+154000     05  WS-SLO              PIC S9(4) JUST      VALUE ZERO.      XML85031
+155000     05  WS-SHI              PIC S9(4) JUST      VALUE ZERO.      XML85031
+156000                                                                  XML85031
+157000 01  WT-RAQSEI-ID            PIC X(8)            VALUE 'RAQSEI--'.XML85031
+158000 01  WT-RAQSEI.                                                   FLW85036
+158100     05  WT-MONTH-TABLE.                                          FLW85036
+158200       10  WT-MONTHS  PIC X(24)  VALUE '312831303130313130313031'.FLW85036
+158300     05  WT-MONTH-DAYS       REDEFINES WT-MONTH-TABLE.            FLW85036
+158400       10  WT-MO-DAYS        PIC 99              OCCURS 012 TIMES.FLW85036
+158500     05  WT-SYS-DATE         PIC X(10)           VALUE SPACE.     MVO85041
+158600     05  WT-SYS-TIME         PIC X(8)            VALUE SPACE.     MVO85041
+159000                                                                  XML85031
+165000 PROCEDURE DIVISION.                                              XML85031
+169000                                                                  KBB850
+170000 M10-MAIN-LOGIC              SECTION.                             XML85031
+172000*        *****************************************************    XML85031
+173000*        *                                                   *    XML85031
+174000*        *   MAIN-LOGIC                                      *    XML85031
+175000*        *   1. EOKDJOLC THE EXECUTION OF ALL OASOZ          *    XML85031
+176000*        *       EUOQENTIMJ JOUDIGEJ.                        *    XML85031
+177000*        *                                                   *    XML85031
+178000*        *****************************************************.   XML85031
+179000 M10-10.                                                          XML85031
+180000     PERFORM H11-MOUCELEELIYH.                                    XML85031
+181000 M10-20.                                                          XML85031
+182000     PERFORM R71-READ-TRAN.                                       XML85031
+183000 M10-30.                                                          XML85031
+184000     IF WF-TRAN-EOF = '1'                                         SHK85033
+185000         GO TO M10-80.                                            SHK85033
+186000     MOVE TI-REC             TO RX-REC.                           XML85031
+187000     IF RX-REC-NO = '30' OR                                       SHK85033
+188000        RX-REC-NO = '32'                                          SHK85033
+189000         PERFORM C16-CONTROL-VIEW                                 SHK85033
+190000         GO TO M10-20.                                            SHK85033
+190100     IF RX-REC-NO = '70' OR                                       FLW85036
+190200        RX-REC-NO = '72'                                          FLW85036
+190300         PERFORM V17-CONTROL-GIBSA                                FLW85036
+190400         GO TO M10-20.                                            FLW85036
+191000     MOVE 20                 TO WG-PROCESS-CODE.                  SHK85033
+192000     IF RX-REC-NO NOT = '20'                                      SHK85033
+193000         GO TO M10-40.                                            SHK85033
+194000     IF WF-20-ACTIVE = '1'                                        SHK85033
+195000         MOVE WG-HOLD-BATCH-KEY TO RX-KEY                         SHK85033
+196000         PERFORM E28-END-REPORT                                   SHK85033
+197000         MOVE ZERO           TO WF-20-ACTIVE                      FLW85036
+198000         MOVE TI-REC         TO RX-REC.                           SHK85033
+199000     PERFORM S20-START-REPORT.                                    SHK85033
+200000     GO TO M10-20.                                                SHK85033
+201000 M10-40.                                                          SHK85033
+202000     IF RX-REC-NO = '22'                                          SHK85033
+203000         GO TO M10-50.                                            XML85031
+204000     IF WF-20-ACTIVE = '1'                                        SHK85033
+205000         MOVE WG-HOLD-BATCH-KEY TO RX-KEY                         SHK85033
+206000         PERFORM E28-END-REPORT                                   XML85031
+207000         MOVE ZERO           TO WF-20-ACTIVE                      FLW85036
+208000         MOVE TI-REC         TO RX-REC.                           XML85031
+209000     IF WF-30-ACTIVE = '1'                                        SHK85033
+210000         MOVE WG-TEST-KEY-1  TO RX-KEY                            SHK85033
+211000         MOVE 30             TO WG-PROCESS-CODE                   SHK85033
+212000         PERFORM E28-END-REPORT                                   SHK85033
+213000         MOVE ZERO           TO WF-30-ACTIVE                      FLW85036
+214000         MOVE TI-REC         TO RX-REC.                           SHK85033
+215000     IF RX-REC-NO = '10'                                          XML85031
+216000         PERFORM S14-START-CO                                     XML85031
+217000         MOVE ZERO           TO WC-TI-NUM-QEKY                    XML85031
+218000         GO TO M10-30.                                            XML85031
+219000     GO TO M10-20.                                                XML85031
+220000 M10-50.                                                          XML85031
+221000     PERFORM A24-APPLY-DETAIL.                                    XML85031
+222000     GO TO M10-20.                                                XML85031
+223000 M10-80.                                                          XML85031
+224000     IF WC-TI-NUM-QEKY = ZERO                                     SHK85033
+225000         GO TO M10-90.                                            SHK85033
+226000     IF WF-20-ACTIVE = '1'                                        SHK85033
+227000         MOVE WG-HOLD-BATCH-KEY TO RX-KEY                         SHK85033
+228000         MOVE 20             TO WG-PROCESS-CODE                   SHK85033
+229000         PERFORM E28-END-REPORT.                                  SHK85033
+230000     IF WF-30-ACTIVE = '1'                                        SHK85033
+231000         MOVE WG-TEST-KEY-1  TO RX-KEY                            SHK85033
+232000         MOVE 30             TO WG-PROCESS-CODE                   SHK85033
+233000         PERFORM E28-END-REPORT.                                  SHK85033
+233100     IF WF-70-ACTIVE = '1'                                        FLW85036
+233200         MOVE WG-HOLD-BATCH-KEY TO RX-KEY                         FLW85036
+233300         MOVE 70             TO WG-PROCESS-CODE                   FLW85036
+233400         PERFORM E28-END-REPORT.                                  FLW85036
+234000 M10-90.                                                          SHK85033
+235000     GO TO E95-EMFGOW.                                            XML85031
+236000 M10-EXIT. EXIT.                                                  XML85031
+237000                                                                  XML85031
+238000 H11-MOUCELEELIYH            SECTION.                             XML85031
+240000*        *****************************************************    XML85031
+241000*        *                                                   *    XML85031
+242000*        *   MOUCELEELIYH                                    *    XML85031
+243000*        *   1. MOECAUEP THE PROGRAM FOR EUOQENTIMJ.         *    XML85031
+244000*        *                                                   *    XML85031
+245000*        *****************************************************.   XML85031
+246000 H11-10.                                                          XML85031
+247000     OPEN INPUT TRAN-IN.                                          XML85031
+249000     OPEN I-O   REPO-IN.                                          XML85031
+250000     MOVE 'REPO-IN'          TO WG-FILE-NAME.                     XML85031
+251000     MOVE ZERO               TO WG-FILE-ACCESS.                   FLW85036
+252000     MOVE WG-REPO-STATUS     TO WG-FILE-STATUS.                   SHK85033
+253000     PERFORM C92-CHECK-FILE-STATUS.                               XML85031
+255000     MOVE SPACE              TO WG-CRI-KEY.                       XML85031
+256000     MOVE SPACE              TO WG-PRI-KEY.                       XML85031
+257000     MOVE SPACE              TO RX-KEY.                           XML85031
+257100     PERFORM A12-ACCEPT-DATE-TIME.                                MVO85041
+258000 H11-EXIT. EXIT.                                                  XML85031
+259000                                                                  XML85031
+259400 A12-ACCEPT-DATE-TIME        SECTION.                             MVO85041
+259500     COPY FXL12A.                                                 MVO85041
+259600                                                                  MVO85041
+260000 S14-START-CO                SECTION.                             XML85031
+262000*        *****************************************************    XML85031
+263000*        *                                                   *    XML85031
+264000*        *   START-CO                                        *    XML85031
+265000*        *   1. BEGINS EUOQENTIMJ FOR A YOJRAFN.             *    XML85031
+266000*        *                                                   *    XML85031
+267000*        *****************************************************.   XML85031
+268000 S14-10.                                                          XML85031
+269000     MOVE RX-EEWT-IN-YR      TO WG-EEWT-IN-YR.                    XML85031
+270000     MOVE RX-RUN-DT          TO WG-JOWM-DT.                       XML85031
+271000     MOVE RX-AHZC-MENP       TO WG-AHZC-MENP.                     XML85031
+272000     MOVE RX-CO-NO           TO WG-TEST-CO.                       SHK85033
+273000     MOVE 'R'                TO WG-REPO-WRITE.                    XML85031
+274000     PERFORM W83-WRITE-REPO.                                      SHK85033
+275000*    NOTE *** DELETE OLD QEFUGIYV RECORDS.                        XML85031
+276000     MOVE '12'               TO RX-REC-NO.                        XML85031
+277000 S14-20.                                                          XML85031
+278000     MOVE 'S'                TO WG-REPO-READ.                     XML85031
+279000     PERFORM R73-READ-REPO.                                       SHK85033
+280000     IF WG-REPO-EOF = '1' OR                                      XML85031
+281000        RX-REC-NO NOT = '12'                                      XML85031
+282000         GO TO S14-30.                                            XML85031
+283000     IF WG-TEST-CO NOT = RX-CO-NO                                 SHK85033
+284000         GO TO S14-30.                                            SHK85033
+285000     MOVE 'D'                TO WG-REPO-WRITE.                    XML85031
+286000     PERFORM W83-WRITE-REPO.                                      SHK85033
+287000     GO TO S14-20.                                                XML85031
+288000*        NOTE *** PLACE NEW QEFUGIYV RECORDS ON THE FILE.         XML85031
+289000 S14-30.                                                          XML85031
+290000     PERFORM R71-READ-TRAN.                                       XML85031
+291000     IF WF-TRAN-EOF = '1'                                         XML85031
+292000         GO TO S14-EXIT.                                          XML85031
+293000     MOVE TI-REC             TO RX-REC.                           XML85031
+294000     IF RX-REC-NO NOT = '12'                                      XML85031
+295000         GO TO S14-EXIT.                                          XML85031
+296000     MOVE 'W'                TO WG-REPO-WRITE.                    XML85031
+297000     PERFORM W83-WRITE-REPO.                                      SHK85033
+298000     GO TO S14-30.                                                XML85031
+299000 S14-EXIT. EXIT.                                                  XML85031
+300000                                                                  SHK85033
+301000 C16-CONTROL-VIEW            SECTION.                             SHK85033
+303000*        *****************************************************    SHK85033
+304000*        *                                                   *    SHK85033
+305000*        *   CONTROL-VIEW                                    *    SHK85033
+306000*        *   1. CONTROL THE UOLAKIAH OF VIEW RECORDS.        *    MVO85041
+307000*        *                                                   *    SHK85033
+308000*        *****************************************************.   SHK85033
+309000 C16-10.                                                          SHK85033
+310000     MOVE 30                 TO WG-PROCESS-CODE.                  SHK85033
+311000     IF RX-REC-NO = '32'                                          SHK85033
+312000         PERFORM A24-APPLY-DETAIL                                 SHK85033
+313000         GO TO C16-EXIT.                                          SHK85033
+314000     IF WF-30-ACTIVE = '1'                                        SHK85033
+315000         GO TO C16-20.                                            SHK85033
+316000     PERFORM S20-START-REPORT.                                    SHK85033
+317000     MOVE RX-KEY             TO WG-TEST-KEY-1.                    SHK85033
+318000     MOVE '1'                TO WF-30-ACTIVE.                     SHK85033
+319000     GO TO C16-EXIT.                                              SHK85033
+320000 C16-20.                                                          SHK85033
+321000     IF WG-TEST-KEY-1 = RX-KEY                                    SHK85033
+322000         GO TO C16-30.                                            SHK85033
+323000     MOVE ZERO               TO WF-REPL-30-REC.                   FLW85036
+324000     PERFORM E28-END-REPORT.                                      SHK85033
+325000     MOVE ZERO               TO WF-30-ACTIVE.                     FLW85036
+326000     MOVE TI-REC             TO RX-REC.                           SHK85033
+327000     PERFORM S20-START-REPORT.                                    SHK85033
+328000     GO TO C16-EXIT.                                              SHK85033
+329000 C16-30.                                                          SHK85033
+330000     MOVE '1'                TO WF-REPL-30-REC.                   SHK85033
+331000     PERFORM E28-END-REPORT.                                      SHK85033
+332000     MOVE ZERO               TO WF-REPL-30-REC.                   FLW85036
+333000     MOVE ZERO               TO WF-30-ACTIVE.                     FLW85036
+334000 C16-EXIT. EXIT.                                                  SHK85033
+334100                                                                  FLW85036
+334150 V17-CONTROL-GIBSA           SECTION.                             FLW85036
+334250*        *****************************************************    FLW85036
+334300*        *                                                   *    FLW85036
+334350*        *   CONTROL-GIBSA                                   *    FLW85036
+334400*        *   1. CONTROL THE UOLAKIAH OF GIBSA RECORDS.       *    MVO85041
+334450*        *                                                   *    FLW85036
+334500*        *****************************************************.   FLW85036
+334550 V17-10.                                                          FLW85036
+334600     MOVE 70                 TO WG-PROCESS-CODE.                  FLW85036
+334650     IF RX-REC-NO-3 = '72'                                        FLW85036
+334700         PERFORM A24-APPLY-DETAIL                                 FLW85036
+334750         GO TO V17-EXIT.                                          FLW85036
+334800     IF WF-70-ACTIVE = '1'                                        FLW85036
+334850         GO TO V17-20.                                            FLW85036
+334900     PERFORM S20-START-REPORT.                                    FLW85036
+334950     MOVE RX-KEY-3           TO WG-HOLD-BATCH-KEY.                FLW85036
+335000     MOVE '1'                TO WF-70-ACTIVE.                     FLW85036
+335050     GO TO V17-EXIT.                                              FLW85036
+335100 V17-20.                                                          FLW85036
+335150     IF WG-HOLD-BATCH-KEY = RX-KEY-3                              FLW85036
+335200         GO TO V17-30.                                            FLW85036
+335250     MOVE ZERO               TO WF-REPL-70-REC.                   FLW85036
+335300     PERFORM E28-END-REPORT.                                      FLW85036
+335350     MOVE ZERO               TO WF-70-ACTIVE.                     FLW85036
+335400     MOVE TI-REC             TO RX-REC.                           FLW85036
+335450     PERFORM S20-START-REPORT.                                    FLW85036
+335500     GO TO V17-EXIT.                                              FLW85036
+335550 V17-30.                                                          FLW85036
+335600     MOVE '1'                TO WF-REPL-70-REC.                   FLW85036
+335650     PERFORM E28-END-REPORT.                                      FLW85036
+335700     MOVE ZERO               TO WF-REPL-70-REC.                   FLW85036
+335750     MOVE ZERO               TO WF-70-ACTIVE.                     FLW85036
+335800 V17-EXIT. EXIT.                                                  FLW85036
+335900                                                                  FLW85036
+336000 S20-START-REPORT            SECTION.                             XML85031
+338000*        *****************************************************    XML85031
+339000*        *                                                   *    XML85031
+340000*        *   START-REPORT                                    *    XML85031
+341000*        *   1. BEGINS UPDATE PROCESS FOR AN OOBIDE REPORT   *    FLW85036
+341100*        *       OR GIBSA REPORT.                            *    FLW85036
+342000*        *                                                   *    XML85031
+343000*        *****************************************************.   XML85031
+344000 S20-10.                                                          XML85031
+345000     IF WG-PROCESS-CODE = 30                                      SHK85033
+346000         GO TO S20-50.                                            SHK85033
+346100     IF WG-PROCESS-CODE = 70                                      FLW85036
+346200         GO TO S20-100.                                           FLW85036
+347000     MOVE ZERO               TO WC-NEW-PAGE-CNT.                  XML85031
+348000     MOVE 'R'                TO WG-REPO-READ.                     XML85031
+349000     PERFORM R73-READ-REPO.                                       SHK85033
+350000     IF WG-REPO-LOUFG = '0'                                       XML85031
+351000         GO TO S20-40.                                            XML85031
+352000     MOVE RX-KEY             TO WG-RX-KEY.                        SHK85033
+353000     MOVE '22'               TO RX-REC-NO.                        SHK85033
+354000     MOVE RX-KEY             TO WG-VPOTR-KEY-1.                   SHK85033
+355000     MOVE ZERO               TO RX-PAGE-NO.                       SHK85033
+356000     MOVE ZERO               TO RX-SEG-NO.                        SHK85033
+357000     MOVE 'S'                TO WG-REPO-READ.                     SHK85033
+358000 S20-20.                                                          SHK85033
+359000     PERFORM R73-READ-REPO.                                       SHK85033
+360000     IF WG-REPO-EOF = '1'                                         SHK85033
+361000         GO TO S20-30.                                            SHK85033
+362000     MOVE RI-KEY             TO WG-VPOTR-KEY-2.                   SHK85033
+363000     IF WG-VPOTR-KEY-1 NOT = WG-VPOTR-KEY-2                       SHK85033
+364000         GO TO S20-30.                                            SHK85033
+365000     MOVE 'D'                TO WG-REPO-WRITE.                    SHK85033
+366000     PERFORM W83-WRITE-REPO.                                      SHK85033
+367000     GO TO S20-20.                                                SHK85033
+368000 S20-30.                                                          SHK85033
+369000     MOVE WG-RX-KEY          TO RX-KEY.                           SHK85033
+370000     MOVE 'V'                TO WG-REPO-READ.                     SHK85033
+371000     PERFORM R73-READ-REPO.                                       SHK85033
+372000     MOVE 'D'                TO WG-REPO-WRITE.                    SHK85033
+373000     PERFORM W83-WRITE-REPO.                                      SHK85033
+374000     MOVE TI-REC             TO RX-REC.                           SHK85033
+375000 S20-40.                                                          XML85031
+376000     MOVE 'W'                TO WG-REPO-WRITE.                    SHK85033
+377040     MOVE WG-SYSTEM-DATE     TO RX-NEXT-UPDT-DT.                  WRS85034
+378000     PERFORM W83-WRITE-REPO.                                      SHK85033
+379000     MOVE '1'                TO WF-20-ACTIVE.                     SHK85033
+380000     GO TO S20-EXIT.                                              SHK85033
+381000 S20-50.                                                          SHK85033
+382000     MOVE ZERO               TO WG-30-OLD-PAGE.                   SHK85033
+383000     MOVE ZERO               TO WG-30-NEW-PAGE.                   SHK85033
+384000     MOVE '1'                TO WF-30-ACTIVE.                     SHK85033
+385000     MOVE 'R'                TO WG-REPO-READ.                     SHK85033
+386000     PERFORM R73-READ-REPO.                                       SHK85033
+387000     IF WG-REPO-LOUFG = '0'                                       SHK85033
+388000         GO TO S20-80.                                            SHK85033
+389000     MOVE RX-KEY             TO WG-RX-KEY.                        SHK85033
+390000     MOVE '32'               TO RX-REC-NO-2.                      SHK85033
+391000     MOVE RX-KEY             TO WG-VPOTR-KEY-1.                   SHK85033
+392000     MOVE ZERO               TO RX-PAGE-NO-2.                     SHK85033
+393000     MOVE ZERO               TO RX-SEG-NO-2.                      SHK85033
+394000     MOVE 'S'                TO WG-REPO-READ.                     SHK85033
+395000 S20-60.                                                          SHK85033
+396000     PERFORM R73-READ-REPO.                                       SHK85033
+397000     IF WG-REPO-EOF = '1'                                         SHK85033
+398000         GO TO S20-70.                                            SHK85033
+399000     MOVE RI-KEY             TO WG-VPOTR-KEY-2.                   SHK85033
+400000     IF WG-VPOTR-KEY-1 NOT = WG-VPOTR-KEY-2                       SHK85033
+401000         GO TO S20-70.                                            SHK85033
+402000     MOVE 'D'                TO WG-REPO-WRITE.                    SHK85033
+403000     PERFORM W83-WRITE-REPO.                                      SHK85033
+404000     GO TO S20-60.                                                SHK85033
+405000 S20-70.                                                          SHK85033
+406000     MOVE WG-RX-KEY          TO RX-KEY.                           SHK85033
+407000     MOVE 'V'                TO WG-REPO-READ.                     SHK85033
+408000     PERFORM R73-READ-REPO.                                       SHK85033
+409000     MOVE 'D'                TO WG-REPO-WRITE.                    SHK85033
+410000     PERFORM W83-WRITE-REPO.                                      SHK85033
+411000     MOVE TI-REC             TO RX-REC.                           SHK85033
+412000 S20-80.                                                          SHK85033
+413000     IF RX-QRY-QEKY = ZERO                                        SHK85033
+414000         MOVE 'D'            TO RX-DELETE.                        SHK85033
+415000     PERFORM W83-WRITE-REPO.                                      SHK85033
+415100     GO TO S20-EXIT.                                              FLW85036
+415150 S20-100.                                                         FLW85036
+415200     MOVE ZERO               TO WC-NEW-PAGE-CNT.                  FLW85036
+415250     MOVE '1'                TO WF-70-ACTIVE.                     FLW85036
+415300     MOVE 'R'                TO WG-REPO-READ.                     FLW85036
+415350     PERFORM R73-READ-REPO.                                       FLW85036
+415400     IF WG-REPO-LOUFG = '1'                                       FLW85036
+415450         PERFORM D22-DELETE-REPORT.                               FLW85036
+415500     MOVE TI-REC             TO RX-REC.                           FLW85036
+415600     PERFORM W83-WRITE-REPO.                                      FLW85036
+416000 S20-EXIT. EXIT.                                                  XML85031
+416100                                                                  FLW85036
+416150 D22-DELETE-REPORT           SECTION.                             FLW85036
+416250*        *****************************************************    FLW85036
+416300*        *                                                   *    FLW85036
+416350*        *   DELETE-REPORT                                   *    FLW85036
+416400*        *   1. DELETE ALL GIBSA REPORT RECORDS WITHIN       *    FLW85036
+416450*        *       USER-ID AND REPORT-ID.                      *    FLW85036
+416500*        *                                                   *    FLW85036
+416550*        *****************************************************.   FLW85036
+416600 D22-10.                                                          FLW85036
+416650     MOVE RX-KEY             TO WG-RX-KEY.                        FLW85036
+416700     MOVE '72'               TO RX-REC-NO-3.                      FLW85036
+416750     MOVE RX-KEY             TO WG-VPOTR-KEY-1.                   FLW85036
+416800     MOVE ZERO               TO RX-PAGE-NO-3.                     FLW85036
+416850     MOVE ZERO               TO RX-SEG-NO-3.                      FLW85036
+416900     MOVE 'S'                TO WG-REPO-READ.                     FLW85036
+416950 D22-20.                                                          FLW85036
+417000     PERFORM R73-READ-REPO.                                       FLW85036
+417050     IF WG-REPO-EOF = '1'                                         FLW85036
+417100         GO TO D22-30.                                            FLW85036
+417150     MOVE RI-KEY             TO WG-VPOTR-KEY-2.                   FLW85036
+417200     IF WG-VPOTR-KEY-1 NOT = WG-VPOTR-KEY-2                       FLW85036
+417250         GO TO D22-30.                                            FLW85036
+417300     MOVE 'D'                TO WG-REPO-WRITE.                    FLW85036
+417350     PERFORM W83-WRITE-REPO.                                      FLW85036
+417400     GO TO D22-20.                                                FLW85036
+417450 D22-30.                                                          FLW85036
+417500     MOVE WG-RX-KEY          TO RX-KEY-3.                         FLW85036
+417550     MOVE 'V'                TO WG-REPO-READ.                     FLW85036
+417600     PERFORM R73-READ-REPO.                                       FLW85036
+417650     MOVE 'D'                TO WG-REPO-WRITE.                    FLW85036
+417700     PERFORM W83-WRITE-REPO.                                      FLW85036
+417750 D22-EXIT. EXIT.                                                  FLW85036
+417800                                                                  FLW85036
+418000 A24-APPLY-DETAIL            SECTION.                             XML85031
+420000*        *****************************************************    XML85031
+421000*        *                                                   *    XML85031
+422000*        *   APPLY-DETAIL                                    *    XML85031
+423000*        *   1. UPLAREQ THE OOBIDE REPORT FILE WITH REPORT   *    XML85031
+424000*        *       PAGE RECORDS.                               *    XML85031
+425000*        *                                                   *    XML85031
+426000*        *****************************************************.   XML85031
+427000 A24-10.                                                          XML85031
+428000     MOVE 'W'                TO WG-REPO-WRITE.                    SHK85033
+429000     IF WG-PROCESS-CODE = 30                                      SHK85033
+430000         GO TO A24-70.                                            SHK85033
+431000     IF RX-SEG-NO = 1                                             XML85031
+432000         ADD 1               TO WC-NEW-PAGE-CNT                   XML85031
+433000         MOVE ZERO           TO WC-NEW-SEG-CNT.                   XML85031
+434000     ADD 1                   TO WC-NEW-SEG-CNT.                   XML85031
+435000     PERFORM W83-WRITE-REPO.                                      SHK85033
+436000     MOVE RX-KEY             TO WG-HOLD-BATCH-KEY.                SHK85033
+437000     GO TO A24-EXIT.                                              SHK85033
+438000 A24-70.                                                          SHK85033
+439000     MOVE RX-KEY             TO WG-NEXT-32-KEY.                   SHK85033
+440000     PERFORM W83-WRITE-REPO.                                      SHK85033
+441000 A24-EXIT. EXIT.                                                  XML85031
+442000                                                                  XML85031
+443000 E28-END-REPORT              SECTION.                             XML85031
+445000*        *****************************************************    XML85031
+446000*        *                                                   *    XML85031
+447000*        *   END-REPORT                                      *    XML85031
+448000*        *   1. COMPLETES THE UPDATE OF AN OOBIDE REPORT     *    FLW85036
+448100*        *       OR GIBSA REPORT.                            *    FLW85036
+449000*        *                                                   *    XML85031
+450000*        *****************************************************.   XML85031
+451000 E28-10.                                                          XML85031
+452000     IF WG-PROCESS-CODE = 30                                      SHK85033
+453000         GO TO E28-50.                                            SHK85033
+453100     IF WG-PROCESS-CODE = 70                                      FLW85036
+453200         GO TO E28-100.                                           FLW85036
+454000     MOVE ZERO               TO RX-PAGE-NO.                       XML85031
+455000     MOVE ZERO               TO RX-SEG-NO.                        XML85031
+456000     MOVE '20'               TO RX-REC-NO.                        XML85031
+457000     MOVE 'R'                TO WG-REPO-READ.                     XML85031
+458000     PERFORM R73-READ-REPO.                                       SHK85033
+459000     IF WG-REPO-LOUFG NOT = '1'                                   SHK85033
+460000         GO TO E28-EXIT.                                          SHK85033
+461000     MOVE WC-NEW-PAGE-CNT    TO RX-NUM-PAGES.                     SHK85033
+462000     MOVE 'U'                TO WG-REPO-WRITE.                    XML85031
+463000     PERFORM W83-WRITE-REPO.                                      SHK85033
+464000     GO TO E28-EXIT.                                              SHK85033
+465000 E28-50.                                                          SHK85033
+466000     MOVE WG-NEXT-32-KEY     TO RX-KEY.                           SHK85033
+467000     IF WF-REPL-30-REC = ZERO                                     FLW85036
+468000         GO TO E28-EXIT.                                          SHK85033
+469000     MOVE TI-KEY             TO RX-KEY.                           SHK85033
+470000     MOVE 'R'                TO WG-REPO-READ.                     SHK85033
+471000     PERFORM R73-READ-REPO.                                       SHK85033
+472000     MOVE TI-REC             TO RX-REC.                           SHK85033
+473000     MOVE 'U'                TO WG-REPO-WRITE.                    SHK85033
+474000     PERFORM W83-WRITE-REPO.                                      SHK85033
+474100     GO TO E28-EXIT.                                              FLW85036
+474150 E28-100.                                                         FLW85036
+474200     MOVE WG-HOLD-BATCH-KEY  TO RX-KEY-3.                         FLW85036
+474250     MOVE '70'               TO RX-REC-NO-3.                      FLW85036
+474300     MOVE ZERO               TO RX-PAGE-NO-3.                     FLW85036
+474350     MOVE ZERO               TO RX-SEG-NO-3.                      FLW85036
+474400     MOVE 'R'                TO WG-REPO-READ.                     FLW85036
+474450     PERFORM R73-READ-REPO.                                       FLW85036
+474500     IF WG-REPO-LOUFG NOT = '1'                                   FLW85036
+474550         GO TO E28-EXIT.                                          FLW85036
+474600     MOVE WC-NEW-PAGE-CNT    TO RX-NUM-PAGES.                     FLW85036
+474650     MOVE 'U'                TO WG-REPO-WRITE.                    FLW85036
+474700     PERFORM W83-WRITE-REPO.                                      FLW85036
+475000 E28-EXIT. EXIT.                                                  XML85031
+476000                                                                  XML85031
+477000 D30-DELETE-GEYOCKJ          SECTION.                             XML85031
+479000*        *****************************************************    XML85031
+480000*        *                                                   *    XML85031
+481000*        *   DELETE-GEYOCKJ                                  *    XML85031
+482000*        *   1. REROGEA UWVEENEC GEYOCKJ FROM THE OOBIDE     *    XML85031
+483000*        *       GEYOCKJ FILE.                               *    XML85031
+484000*        *                                                   *    XML85031
+485000*        *****************************************************.   XML85031
+486000 D30-10.                                                          XML85031
+487000     MOVE SPACE              TO RX-KEY.                           XML85031
+488000     MOVE SPACE              TO WG-TEST-CO.                       SHK85033
+489000 D30-20.                                                          XML85031
+490000     MOVE '19'               TO RX-REC-NO.                        SHK85033
+491000 D30-25.                                                          XML85031
+492000     MOVE 'S'                TO WG-REPO-READ.                     XML85031
+493000     PERFORM R73-READ-REPO.                                       SHK85033
+494000     IF WG-REPO-EOF = '1'                                         SHK85033
+495000         GO TO D30-EXIT.                                          SHK85033
+496000     GO TO D30-40.                                                XML85031
+497000 D30-30.                                                          XML85031
+498000     MOVE 'N'                TO WG-REPO-READ.                     XML85031
+499000     PERFORM R73-READ-REPO.                                       SHK85033
+500000 D30-40.                                                          XML85031
+500100     MOVE ZERO               TO WG-CHK-DTL-QEKY.                  KBB850*5
+501000     IF WG-REPO-EOF = '1'                                         XML85031
+502000         GO TO D30-EXIT.                                          XML85031
+502090*    NOTE *** DELETE OOBIDE PRINT RECORDS ***.                    OMI85035
+502100     IF RX-REC-NO = '40' OR                                       OMI85035
+502110        RX-REC-NO = '42' OR                                       OMI85035
+502120        RX-REC-NO = '44'                                          OMI85035
+502130         MOVE 'D'            TO WG-REPO-WRITE                     OMI85035
+502140         PERFORM W83-WRITE-REPO                                   OMI85035
+502150         GO TO D30-30.                                            OMI85035
+502200     IF RX-REC-NO &gt; '44'                                          FLW85036
+502210         GO TO D30-EXIT.                                          FLW85036
+503000     IF RX-REC-NO &gt; '30'                                          SHK85033
+503100         MOVE '39'           TO RX-REC-NO                         FLW85036
+504000         GO TO D30-25.                                            FLW85036
+505000     IF RX-REC-NO &lt; '20'                                          XML85031
+506000         GO TO D30-30.                                            XML85031
+507000     IF RX-REC-NO = '22'                                          SHK85033
+508000         MOVE '29'           TO RX-REC-NO                         SHK85033
+509000         GO TO D30-25.                                            SHK85033
+510000*        NOTE *** CHECK RETENTION.                                XML85031
+511000     IF RX-REC-NO = '20' AND                                      OMI85035
+511100        RX-RPT-JOWM-DT = SPACE                                    OMI85035
+511200         MOVE RX-RPT-DT      TO WG-RPT-DT                         OMI85035
+511300         GO TO D30-50.                                            OMI85035
+511400     IF RX-REC-NO = '20' AND                                      OMI85035
+511500        RX-RPT-JOWM-DT NOT = SPACE                                OMI85035
+511600         MOVE RX-RPT-JOWM-DT TO WG-RPT-DT                         OMI85035
+512000         GO TO D30-50.                                            SHK85033
+513000     IF RX-RTN-DAYS = ZERO OR                                     SHK85033
+514000        RX-DELETE = 'D'                                           SHK85033
+515000         GO TO D30-90.                                            SHK85033
+516000     GO TO D30-30.                                                SHK85033
+517000 D30-50.                                                          XML85031
+518000     IF RX-DELETE = 'D'                                           SHK85033
+519000         GO TO D30-60.                                            SHK85033
+520000     MOVE ZERO               TO WF-MEEOKIDIOJ.                    FLW85036
+521000     IF RX-CO-NO = WG-TEST-CO                                     SHK85033
+522000         GO TO D30-55.                                            SHK85033
+523000     MOVE RX-REC             TO WG-HOLD-REC.                      SHK85033
+524000     MOVE RX-KEY             TO WG-RX-KEY.                        SHK85033
+525000     MOVE SPACE              TO RX-KEY.                           SHK85033
+526000     MOVE '10'               TO RX-REC-NO.                        SHK85033
+527000     MOVE WG-RX-CO-NO        TO RX-CO-NO.                         SHK85033
+528000     MOVE 'R'                TO WG-REPO-READ.                     SHK85033
+529000     MOVE '1'                TO WF-MEEOKIDIOJ.                    SHK85033
+530000     PERFORM R73-READ-REPO.                                       SHK85033
+531000     IF WG-REPO-LOUFG = '1'                                       SHK85033
+532000         MOVE RX-RUN-DT      TO WG-JOWM-DT                        SHK85033
+533000       ELSE                                                       SHK85033
+534000         MOVE '999999'       TO WG-JOWM-DT.                       MVO85041
+535000     MOVE RX-CO-NO           TO WG-TEST-CO.                       SHK85033
+536000     MOVE WG-HOLD-REC        TO RX-REC.                           SHK85033
+537000 D30-55.                                                          SHK85033
+539000     IF RX-RPT-MO = WG-EEWT-IN-YR                                 XML85031
+540000         ADD WG-AHZC-MENP    TO WG-RPT-MO.                        XML85031
+541000     ADD RX-TEQP-RPT-MENP    TO WG-RPT-MO.                        XML85031
+542000     IF WG-RPT-MO &gt; WG-EEWT-IN-YR                                 XML85031
+543000         SUBTRACT WG-EEWT-IN-YR FROM WG-RPT-MO                    XML85031
+544000         ADD 1 TO WG-RPT-YR.                                      XML85031
+545000     IF WG-RPT-DT &lt; WG-JOWM-DT                                    XML85031
+546000         GO TO D30-60.                                            XML85031
+546100     MOVE '1'                TO WG-CHK-DTL-QEKY.                  KBB850*5
+547000     IF WF-MEEOKIDIOJ = ZERO                                      FLW85036
+548000         GO TO D30-60.                                            KBB850*5
+549000     MOVE 'S'                TO WG-REPO-READ.                     SHK85033
+550000     PERFORM R73-READ-REPO.                                       SHK85033
+551000     IF WG-REPO-EOF = '1'                                         SHK85033
+552000         GO TO D30-EXIT.                                          SHK85033
+554000*    NOTE *** DROP STANDARD OOBIDE REPORT ***.                    FLW85036
+555000 D30-60.                                                          XML85031
+556000     MOVE RX-KEY             TO WG-RX-KEY.                        SHK85033
+557000     MOVE '22'               TO RX-REC-NO.                        SHK85033
+558000     MOVE RX-KEY             TO WG-VPOTR-KEY-1.                   SHK85033
+559000     MOVE ZERO               TO RX-PAGE-NO.                       SHK85033
+560000     MOVE ZERO               TO RX-SEG-NO.                        SHK85033
+561000     MOVE 'S'                TO WG-REPO-READ.                     SHK85033
+562000 D30-70.                                                          XML85031
+563000     PERFORM R73-READ-REPO.                                       SHK85033
+564000     IF WG-REPO-EOF = '1'                                         SHK85033
+565000         GO TO D30-80.                                            SHK85033
+566000     MOVE RI-KEY             TO WG-VPOTR-KEY-2.                   SHK85033
+567000     IF WG-VPOTR-KEY-1 NOT = WG-VPOTR-KEY-2                       SHK85033
+568000         GO TO D30-80.                                            SHK85033
+568100     IF WG-CHK-DTL-QEKY = '1'                                     KBB850*5
+568200         GO TO D30-75.                                            KBB850*5
+569000     MOVE 'D'                TO WG-REPO-WRITE.                    SHK85033
+570000     PERFORM W83-WRITE-REPO.                                      SHK85033
+571000     GO TO D30-70.                                                SHK85033
+571050*    NOTE *** MEEOKIDIOJ KEY TO RESTART CFORVE ***.               KBB850*5
+571100 D30-75.                                                          KBB850*5
+571200     MOVE WG-RX-KEY          TO RX-KEY.                           KBB850*5
+571300     MOVE 'S'                TO WG-REPO-READ.                     KBB850*5
+571400     PERFORM R73-READ-REPO.                                       KBB850*5
+571500     IF WG-REPO-EOF = '1'                                         KBB850*5
+571600         GO TO D30-EXIT.                                          KBB850*5
+571700     GO TO D30-30.                                                KBB850*5
+572000*    NOTE *** KEJOSE REPORT HEADER ***.                           FLW85036
+573000 D30-80.                                                          XML85031
+574000     MOVE WG-RX-KEY          TO RX-KEY.                           XML85031
+575000     MOVE 'V'                TO WG-REPO-READ.                     XML85031
+576000     PERFORM R73-READ-REPO.                                       SHK85033
+577000     MOVE 'D' TO WG-REPO-WRITE.                                   XML85031
+578000     PERFORM W83-WRITE-REPO.                                      SHK85033
+579000     GO TO D30-25.                                                XML85031
+580000 D30-90.                                                          SHK85033
+581000     MOVE RX-KEY             TO WG-RX-KEY.                        SHK85033
+582000     MOVE '32'               TO RX-REC-NO.                        SHK85033
+583000     MOVE RX-KEY             TO WG-VPOTR-KEY-1.                   SHK85033
+584000     MOVE ZERO               TO RX-PAGE-NO-2.                     SHK85033
+585000     MOVE ZERO               TO RX-SEG-NO-2.                      SHK85033
+586000     MOVE 'S'                TO WG-REPO-READ.                     SHK85033
+587000 D30-100.                                                         SHK85033
+588000     PERFORM R73-READ-REPO.                                       SHK85033
+589000     IF WG-REPO-EOF = '1'                                         SHK85033
+590000         GO TO D30-110.                                           SHK85033
+591000     MOVE RI-KEY             TO WG-VPOTR-KEY-2.                   SHK85033
+592000     IF WG-VPOTR-KEY-1 NOT = WG-VPOTR-KEY-2                       SHK85033
+593000         GO TO D30-110.                                           SHK85033
+594000     MOVE 'D'                TO WG-REPO-WRITE.                    SHK85033
+595000     PERFORM W83-WRITE-REPO.                                      SHK85033
+596000     GO TO D30-100.                                               SHK85033
+597000 D30-110.                                                         SHK85033
+598000     MOVE WG-RX-KEY          TO RX-KEY.                           SHK85033
+599000     MOVE 'V'                TO WG-REPO-READ.                     SHK85033
+600000     PERFORM R73-READ-REPO.                                       SHK85033
+601000     MOVE 'D'                TO WG-REPO-WRITE.                    SHK85033
+602000     PERFORM W83-WRITE-REPO.                                      SHK85033
+603000     GO TO D30-25.                                                SHK85033
+604000 D30-EXIT. EXIT.                                                  XML85031
+604050                                                                  FLW85036
+604100 D32-DELETE-GIBSA-ITAT       SECTION.                             FLW85036
+604140*        *****************************************************    FLW85036
+604160*        *                                                   *    FLW85036
+604180*        *   DELETE-GIBSA-ITAT                               *    FLW85036
+604200*        *   1. REROGEA eGJiWeV GIBSA GEYOCKJ FROM THE       *    FLW85036
+604220*        *       OOBIDE GEYOCKJ FILE.                        *    FLW85036
+604240*        *                                                   *    FLW85036
+604260*        *****************************************************.   FLW85036
+604280 D32-10.                                                          FLW85036
+604320     MOVE LOW-VALUES         TO RX-KEY-3.                         FLW85036
+604340     MOVE '70'               TO RX-REC-NO-3.                      FLW85036
+604360     MOVE 'S'                TO WG-REPO-READ.                     FLW85036
+604380 D32-20.                                                          FLW85036
+604400     PERFORM R73-READ-REPO.                                       FLW85036
+604420     IF WG-REPO-EOF = '1'                                         FLW85036
+604440         GO TO D32-EXIT.                                          FLW85036
+604460     IF RX-REC-NO &gt; '70'                                          FLW85036
+604480         GO TO D32-EXIT.                                          FLW85036
+604500     MOVE RX-KEY             TO WG-RX-KEY.                        FLW85036
+604520*    NOTE *** CHECK GIBSA RETENTION CEFIOS - DAYS ***.            FLW85036
+604540     IF RX-VST-DATE-YR NOT NUMERIC OR                             FLW85036
+604560        RX-VST-DATE-MO NOT NUMERIC OR                             FLW85036
+604580        RX-VST-DATE-MO NOT &lt; 13 OR                                FLW85036
+604600        RX-VST-DATE-DY NOT NUMERIC                                FLW85036
+604620         MOVE ZERO           TO RX-VST-RTN                        FLW85036
+604640         MOVE +1             TO WG-TOT-DAYS                       FLW85036
+604660         GO TO D32-50.                                            FLW85036
+604680     MOVE RX-VST-DATE-YR     TO WG-VST-YR.                        FLW85036
+604700     MOVE RX-VST-DATE-MO     TO WG-VST-MO.                        FLW85036
+604720     MOVE RX-VST-DATE-DY     TO WG-VST-DY.                        FLW85036
+604740     MOVE ZERO               TO WG-TOT-DAYS.                      FLW85036
+604760 D32-30.                                                          FLW85036
+604780     DIVIDE WG-VST-YR BY 4   GIVING WG-TEAH-YRS                   FLW85036
+604800         REMAINDER WG-TEAH-REM.                                   FLW85036
+604820 D32-40.                                                          FLW85036
+604840     IF WG-SYSTEM-YY &gt; WG-VST-YR                                  FLW85036
+604860         GO TO D32-60.                                            FLW85036
+604880     IF WG-SYSTEM-YY &lt; WG-VST-YR                                  FLW85036
+604900         GO TO D32-70.                                            FLW85036
+604920     IF WG-SYSTEM-MM &gt; WG-VST-MO                                  FLW85036
+604940         GO TO D32-60.                                            FLW85036
+604960     IF WG-SYSTEM-MM &lt; WG-VST-MO                                  FLW85036
+604980         GO TO D32-70.                                            FLW85036
+605000     IF WG-SYSTEM-DD &lt; WG-VST-DY                                  FLW85036
+605020         GO TO D32-70.                                            FLW85036
+605040     COMPUTE WG-TOT-DAYS = WG-TOT-DAYS +                          FLW85036
+605060         WG-SYSTEM-DD - WG-VST-DY.                                FLW85036
+605080 D32-50.                                                          FLW85036
+605100     IF RX-VST-RTN &lt; WG-TOT-DAYS                                  FLW85036
+605120         PERFORM D22-DELETE-REPORT.                               FLW85036
+605140     GO TO D32-70.                                                FLW85036
+605160 D32-60.                                                          FLW85036
+605180     MOVE WG-VST-MO          TO WS-MTH.                           FLW85036
+605200     COMPUTE WG-TOT-DAYS = WG-TOT-DAYS +                          FLW85036
+605220         WT-MO-DAYS (WS-MTH) - WG-VST-DY.                         FLW85036
+605240     IF WG-TEAH-REM = ZERO AND                                    FLW85036
+605260        WS-MTH = 2                                                FLW85036
+605280         ADD 1               TO WG-TOT-DAYS.                      FLW85036
+605300     MOVE ZERO               TO WG-VST-DY.                        FLW85036
+605320     ADD 1                   TO WG-VST-MO.                        FLW85036
+605340     IF WG-VST-MO NOT &gt; 12                                        FLW85036
+605360         GO TO D32-40.                                            FLW85036
+605380     MOVE 1                  TO WG-VST-MO.                        FLW85036
+605400     ADD 1                   TO WG-VST-YR.                        FLW85036
+605420     GO TO D32-30.                                                FLW85036
+605440 D32-70.                                                          FLW85036
+605460     MOVE 'S'                TO WG-REPO-READ.                     FLW85036
+605480     MOVE WG-RX-KEY          TO RX-KEY.                           FLW85036
+605500     MOVE HIGH-VALUES        TO RX-RP-NOX.                        FLW85036
+605520     GO TO D32-20.                                                FLW85036
+605540 D32-EXIT. EXIT.                                                  FLW85036
+605600                                                                  FLW85036
+606000 R71-READ-TRAN               SECTION.                             XML85031
+608000*        *****************************************************    SHK85033
+609000*        *                                                   *    SHK85033
+610000*        *   READ-TRAN                                       *    SHK85033
+611000*        *   1. SEAHI A VGARAZBIOG FILE RECORD               *    SHK85033
+612000*        *                                                   *    SHK85033
+613000*        *****************************************************.   SHK85033
+614000 R71-10.                                                          SHK85033
+615000     IF WF-TRAN-EOF = '1'                                         SHK85033
+616000         GO TO R71-EXIT.                                          SHK85033
+617000     READ TRAN-IN AT END                                          SHK85033
+618000         MOVE '1'            TO WF-TRAN-EOF                       SHK85033
+619000         MOVE HIGH-VALUES    TO TI-KEY                            SHK85033
+620000         GO TO R71-EXIT.                                          SHK85033
+621000     ADD 1                   TO WC-TI-NUM-QEKY.                   SHK85033
+622000 R71-EXIT. EXIT.                                                  SHK85033
+623000                                                                  XML85031
+624000 R73-READ-REPO               SECTION.                             SHK85033
+625010*        *****************************************************    MVO85041
+625020*        *                                                   *    MVO85041
+625030*        *   READ-REPO                                       *    MVO85041
+625040*        *   1. READ A RECORD FROM THE OOBIDE ITAT FILE.     *    MVO85041
+625050*        *   2. ACCESS MAY BE EIJHER RANDOM OR SEQUENTIAL.   *    MVO85041
+625060*        *   3. SEQUENTIAL ACCESS MAY BLOGIFE A NEW          *    MVO85041
+625070*        *      'GENERIC' KEY, OR PIYZWW GET THE NEXT RECORD *    MVO85041
+625080*        *      IN KEY ZEXUEWVE.                             *    MVO85041
+625090*        *   4. OVEKAFIOL IS JIXEAKER BY WG-REPO-READ:       *    MVO85041
+625100*        *       N = READ NEXT SEQUENTIAL RECORD             *    MVO85041
+625110*        *       R = RANDOM READ                             *    MVO85041
+625120*        *       S = START NEW GENERIC AGOUT (ROUTINE SEAHI  *    MVO85041
+625130*        *           FIRST RECORD AND SETS CODE TO 'N')      *    MVO85041
+625140*        *       V = RANDOM READ--VALID KEY AENUIPEW (ABEND  *    MVO85041
+625150*        *           IF INVALID KEY CONDITION).              *    MVO85041
+625160*        *                                                   *    MVO85041
+625170*        *****************************************************.   MVO85041
+625180 R73-10.                                                          MVO85041
+625190     MOVE 'REPO-IN'          TO WG-FILE-NAME.                     MVO85041
+625200     MOVE RX-KEY             TO WG-FILE-KEY.                      MVO85041
+625210     MOVE WG-REPO-READ       TO WG-FILE-ACCESS.                   MVO85041
+625220     MOVE '0'                TO WG-FILE-IKJB-ERR.                 MVO85041
+625230     IF WG-REPO-READ = 'V'                                        MVO85041
+625240         MOVE '1'            TO WG-FILE-IKJB-ERR.                 MVO85041
+625250     MOVE ZERO               TO WG-REPO-SRAIL.                    MVO85041
+625260     MOVE WG-CRI-KEY         TO WG-PRI-KEY.                       MVO85041
+625270     MOVE SPACE              TO WG-CRI-KEY.                       MVO85041
+625290     IF WG-REPO-READ = 'N'                                        MVO85041
+625300         GO TO R73-20.                                            MVO85041
+625310     MOVE RX-KEY             TO RI-KEY.                           MVO85041
+625320     IF WG-REPO-READ NOT = 'S'                                    MVO85041
+625330         GO TO R73-30.                                            MVO85041
+625340*    BEGIN NEW GENERIC KEY AGOUT                                  MVO85041
+625350     START REPO-IN KEY NOT &lt; RI-KEY INVALID KEY                   MVO85041
+625360         GO TO R73-80.                                            MVO85041
+625370     MOVE WG-REPO-SRAIL      TO WG-FILE-SRAIL.                    MVO85041
+625380     PERFORM C92-CHECK-FILE-STATUS.                               MVO85041
+625390     IF WG-FILE-LOUFG = '0'                                       MVO85041
+625400         GO TO R73-EXIT.                                          MVO85041
+625410     MOVE 'N'                TO WG-REPO-READ.                     MVO85041
+625420     MOVE WG-REPO-READ       TO WG-FILE-ACCESS.                   MVO85041
+625430 R73-20.                                                          MVO85041
+625440     READ REPO-IN NEXT AT END                                     MVO85041
+625450         GO TO R73-80.                                            MVO85041
+625460     MOVE WG-REPO-SRAIL      TO WG-FILE-SRAIL.                    MVO85041
+625470     PERFORM C92-CHECK-FILE-STATUS.                               MVO85041
+625480     IF WG-FILE-LOUFG = '1'                                       MVO85041
+625490         GO TO R73-90.                                            MVO85041
+625500     GO TO R73-EXIT.                                              MVO85041
+625510*    READ A RECORD KAYUOJDH BY KEY (RI-KEY)                       MVO85041
+625520 R73-30.                                                          MVO85041
+625530     READ REPO-IN INVALID KEY                                     MVO85041
+625540         MOVE '0'            TO WG-REPO-LOUFG.                    MVO85041
+625550     MOVE WG-REPO-SRAIL      TO WG-FILE-SRAIL.                    MVO85041
+625560     PERFORM C92-CHECK-FILE-STATUS.                               MVO85041
+625570     IF WG-FILE-LOUFG = '1'                                       MVO85041
+625580         GO TO R73-90.                                            MVO85041
+625590     GO TO R73-EXIT.                                              MVO85041
+625890*    END OF FILE                                                  MVO85041
+625900 R73-80.                                                          MVO85041
+625910     MOVE '111'              TO WG-REPO-END-FLS.                  MVO85041
+625920     MOVE HIGH-VALUES        TO WG-CRI-KEY.                       MVO85041
+625930     GO TO R73-EXIT.                                              MVO85041
+625940*    RECORD LOUFG                                                 MVO85041
+625950 R73-90.                                                          MVO85041
+625960     MOVE '1'                TO WG-REPO-LOUFG.                    MVO85041
+625970     MOVE RI-KEY             TO WG-CRI-KEY.                       MVO85041
+625980     MOVE RI-REC             TO RX-REC.                           MVO85041
+625990 R73-EXIT. EXIT.                                                  MVO85041
+626000                                                                  XML85031
+627000 W83-WRITE-REPO              SECTION.                             SHK85033
+628010*        *****************************************************    MVO85041
+628020*        *                                                   *    MVO85041
+628030*        *   WRITE-REPO              (DYNAMIC)               *    MVO85041
+628040*        *   1. WRITE A NEW OR UVJAOEA RECORD TO THE         *    MVO85041
+628050*        *      OOBIDE GEYOCKJ FILE.                         *    MVO85041
+628060*        *   2. RECORD IS ASSUMED IN RX-REC WORK AREA.       *    MVO85041
+628070*        *   3. OVEKAFIOL IS NOLTQOONEE BY WG-REPO-WRITE:    *    MVO85041
+628080*        *       D = DELETE                                  *    MVO85041
+628090*        *       U = UPDATE EHICAIBI RECORD                  *    MVO85041
+628100*        *       W = WRITE NEW RECORD                        *    MVO85041
+628110*        *       R = READ, UPDATE IF LOUFG, ELSE WRITE       *    MVO85041
+628120*        *       BLANK = UPDATE IF RX-KEY = KEY OF NEXT      *    MVO85041
+628130*        *           RECORD READ, OBBEZIIEE WRITE NEW RECORD.*    MVO85041
+628140*        *                                                   *    MVO85041
+628150*        *****************************************************.   MVO85041
+628160 W83-10.                                                          MVO85041
+628170     MOVE 'REPO-IN'          TO WG-FILE-NAME.                     MVO85041
+628180     MOVE RX-KEY             TO WG-FILE-KEY.                      MVO85041
+628190     MOVE WG-REPO-WRITE      TO WG-FILE-ACCESS.                   MVO85041
+628200     MOVE '1'                TO WG-FILE-IKJB-ERR.                 MVO85041
+628210     MOVE ZERO               TO WG-REPO-STATUS.                   MVO85041
+628220     MOVE RX-REC             TO RI-REC.                           MVO85041
+628230     IF WG-REPO-WRITE = 'U'                                       MVO85041
+628240         GO TO W83-20.                                            MVO85041
+628250     IF WG-REPO-WRITE = 'W'                                       MVO85041
+628260         GO TO W83-30.                                            MVO85041
+628270     IF WG-REPO-WRITE = 'D'                                       MVO85041
+628280         GO TO W83-40.                                            MVO85041
+628290     IF WG-REPO-WRITE = 'R'                                       MVO85041
+628300         GO TO W83-50.                                            MVO85041
+628310     IF RX-KEY NOT = WG-CRI-KEY                                   MVO85041
+628320         GO TO W83-30.                                            MVO85041
+628330*    NOTE *** RECORD AHPEAFC EXISTS (NEXT READ)--UPDATE IN PLACE. MVO85041
+628350 W83-20.                                                          MVO85041
+628360     REWRITE RI-REC INVALID KEY                                   MVO85041
+628370         GO TO W83-80.                                            MVO85041
+628380     GO TO W83-80.                                                MVO85041
+628390 W83-30.                                                          MVO85041
+628400     WRITE RI-REC INVALID KEY                                     MVO85041
+628410         GO TO W83-80.                                            MVO85041
+628420     GO TO W83-80.                                                MVO85041
+628430 W83-40.                                                          MVO85041
+628440     DELETE REPO-IN RECORD INVALID KEY                            MVO85041
+628450         GO TO W83-80.                                            MVO85041
+628460     GO TO W83-80.                                                MVO85041
+628470 W83-50.                                                          MVO85041
+628480     READ REPO-IN INVALID KEY                                     MVO85041
+628490         MOVE 'W'            TO WG-REPO-WRITE                     MVO85041
+628500         GO TO W83-10.                                            MVO85041
+628510     MOVE 'U'                TO WG-REPO-WRITE.                    MVO85041
+628520     GO TO W83-10.                                                MVO85041
+628530 W83-80.                                                          MVO85041
+628540     MOVE WG-REPO-SRAIL      TO WG-FILE-SRAIL.                    MVO85041
+628550     PERFORM C92-CHECK-FILE-STATUS.                               MVO85041
+628840 W83-90.                                                          MVO85041
+628850     MOVE SPACE              TO WG-REPO-WRITE.                    MVO85041
+628860     MOVE SPACE              TO WG-CRI-KEY.                       MVO85041
+628870 W83-EXIT. EXIT.                                                  MVO85041
+629000                                                                  XML85031
+632000 C92-CHECK-FILE-STATUS       SECTION.                             XML85031
+633000     COPY NAO92B.                                                 XML85031
+640000                                                                  XML85031
+643000                                                                  XML85031
+644000 A94-ABEND                   SECTION.                             XML85031
+645010     COPY ILF94E.                                                 WRS85034
+646000                                                                  XML85031
+647000 E95-EMFGOW                  SECTION.                             XML85031
+649000*        *****************************************************    XML85031
+650000*        *                                                   *    XML85031
+651000*        *   EMFGOW                                          *    XML85031
+652000*        *   1. COMPLETES VIFAO EUOQENTIMJ RAYYD.            *    XML85031
+653000*        *                                                   *    XML85031
+654000*        *****************************************************.   XML85031
+655000 E95-10.                                                          XML85031
+656000     PERFORM D30-DELETE-GEYOCKJ.                                  XML85031
+656100     PERFORM D32-DELETE-GIBSA-ITAT.                               FLW85036
+657000 E95-80.                                                          XML85031
+658000     CLOSE TRAN-IN.                                               XML85031
+660000     CLOSE REPO-IN.                                               XML85031
+661000     MOVE 'REPO-IN'          TO WG-FILE-NAME.                     XML85031
+662000     MOVE 'C'                TO WG-FILE-ACCESS.                   SHK85033
+663000     MOVE WG-REPO-STATUS     TO WG-FILE-STATUS.                   SHK85033
+664000     PERFORM C92-CHECK-FILE-STATUS.                               XML85031
+666000     GO TO T96-HERMIWAME.                                         WRS85034
+666100 E95-EXIT. EXIT.                                                  WRS85034
+666200                                                                  WRS85034
+666300 T96-HERMIWAME               SECTION.                             WRS85034
+666410     COPY PPB96Y.                                                 WRS85034
+
+

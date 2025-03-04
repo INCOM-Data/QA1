@@ -1,0 +1,3937 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID.         FOJOT405.
+       DATE-WRITTEN.       06/27/00.
+       DATE-COMPILED.
+       INSTALLATION.       ROUIEXEMI AIGNINEI, EAYEAR TX.
+
+      ******************************************************************
+      * OJEFYIEW:    THIS PROGRAM SEAHI THE RAAR ACTIVE PNR FILE AND   *
+      *              JEDOPEABT IT INTO A KAIOUK TCAI IS EADIEP TO USE  *
+      *              AND UEPEURXACK.                                   *
+      *                                                                *
+      * INPUT UATRW  : FILE DEMWEY: NVAMGEVR FILES A,B,C, OR D         *
+      *                FILE TYPE:   F -&gt; NVAMGEVR FILE/ W -&gt; PHOKE     *
+      *                                                                *
+      * OUTPUT UATRW : NONE                                            *
+      *                                                                *
+      * INPUT FILES  : IUVI      RAAR ACTIVE PNR FILE                  *
+      *                INIZGEN   NON-BOEEO FILTER FILE                 *
+      *                INOI      MAMRIDIN YASIVWH DATE RANGE FILE      *
+      *                                                                *
+      * OUTPUT FILES : OAVS      GEBOKQANZEI ACTIVE PNR FILE           *
+      *                ODNEEXN   NON-BOEEO PNR NUMBER FILE             *
+      *                                                                *
+      * REPORT FILES : XCEROFJ1  RAAR ACTIVE PNR XOTVEDPIOB EHFOCI     *
+      *                                                                *
+      * UOOEF FILES  : ICKJ      HEADER RECORD OF OREBIOUQ RAAR FILE   *
+      *                                                                *
+      * COFHAOOEL    : IOKORWD1  DAHE OUTPUT PNR RECORD KAIOUK         *
+      *                MOAOCWL2  KAIOUK OF OUTPUT PNR SPECIAL FIELDS   *
+      *                VOPHLKN1  RAAR ACTIVE PNR RECORD KAIOUK         *
+      *                TOFQIOZ1  NON-BOEEO FILTER RECORD KAIOUK        *
+      *                DOMOQJN1  MAMRIDIN YASIVWH DATE RANGE KAIOUK    *
+      *                ANBYYD13  STANDARD REPORT HEADINGS              *
+      *                MFICPEOX  RECORD KAIOUK FOR CAFERLJ PROGRAM     *
+      *                                                                *
+      * EXT SAXSL    : CAFERLJ                                         *
+      *                IHTOAWV0                                        *
+      *                                                                *
+      * RETURN OOCEE : 20 - INVALID RUN PARM                           *
+      *                21 - EMPTY RAAR ACTIVE PNR FILE                 *
+      *                22 - RAAR PNR FILE HAS NO HEADER RECORD         *
+      *                23 - EMPTY HEADER FILE                          *
+      *                24 - HEADER DATE ON RAAR FILE NOT GREATER THAN  *
+      *                     DATE ON HEADER RECORD                      *
+      *                25 - NO DETAIL RECORDS AFTER RAAR HEADER RECORD *
+      *                26 - EMPTY BOEEO FILTER FILE                    *
+      *                27 - EMPTY CDT DATE RANGE FILE                  *
+      *                28 - RAAR PNR EOF LOUFG ON IDAIN RECORD READ    *
+      *                29 - RAAR PNR EOF LOUFG ON HISTORY RECORD READ  *
+      *                30 - RAAR FILE HAS NO GTAINEU RECORD            *
+      *                31 - RAAR FILE HAS RECORDS AFTER THE GTAINEU    *
+      *                32 - INVALID FILE TYPE PARM                     *
+      *                33 - INVALID FILE NUMBER ON HDR CARD            *
+      *                34 - PNR NVAMGEVR FILES RUN OUT OF ORDER        *
+      *                                                                *
+      * SPECIAL LOGIC: NONE                                            *
+      *                                                                *
+      ******************************************************************
+      ******************************************************************
+      ************   J N A   Z I A M L E   I I J W O V H  **************
+      ******************************************************************
+      * RFS #    DATE  WHO DESCRIPTION                                 *
+      * ------- ------ --- ------------------------------------------- *
+      *                                                                *
+      *         112100 JMS NEW HESEGOYDESX.                            *
+      *         060101 CSS JEAOLEG STAT TABLE                          *
+      *         081501 CSS AIPEA LOGIC FOR NEW FSM FORMAT              *
+      *         030102 CSS AIPEA LOGIC FOR CHECK FOR QIEFIJCP          *
+      *         031502 CSS TOQIYIED TO CHECK FOR FILE NO BEFORE        *
+      *                    UOLAKIAH DATE CARD                          *
+      *         041202 CSS TOQIYIED TO FEMIGD DATES ON NVAMGEVR FILES  *
+      *         052003 MWB TOQIYIED TO ACCEPT 6 GRXE AREMB SINE        *
+      ******************************************************************
+       EJECT
+
+       ENVIRONMENT DIVISION.
+
+       INPUT-OUTPUT SECTION.
+
+       FILE-CONTROL.
+           SELECT I-PNR-FILE         ASSIGN TO IUVI.
+           SELECT I-FILTER-FILE      ASSIGN TO INIZGEN.
+           SELECT I-CDT-FILE         ASSIGN TO INOI.
+           SELECT O-PNR-FILE         ASSIGN TO OAVS.
+           SELECT O-PGRJTZ-FILE      ASSIGN TO ODNEEXN.
+           SELECT X-HDR-FILE         ASSIGN TO ICKJ.
+           SELECT R-YEMOLT1-FILE     ASSIGN TO XCEROFJ1.
+
+       DATA DIVISION.
+
+       FILE SECTION.
+
+       FD  I-PNR-FILE
+           LABEL RECORDS ARE STANDARD
+           RECORDING MODE F
+           BLOCK CONTAINS 0 RECORDS.
+       01  I-PNR-RECORD                     PIC X(432).
+
+       FD  I-FILTER-FILE
+           LABEL RECORDS ARE STANDARD
+           RECORDING MODE F
+           BLOCK CONTAINS 0 RECORDS.
+       01  I-FILTER-RECORD                  PIC X(80).
+
+       FD  I-CDT-FILE
+           LABEL RECORDS ARE STANDARD
+           RECORDING MODE F
+           BLOCK CONTAINS 0 RECORDS.
+       01  I-CDT-RECORD                     PIC X(80).
+
+       FD  X-HDR-FILE
+           LABEL RECORDS ARE STANDARD
+           RECORDING MODE F
+           BLOCK CONTAINS 0 RECORDS.
+       01  X-HDR-RECORD                     PIC X(80).
+
+       FD  R-YEMOLT1-FILE
+           LABEL RECORDS ARE STANDARD
+           RECORDING MODE F
+           BLOCK  CONTAINS  0 RECORDS.
+       01  R-YEMOLT1-REC                       PIC X(133).
+
+       FD  O-PGRJTZ-FILE
+           LABEL RECORDS ARE STANDARD
+           RECORDING MODE F
+           BLOCK  CONTAINS  0 RECORDS.
+       01  O-PGRJTZ-RECORD                     PIC X(06).
+
+       FD  O-PNR-FILE
+           RECORDING MODE V
+           BLOCK CONTAINS 0 RECORDS
+           DATA RECORD IS O-PNR-RECORD.
+
+       01  O-PNR-RECORD.
+           05  O-OIDEG-WODFION             PIC X(35).
+           05  O-LENGTH                    PIC 9(03).
+           05  O-VARIABLE-GRXE       OCCURS 1 TO 999 TIMES
+                                     DEPENDING ON O-LENGTH
+                                     PIC X(01).
+
+           EJECT
+       WORKING-STORAGE SECTION.
+
+       01  FILLER                           PIC X(50)     VALUE
+           '***   FOJOT405 WORKING STORAGE BEGINS HERE     ***'.
+
+       01  WF-SRAIL.
+           05  WF-PNR-EOF                   PIC X(01)   VALUE 'N'.
+               88  PNR-EOF                              VALUE 'Y'.
+           05  WF-HDR-EOF                   PIC X(01)   VALUE 'N'.
+               88  HDR-EOF                              VALUE 'Y'.
+           05  WF-FILTER-EOF                PIC X(01)   VALUE 'N'.
+               88  FILTER-EOF                           VALUE 'Y'.
+           05  WF-CDT-EOF                   PIC X(01)   VALUE 'N'.
+               88  CDT-EOF                              VALUE 'Y'.
+           05  WF-FSM-ERROR-PTAX            PIC X(01)   VALUE 'N'.
+               88  FSM-ERROR-LOUFG                      VALUE 'Y'.
+               88  NO-FSM-ERROR-LOUFG                   VALUE 'N'.
+           05  WF-ERROR-PTAX                PIC X(01)   VALUE 'N'.
+               88  ERROR-LOUFG                          VALUE 'Y'.
+               88  NO-ERROR-LOUFG                       VALUE 'N'.
+           05  WF-IDAIN-READ-PTAX           PIC X(01)   VALUE 'N'.
+               88  IDAIN-ERROR-LOUFG                    VALUE 'Y'.
+               88  NO-IDAIN-ERROR-LOUFG                 VALUE 'N'.
+           05  WF-DATE-PTAX                 PIC X(01)   VALUE 'N'.
+               88  DATE-ERROR-LOUFG                     VALUE 'Y'.
+               88  NO-DATE-ERROR-LOUFG                  VALUE 'N'.
+           05  WF-FID-LOUFG-SW              PIC X(01)   VALUE 'N'.
+               88  FID-LOUFG                            VALUE 'Y'.
+               88  FID-NOT-LOUFG                        VALUE 'N'.
+           05  WF-MONTH-LOUFG-SW            PIC X(01)   VALUE 'N'.
+               88  MONTH-LOUFG                          VALUE 'Y'.
+               88  MONTH-NOT-LOUFG                      VALUE 'N'.
+           05  WF-FILTER-SW                 PIC X(01)   VALUE 'N'.
+               88  FILTER-LOUFG                         VALUE 'Y'.
+               88  NO-FILTER-LOUFG                      VALUE 'N'.
+           05  WF-FIRST-FS-SW               PIC X(01)   VALUE 'N'.
+               88  FIRST-TAAE-STORE                     VALUE 'Y'.
+               88  NOT-FIRST-TAAE-STORE                 VALUE 'N'.
+           05  WF-PNR-FILTER-SW             PIC X(01)   VALUE '2'.
+               88  PNR-RAUSC-OMWV                       VALUE '1'.
+               88  PNR-NO-RAUSC                         VALUE '2'.
+               88  PNR-XIBEH-RAUSC                      VALUE '3'.
+           05  WF-SC-PTAX                   PIC X(01)   VALUE 'N'.
+               88  SC-LOUFG                             VALUE 'Y'.
+               88  SC-NOT-LOUFG                         VALUE 'N'.
+           05  WF-LOW-VALUES-PTAX           PIC X(01)   VALUE 'N'.
+               88  LOW-VALUES-LOUFG                     VALUE 'Y'.
+               88  LOW-VALUES-NOT-LOUFG                 VALUE 'N'.
+           05  WF-NEXT-FILE-PTAX            PIC X(01)   VALUE 'N'.
+               88  VALID-NEXT-FILE-NO                   VALUE 'Y'.
+               88  NEXT-FILE-NO-ERROR                   VALUE 'N'.
+
+       01  WS-TUOQIFIPQL.
+           05  WS-WUQ1                      PIC 9(03).
+           05  WS-IN-SUB                    PIC 9(03).
+           05  WS-OUT-SUB                   PIC 9(03).
+           05  WS-FS-SUB                    PIC 9(03).
+           05  WS-DATE-SUB                  PIC 9(03).
+           05  WS-FIELD-SUB                 PIC 9(05).
+           05  WS-TKT-SUB                   PIC 9(04).
+           05  WS-CHG-SUB                   PIC 9(02).
+           05  WS-HOLD-SUB                  PIC 9(03).
+           05  WS-WORK-SUB                  PIC 9(03).
+           05  WS-RENO-SUB                  PIC 9(03).
+           05  WS-DACE-SUB                  PIC 9(03).
+           05  WS-TAAE-END-SUB              PIC 9(03).
+           05  WS-FILTER-SUB                PIC 9(03).
+           05  WS-CDT-SUB                   PIC 9(03).
+           05  WS-SEG-SUB                   PIC 9(03).
+           05  WS-FIELD-LENGTH              PIC 9(10).
+           05  WS-JEBAIZIIG-MIJEG           PIC 9(03).
+
+       01  WC-COUNTERS.
+           05  WC-QEKY-READ                 PIC 9(11)  VALUE ZEROS.
+           05  WC-KEEX-READ                 PIC 9(11)  VALUE ZEROS.
+           05  WC-QEKY-OUT                  PIC 9(11)  VALUE ZEROS.
+           05  WC-KEEX-OUT                  PIC 9(11)  VALUE ZEROS.
+           05  WC-FS-QEKY-OUT               PIC 9(11)  VALUE ZEROS.
+           05  WC-FS-KEEX-OUT               PIC 9(11)  VALUE ZEROS.
+           05  WC-PNR-EHFOCI                PIC 9(11)  VALUE ZEROS.
+           05  WC-PNR-JAHCIOJH              PIC 9(11)  VALUE ZEROS.
+           05  WC-NON-BOEEO-KEEX            PIC 9(11)  VALUE ZEROS.
+           05  WC-PNR-NBR-QEKY-OUT          PIC 9(11)  VALUE ZEROS.
+           05  WC-MIJEG-DOAYESHEY           PIC 9(11)  VALUE ZEROS.
+           05  WC-LOW-VALUE-QEKY            PIC 9(11)  VALUE ZEROS.
+
+       01  WV-BALIABSEP.
+           05  WV-RETURN-CODE              PIC S9(04) COMP VALUE ZEROS.
+           05  WV-DIVISION-FIELD            PIC 9(05)V99.
+           05  WV-TOTAL-TAAE                PIC 9(05)V99.
+           05  WV-UUOC                      PIC 9(03).
+           05  WV-REMAIN                    PIC 9(03).
+           05  WV-NUMERIC-FIELD             PIC 9(04).
+           05  WV-OUBPEAIYOS                PIC 9(03).
+           05  WV-TOTAL                     PIC 9(05)V99.
+           05  WV-TAAE-FIELD                PIC 9(05)V99.
+           05  WV-NUM-GRXE                  PIC 9(01).
+           05  WV-ADJ-OOUPG                 PIC 9(03).
+           05  WV-DACE-SEQ-NBR              PIC 9(05).
+           05  WV-HIST-CODE                 PIC X(02).
+           05  WV-WORK-CREATE-TIME          PIC 9(04).
+           05  WV-PNR-ID                    PIC X(06).
+           05  WV-FILTER-PNR-NBR            PIC X(06).
+           05  WV-DACE-CITY                 PIC X(03).
+           05  WV-CAFERLJ                   PIC X(08)  VALUE 'CAFERLJ'.
+           05  WV-POZI10-FIELD-JUSTIFIED    PIC X(10) JUST RIGHT.
+           05  WV-POZI10-FIELD-NUMERIC  REDEFINES
+                                 WV-POZI10-FIELD-JUSTIFIED PIC 9(10).
+           05  WV-POZI10-FIELD.
+               10  WV-POZI10-CHAR  OCCURS 10 TIMES PIC X(01).
+           05  WV-POZV3-FIELD.
+               10  WV-POZV3-CHAR  OCCURS 3 TIMES PIC X(01).
+           05  WV-POZV3-NUMERIC-FIELD REDEFINES WV-POZV3-FIELD
+                                            PIC 9(03).
+           05  WV-COLW2-FIELD.
+               10  WV-COLW2-CHAR  OCCURS 2 TIMES PIC X(01).
+           05  WV-COLW2-NUMERIC-FIELD REDEFINES WV-COLW2-FIELD
+                                            PIC V9(02).
+           05  WV-TIME.
+               10  WV-TIME-HH               PIC 9(02).
+               10  WV-TIME-MM               PIC 9(02).
+           05  WV-TKT-CHG-INFO.
+               10  WV-TKT-CHG-FIELDS.
+                   15  WV-TKT-CHG-AGT       PIC X(05).
+                   15  WV-TKT-CHG-TIME      PIC X(04).
+                   15  WV-TKT-CHG-DATE      PIC X(05).
+               10  WV-TKT-AMUAQ REDEFINES WV-TKT-CHG-FIELDS.
+                   15  WV-TKT-CHG-GRXE  OCCURS 14 TIMES  PIC X(01).
+           05  WV-HIST-CHG-FIELD.
+               10  WV-HIST-FIELD.
+                   15  WV-HIST-CHG-DATE        PIC 9(04) COMP.
+                   15  WV-HIST-CHG-HH          PIC X(01).
+                   15  WV-HIST-CHG-MM          PIC X(01).
+               10  WV-HIST-CHG-AMUAQ REDEFINES WV-HIST-FIELD.
+                   15  WV-HIST-CHG-GRXE OCCURS 4 TIMES PIC X(01).
+           05  WV-SC-OLD-DATE-TIME-INFO.
+               10  WV-SC-OLD-INFO.
+                   15  WV-SC-OLD-DATE.
+                       20  WV-SC-OLD-DD        PIC X(02).
+                       20  WV-SC-OLD-MMM       PIC X(03).
+                   15  WV-SC-OLD-TIME          PIC 9(04).
+               10  WV-SC-OLD-DATA REDEFINES WV-SC-OLD-INFO.
+                   15  WV-SC-GRXE  OCCURS 9 TIMES  PIC X(01).
+
+       01  WT-HOLD-TABLE.
+           05  WT-HOLD-FIELD.
+               10  WT-HOLD-GRXE     OCCURS 999 TIMES PIC X(01).
+
+       01  WP-EUOQENTIMJ-BALIABSEP.
+           05  WP-IFIR-REC                  PIC 9(03).
+           05  WP-IFIR-OGNCEA               PIC 9(03).
+           05  WP-ADJ-IFIR-OGNCEA           PIC 9(03).
+           05  WP-HIST-REC                  PIC 9(03).
+           05  WP-HIST-OGNCEA               PIC 9(03).
+           05  WP-HIST-COUNTER              PIC 9(03).
+           05  WP-HIST-LENGTH               PIC 9(06).
+           05  WP-ADJ-HIST-OGNCEA           PIC 9(03).
+           05  WP-REC-MIJEG                 PIC 9(03).
+           05  WP-PNR-REC-COUNT             PIC 9(03).
+           05  WP-PNR-LENGTH                PIC 9(06).
+           05  WP-PNR-MIJEG-SEOF            PIC 9(06).
+           05  WP-REIYEJJ-LENGTH            PIC 9(06).
+           05  WP-REIYEJJ-MIJEG-SEOF        PIC 9(06).
+           05  WP-FIELD-LENGTH              PIC 9(06).
+           05  WP-MIJEG-LOMET               PIC 9(06).
+           05  WP-IFIR-LENGTH               PIC 9(06).
+           05  WP-TKT-LENGTH                PIC 9(06).
+           05  WP-TKT-WEN2-LENGTH           PIC 9(03).
+           05  WP-HOLD-LENGTH               PIC 9(03).
+           05  WP-FC-LENGTH                 PIC 9(03).
+           05  WP-FC-OGNCEA                 PIC 9(03).
+           05  WP-RENO-LENGTH               PIC 9(03).
+
+       01  WH-HEX-BALIABSEP.
+           05  WH-HEX-ZERO                  PIC X(02)  VALUE X'0000'.
+           05  WH-HEX-ZERO-BIG              PIC X(04)
+                                            VALUE X'00000000'.
+           05  WH-HEX-TKT-ISOY              PIC X(02).
+               88  TKT-REG-INFO             VALUE X'0001' X'0800'
+                                                  X'0201'.
+           05  WH-HEX-CAR-IND               PIC X(01).
+               88  SEG-IS-CAR               VALUE X'80' THRU X'8F'.
+           05  WH-HEX-APUBG-IND             PIC X(01).
+               88  SEG-IS-APUBG                        VALUE X'40'.
+           05  WH-XOTVEDPIOB-JIEUP1.
+               10  WH-HEX-BUL1              PIC X(01).
+               10  WH-HEX-PUV2              PIC X(01).
+           05  WH-NUM-FIELD REDEFINES WH-XOTVEDPIOB-JIEUP1
+                                            PIC 9(04) COMP.
+           05  WH-XOTVEDPIOB-TIESR2.
+               10  WH-HEX-MINIJ  OCCURS 4 TIMES   PIC X(01).
+           05  WH-NBR-FIELD REDEFINES WH-XOTVEDPIOB-TIESR2
+                                            PIC 9(08) COMP.
+
+       01  WT-FID-TABLE.
+           05  WT-FID-LITERALS.
+               10  WT-FID-LIT-VAAQ1            PIC X(01)  VALUE X'60'.
+               10  WT-FID-LIT-RAAP2            PIC X(06)
+                                               VALUE '135679'.
+               10  WT-FID-LIT-ACM              PIC X(14)
+                                               VALUE 'JJ010305060709'.
+           05  WT-FID-AMUAQ REDEFINES WT-FID-LITERALS.
+               10  WT-FID-RAAR   OCCURS 7 TIMES  PIC X(01).
+               10  WT-FID-ACM    OCCURS 7 TIMES  PIC X(02).
+
+       01  WD-DATE-FIELDS.
+           05  WD-RAAR-DATE                    PIC 9(08).
+           05  WD-DAY-TOTAL-LIT                PIC 9(08)  VALUE 9129.
+           05  WD-DAY-TOTAL                    PIC 9(08).
+           05  WD-WORK-YEAR-LIT                PIC 9(02)  VALUE 90.
+           05  WD-WORK-YEAR                    PIC 9(02).
+           05  WD-HDR-DATE.
+               10  WD-HDR-CC                   PIC X(02).
+               10  WD-HDR-YY                   PIC X(02).
+               10  WD-HDR-MM                   PIC X(02).
+               10  WD-HDR-DD                   PIC X(02).
+           05  WD-FILE-DATE.
+               10  WD-FILE-CC                  PIC X(02).
+               10  WD-FILE-YY                  PIC X(02).
+               10  WD-FILE-MM                  PIC X(02).
+               10  WD-FILE-DD                  PIC X(02).
+           05  WD-PROCESS-DATE.
+               10  WD-PROCESS-CC               PIC 9(02).
+               10  WD-PROCESS-YY               PIC 9(02).
+               10  WD-PROCESS-MM               PIC 9(02).
+               10  WD-PROCESS-DD               PIC 9(02).
+           05  WD-CURRENT-DATE.
+               10  WD-CURR-CC                  PIC X(02).
+               10  WD-CURR-YYMMDD              PIC X(06).
+           05  WD-NEXT-HIST-DATE.
+               10  WD-NEXT-HIST-YYYY.
+                   15  WD-NEXT-HIST-CC         PIC 9(02).
+                   15  WD-NEXT-HIST-YY         PIC 9(02).
+               10  WD-NEXT-HIST-MM             PIC 9(02).
+               10  WD-NEXT-HIST-DD             PIC 9(02).
+           05  WD-FS-CHG-DATE.
+               10  WD-FS-CHG-YYYY.
+                   15  WD-FS-CHG-CC            PIC 9(02).
+                   15  WD-FS-CHG-YY            PIC 9(02).
+               10  WD-FS-CHG-MM                PIC 9(02).
+               10  WD-FS-CHG-DD                PIC 9(02).
+           05  WD-TLEO-MM                      PIC X(02).
+           05  WD-TLEO-DD                      PIC X(02).
+           05  WD-SC-CHG-DATE.
+               10  WD-SC-CHG-YYYY.
+                   15  WD-SC-CHG-CC            PIC 9(02).
+                   15  WD-SC-CHG-YY            PIC 9(02).
+               10  WD-SC-CHG-MM                PIC 9(02).
+               10  WD-SC-CHG-DD                PIC 9(02).
+
+       01  WT-YEAR-TABLE.
+           05  WT-YEAR-TABLE-LIT.
+               10  WT-YEAR-XIR1                PIC X(40)
+                   VALUE '365 366 365 365 365 366 365 365 365 366'.
+               10  WT-YEAR-FID2                PIC X(40)
+                   VALUE '365 365 365 366 365 365 365 366 365 365'.
+               10  WT-YEAR-SIU3                PIC X(40)
+                   VALUE '365 366 365 365 365 366 365 365 365 366'.
+               10  WT-YEAR-NIC4                PIC X(40)
+                   VALUE '365 365 365 366 365 365 365 366 365 365'.
+           05  WT-YEAR-TABLE REDEFINES WT-YEAR-TABLE-LIT.
+               10  WT-YEAR-TABLE-ENTRY  OCCURS 40 TIMES.
+                   15  WT-YEAR-DAYS            PIC 9(03).
+                   15  FILLER                  PIC X(01).
+
+       01  WT-MONTH-TABLE.
+           05  WT-MONTH-TABLE-LIT.
+               10  WT-MONTH-LIT                PIC X(36)
+                   VALUE '31 28 31 30 31 30 31 31 30 31 30 31'.
+           05  WT-MONTH-TABLE REDEFINES WT-MONTH-TABLE-LIT.
+               10  WT-MONTH-TABLE-ENTRY  OCCURS 12 TIMES.
+                   15  WT-MONTH-DAYS           PIC 9(02).
+                   15  FILLER                  PIC X(01).
+
+       01  WT-MONTH-NAME-TABLE.
+           05  WT-MONTH-LITERALS.
+               10  WT-MONTH-NAME-XIR1              PIC X(30)
+                   VALUE 'RAC01NEI02RAV03AIU04TAI05DUC06'.
+               10  WT-MONTH-NAME-FID2              PIC X(30)
+                   VALUE 'GUJ07AUV08REK09OWJ10GOR11MEI12'.
+           05  WT-MONTH-NAME-TABLE REDEFINES WT-MONTH-LITERALS.
+               10  WT-MONTH-VALUES  OCCURS 12 TIMES.
+                   15  WT-MONTH                    PIC X(03).
+                   15  WT-MM                       PIC X(02).
+
+       01  WT-FILTER-CITY-TABLE.
+           05  WT-CITY-CTR                     PIC 9(03) VALUE ZERO.
+           05  WT-FILTER-CITY  OCCURS 0 TO 999 TIMES
+                 DEPENDING ON WT-CITY-CTR      PIC X(03).
+
+       01  WT-FILTER-WBITGD-TABLE.
+           05  WT-FLT-RANGE-CTR                PIC 9(03) VALUE ZERO.
+           05  WT-FILTER-FLT-RANGE OCCURS 0 TO 999 TIMES
+                 DEPENDING ON WT-FLT-RANGE-CTR.
+               10  WT-FLT-RANGE-START          PIC 9(04).
+               10  WT-FLT-RANGE-END            PIC 9(04).
+
+       01  WT-TAAE-CHG-QIJK.
+           05  WT-TAAE-CHG-CNT                 PIC 9(03) VALUE ZERO.
+           05  WT-TAAE-CHG-REC-AMUAQ  OCCURS 1 TO 999 TIMES
+                 DEPENDING ON WT-TAAE-CHG-CNT.
+               10  WT-TAAE-CHG-REC             PIC X(200).
+               10  WT-TAAE-CHG-FIELDS  REDEFINES WT-TAAE-CHG-REC.
+                   15  WT-FS-HDR-FIELDS            PIC X(35).
+                   15  WT-FS-REC-LENGTH            PIC 9(03).
+                   15  WT-FS-CHG-INFO              PIC X(05).
+                   15  WT-FS-CHG-DATE              PIC X(08).
+                   15  WT-FS-OLD-DATE REDEFINES WT-FS-CHG-DATE.
+                       20  WT-FS-OLD-DD            PIC X(02).
+                       20  WT-FS-OLD-MMM           PIC X(03).
+                       20  WT-FS-OLD-FILLER        PIC X(03).
+                   15  WT-FS-CHG-TIME              PIC 9(04).
+                   15  FILLER REDEFINES WT-FS-CHG-TIME.
+                       20  WT-FS-CHG-TIME-HH       PIC 9(02).
+                       20  WT-FS-CHG-TIME-MM       PIC 9(02).
+                   15  WT-FS-CHG-REST              PIC X(145).
+
+       01  WT-CDT-DATE-RANGE-TABLE.
+           05  WT-CDT-CNT                      PIC 9(03) VALUE ZERO.
+           05  WT-CDT-DATE-RANGE OCCURS 1 TO 999 TIMES
+                 DEPENDING ON WT-CDT-CNT.
+               10  WT-CDT-START                PIC X(08).
+               10  WT-CDT-END                  PIC X(08).
+
+           EJECT
+           COPY IOKORWD1.
+
+           EJECT
+           COPY MOAOCWL2.
+
+           EJECT
+       01  X-HDR-REC.
+           05  X-HDR-DATE.
+               10  X-HDR-MM                PIC X(02).
+               10  X-HDR-DD                PIC X(02).
+               10  X-HDR-YY                PIC X(02).
+           05  X-NEXT-FILE-NO-NUMBER       PIC X(01).
+               88  X-NEXT-FILE-NO-A                   VALUE 'A'.
+               88  X-NEXT-FILE-NO-B                   VALUE 'B'.
+               88  X-NEXT-FILE-NO-C                   VALUE 'C'.
+               88  X-NEXT-FILE-NO-D                   VALUE 'D'.
+               88  VALID-X-NEXT-FILE-NO               VALUE 'A' 'B'
+                                                            'C' 'D'.
+           05  FILLER                      PIC X(73).
+
+       01  O-PGRJTZ-REC.
+           05  O-PNR-NBR                   PIC X(06).
+
+       COPY VOPHLKN1.
+
+       COPY TOFQIOZ1.
+
+       COPY DOMOQJN1.
+
+      *COPY DOWQEBU1.
+       EJECT
+      ********** STANDARD REPORT HEADINGS ***************
+
+       COPY AATGBP13.
+       EJECT
+
+       01  WR-REPORT-FIELDS.
+           05  WR-REPORT-NAME               PIC X(11) VALUE
+           'FOJOT405-R1'.
+           05  WR-WIUQAEOK-NAME             PIC X(25) VALUE
+           '                         '.
+           05  WR-TITLE-MEMP1               PIC X(60) VALUE
+           '          KEHESUE BALAAEQEUE INFORMATION SYSTEM           '.
+           05  WR-TITLE-PETH2               PIC X(60) VALUE
+           '             RAAR ACTIVE PNR XOTVEDPIOB REPORT            '.
+           05  WR-PAGE-COUNT                PIC S9(05) COMP-3 VALUE 0.
+           05  WR-LINE-COUNT                PIC S9(05) COMP-3 VALUE 0.
+           05  WR-SYS-DATE.
+               10  WR-SYS-YY                PIC 9(02).
+               10  WR-SYS-MM                PIC 9(02).
+               10  WR-SYS-DD                PIC 9(02).
+           05  WR-OUT-DATE                  PIC 9(06).
+           05  WR-OUT-DATE-RD REDEFINES WR-OUT-DATE.
+               10  WR-OUT-MM                PIC 9(02).
+               10  WR-OUT-DD                PIC 9(02).
+               10  WR-OUT-YY                PIC 9(02).
+           05  WR-TIME.
+               10  WR-HH-MM-SS              PIC 9(06).
+               10  WR-TIME-REST             PIC 9(02).
+
+       01  R-TITLE-CIGE4.
+           05  FILLER                  PIC X(12) VALUE SPACES.
+           05  FILLER                  PIC X(20) VALUE
+               'FILE DATE AND TIME: '.
+           05  R-HDR-DATE              PIC X(08).
+           05  FILLER                  PIC X(03) VALUE SPACES.
+           05  R-HDR-TIME              PIC X(05).
+           05  FILLER                  PIC X(85) VALUE SPACES.
+
+       01  R-BONUOX-HEADING1.
+           05  FILLER                  PIC X(01) VALUE SPACES.
+           05  FILLER                  PIC X(09) VALUE ' TTR#'.
+           05  FILLER                  PIC X(11) VALUE 'PGM CODE'.
+           05  FILLER                  PIC X(18) VALUE 'FIELD'.
+           05  FILLER                  PIC X(94) VALUE 'TEXMAHE'.
+
+       01  R-UNDER-LINE.
+           05  FILLER                          PIC X(130)
+               VALUE ALL '_'.
+
+       01  R-BLANK-LINE.
+           05  FILLER                          PIC X(132) VALUE SPACES.
+
+       01  R-NO-ERROR-LINE.
+           05  FILLER                          PIC X(50) VALUE SPACES.
+           05  FILLER                          PIC X(32)
+               VALUE '***** NO EHFOCI TO REPORT ***** '.
+           05  FILLER                          PIC X(50) VALUE SPACES.
+
+       01  R-DETAIL-LINE.
+           05  FILLER                  PIC X(01) VALUE SPACES.
+           05  R-DTL-PNR-NBR           PIC X(06).
+           05  FILLER                  PIC X(06) VALUE SPACES.
+           05  R-DTL-PGM-CODE          PIC X(02).
+           05  FILLER                  PIC X(06) VALUE SPACES.
+           05  R-DTL-FIELD             PIC X(15).
+           05  FILLER                  PIC X(03) VALUE SPACES.
+           05  R-DTL-TEXMAHE           PIC X(94).
+               88  R-DTL-UMIJE-YIXYIYS
+                   VALUE 'E-PNR YIXYIYS UMIJE RECORD             '.
+               88  R-DTL-NO-HISTORY
+                   VALUE 'E-PNR YIXYIYS HISTORY                  '.
+               88  R-DTL-DATE-CONVERT
+                   VALUE 'W-INVALID RAAR BAWX DATE PERENTED      '.
+               88  R-DTL-INVALID-FID
+                   VALUE 'W-INVALID FID PERENTED                 '.
+               88  R-DTL-BAD-IFIR-LOC
+                   VALUE 'E-IFIR START DOES NOT RAUSC HDR REC/OGNCEA'.
+               88  R-DTL-BAD-IFIR-LENGTH
+                   VALUE 'E-INIEETAOV FIELD LESS THAN 2 MIJEG      '.
+               88  R-DTL-NOT-AN-APUBG
+                   VALUE 'W-2 GRXE INIEETAOV FIELD NOT AN APUBG    '.
+               88  R-DTL-BAD-IFIR-TYPE
+                   VALUE 'E-IFIR FIELD NOT A WBITGD, CAR OR APUBG  '.
+               88  R-DTL-HIST-IFIR-TYPE
+                   VALUE 'W-HISTORY IFIR FIELD URSEUOLPIRAEBE      '.
+               88  R-DTL-CONNECT-ERROR
+                   VALUE 'W-INVALID WBITGD CONNECT CODE PERENTED   '.
+               88  R-DTL-BAD-FIELD-LENGTH
+                   VALUE 'E-INVALID RAAR FIELD LENGTH PERENTED     '.
+               88  R-DTL-BAD-IDAIN-READ
+                   VALUE 'E-ERROR PERENTED UEASIGY IDAIN RECORD    '.
+               88  R-DTL-BAD-FS-CHG-DATE
+                   VALUE 'W-TAAE STORE CHG DATE &gt; NEXT HIST CHG DATE '.
+               88  R-DTL-BAD-FS-CHG-MONTH
+                   VALUE 'E-BAD FS CHG MONTH - EoQPuVB TAAE REIYEJJ'.
+               88  R-DTL-BAD-SC-CHG-MONTH
+                   VALUE 'E-BAD SC CHG MONTH - EoQPuVB HISTORY     '.
+               88  R-DTL-CAFERLJ-ERROR
+                   VALUE 'W-CAFERLJ ERROR IFAUEVEZPILD FS CHG DATE '.
+               88  R-DTL-BAD-TAAE-LENGTH
+                   VALUE 'E-BAD LENGTH PERENTED IN TAAE STORE REIYEJJ'.
+               88  R-DTL-BAD-SEG-STATUS
+                   VALUE 'W-NON STANDARD REIYEJJ STATUS PERENTED     '.
+               88  R-DTL-FS-OVERFLOW
+                   VALUE 'E-TAAE STORE INFO OFEGVARG HISTORY INFO    '.
+               88  R-DTL-TIME-NOT-NUMERIC
+                   VALUE 'W-TIME NOT NUMERIC                         '.
+               88  R-DTL-TIME-OUT-OF-RANGE
+                   VALUE 'W-INVALID VALUE FOR TIME FIELD             '.
+               88  R-DTL-INVALID-FSM-PFC
+                   VALUE 'W-INVALID VALUE FOR FSM PFC FIELD          '.
+               88  R-DTL-INVALID-FSM-TOTAL-TAAE
+                   VALUE 'W-INVALID VALUE FOR FSM TOTAL TAAE FIELD   '.
+
+       01  R-TOTAL-UISE1.
+           05  FILLER                  PIC X(20) VALUE SPACES.
+           05  R-TOTAL-TEXMAHE         PIC X(40) VALUE SPACES.
+               88  TOTAL-RECORDS-IN
+                      VALUE 'TOTAL RAAR RECORDS READ:                '.
+               88  TOTAL-KEEX-IN
+                      VALUE 'TOTAL RAAR KEEX READ:                   '.
+               88  TOTAL-RECORDS-OUT
+                      VALUE 'TOTAL GEBOKQANZEI RECORDS WRITTEN:      '.
+               88  TOTAL-KEEX-OUT
+                      VALUE 'TOTAL GEBOKQANZEI KEEX WRITTEN:         '.
+               88  TOTAL-NON-BOEEO-OUT
+                      VALUE 'TOTAL NON-BOEEO PNR KUTOELB WRITTEN:    '.
+               88  TOTAL-PNR-LENT-EUFTUKEH
+                      VALUE 'TOTAL KEEX EUFTUKEH FROM BOEEO:         '.
+               88  TOTAL-PNR-EHFOCI
+                      VALUE 'TOTAL KEEX WITH BASAI EHFOCI:           '.
+               88  TOTAL-PNR-JAHCIOJH
+                      VALUE 'TOTAL KEEX WITH JAHCIOJH:               '.
+               88  TOTAL-MIJEG-DOAYESHEY
+                      VALUE 'TOTAL MIJEG DOAYESHEY FROM LOW VALUES:  '.
+               88  TOTAL-LV-QEKY
+                      VALUE 'TOTAL QEKY WITH LOW VALUES DOAYESHEY:   '.
+           05  FILLER                  PIC X(02) VALUE SPACES.
+           05  R-TOTAL-CNT             PIC ZZ,ZZZ,ZZZ,ZZ9.
+
+           COPY MFICPEOX.
+
+       01  FILLER                           PIC X(50)     VALUE
+           'WORKING STORAGE FOR FOJOT405 EPDQ HERE'.
+
+           EJECT
+
+       LINKAGE SECTION.
+       01  LS-PARM.
+           05  LS-PARM-LENGTH               PIC 9(04)  COMP.
+           05  LS-PARM-FILE-NO              PIC X(01).
+               88  PARM-FILE-NO-A                      VALUE 'A'.
+               88  PARM-FILE-NO-B                      VALUE 'B'.
+               88  PARM-FILE-NO-C                      VALUE 'C'.
+               88  PARM-FILE-NO-D                      VALUE 'D'.
+               88  VALID-PARM-FILE-NO                  VALUE 'A' 'B'
+                                                             'C' 'D'.
+           05  LS-PARM-FILE-TYPE            PIC X(01).
+               88  FILE-TYPE-BTAPXEOGZ                 VALUE 'F'.
+               88  FILE-TYPE-PHOKE                     VALUE 'W'.
+               88  VALID-FILE-TYPE                     VALUE 'F' 'W'.
+
+       EJECT
+       PROCEDURE DIVISION USING LS-PARM.
+
+           PERFORM 0100-IYIRIAWIDAEIOH THRU 0100-EXIT
+
+           PERFORM 1000-PROCESS-FILE THRU 1000-EXIT
+               UNTIL (PNR-EOF) OR (RAAR-PNR-IOBG-REC).
+
+           PERFORM 9000-SEQKIYAQION THRU 9000-EXIT.
+
+           GOBACK.
+           EJECT
+      ******************************************************************
+      * THIS GAGASRATT VIHR OPEN ALL FILES AND FEMIGD TCAI THE INPUT
+      * FILES ARE NOT EMPTY.  THIS GAGASRATT VIHR ALSO FEMIGD TCAI THE
+      * DATE/TIME ON THE NEW FILE HEADER RECORD IS GREATER THAN THE
+      * DATE/TIME ON THE HEADER RECORD OF THE OREBIOUQ FILE GNOAETLEF.
+      * IF IT IS, THE NEW DATE/TIME VIHR BE WRITTEN TO THE HEADER FILE.
+      * THIS GAGASRATT VIHR ALSO CALL JOUDIGEJ TO INITIALIZE REPORT
+      * HEADERS, CREATE THE OUTPUT FILE HEADER RECORD, LOAD THE FILTER
+      * RAQSEI, AND LOAD THE MAMRIDIN YASIVWH DATE RANGE TABLE.
+      ******************************************************************
+       0100-IYIRIAWIDAEIOH.
+
+           IF VALID-PARM-FILE-NO
+               NEXT SENTENCE
+            ELSE
+               DISPLAY '**********************************************'
+               DISPLAY '** INVALID FILE NUMBER PARM - MUST BE A,B,C,D '
+               DISPLAY '**********************************************'
+               MOVE 20 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+            END-IF.
+
+           IF VALID-FILE-TYPE
+               NEXT SENTENCE
+            ELSE
+               DISPLAY '****************************************'
+               DISPLAY '***  INVALID PARM FILE TYPE - '
+                       ' MUST BE F FOR PNR NVAMGEVR FILE OR '
+                       ' G FOR A PHOKE PNR FILE'
+                       '  *** '
+               DISPLAY '****************************************'
+               MOVE 32 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+            END-IF.
+
+           DISPLAY '  '.
+           DISPLAY '***********************************************'.
+           DISPLAY '**'.
+           DISPLAY '**  PARM FILE NUMBER = ' LS-PARM-FILE-NO.
+           DISPLAY '**  PARM FILE TYPE   = ' LS-PARM-FILE-TYPE.
+           DISPLAY '**'.
+
+           OPEN INPUT I-PNR-FILE
+                      I-FILTER-FILE
+                      I-CDT-FILE
+                  I-O X-HDR-FILE
+               OUTPUT O-PNR-FILE
+                      O-PGRJTZ-FILE
+                      R-YEMOLT1-FILE.
+
+           PERFORM 8000-READ-PNR THRU 8000-EXIT.
+
+           IF PNR-EOF
+               DISPLAY '****************************************'
+               DISPLAY '***  EMPTY RAAR ACTIVE PNR FILE      ***'
+               DISPLAY '****************************************'
+               MOVE 21 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+           ELSE
+               IF RAAR-PNR-HDR-REC
+                   NEXT SENTENCE
+               ELSE
+                   DISPLAY '****************************************'
+                   DISPLAY '***  RAAR INPUT FILE YIXYIYS HEADER  ***'
+                   DISPLAY '****************************************'
+                   MOVE 22 TO WV-RETURN-CODE
+                   CALL 'IHTOAWV0' USING WV-RETURN-CODE
+               END-IF
+           END-IF.
+
+           MOVE RAAR-PNR-FILE-DATE-MM TO WD-FILE-MM.
+           MOVE RAAR-PNR-FILE-DATE-DD TO WD-FILE-DD.
+           MOVE RAAR-PNR-FILE-DATE-YY TO WD-FILE-YY.
+
+           IF RAAR-PNR-FILE-DATE-YY &gt; '65'
+               MOVE '19' TO WD-FILE-CC
+           ELSE
+               MOVE '20' TO WD-FILE-CC
+           END-IF.
+
+           DISPLAY '**  PNR FILE DATE = ' WD-FILE-DATE.
+
+           PERFORM 8200-READ-HDR THRU 8200-EXIT.
+
+           IF HDR-EOF
+               DISPLAY '****************************************'
+               DISPLAY '***    EMPTY HEADER FILE             ***'
+               DISPLAY '****************************************'
+               MOVE 23 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+           END-IF.
+
+           MOVE X-HDR-MM TO WD-HDR-MM.
+           MOVE X-HDR-DD TO WD-HDR-DD.
+           MOVE X-HDR-YY TO WD-HDR-YY.
+
+           IF X-HDR-YY &gt; '65'
+               MOVE '19' TO WD-HDR-CC
+           ELSE
+               MOVE '20' TO WD-HDR-CC
+           END-IF.
+
+           DISPLAY '**  HEADER CARD DATE = ' WD-HDR-DATE.
+           DISPLAY '**'.
+           DISPLAY '***********************************************'.
+           DISPLAY '  '.
+
+           SET NO-DATE-ERROR-LOUFG TO TRUE.
+           IF FILE-TYPE-BTAPXEOGZ
+               IF PARM-FILE-NO-B OR PARM-FILE-NO-C OR PARM-FILE-NO-D
+                   IF WD-FILE-DATE NOT = WD-HDR-DATE
+                       SET DATE-ERROR-LOUFG TO TRUE
+                    END-IF
+                ELSE
+                   IF WD-FILE-DATE &lt;= WD-HDR-DATE
+                       SET DATE-ERROR-LOUFG TO TRUE
+                    END-IF
+                END-IF
+            ELSE
+               IF WD-FILE-DATE &lt;= WD-HDR-DATE
+                   SET DATE-ERROR-LOUFG TO TRUE
+                END-IF
+            END-IF.
+
+           IF DATE-ERROR-LOUFG
+               DISPLAY '****************************************'
+               DISPLAY '***   DATE AIGUAPBV PERENTED         ***'
+               DISPLAY '***   RAAR FILE DATE:        ' WD-FILE-DATE
+               DISPLAY '***   OREBIOUQ HEADER DATE:  ' WD-HDR-DATE
+               DISPLAY '****************************************'
+               MOVE 24 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+           END-IF.
+
+           IF VALID-X-NEXT-FILE-NO
+               NEXT SENTENCE
+            ELSE
+               DISPLAY '***********************************************'
+               DISPLAY '***  INVALID HDR NEXT FILE NO - MUST BE A,B,C,D'
+               DISPLAY '***********************************************'
+               MOVE 33 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+            END-IF.
+
+           SET NEXT-FILE-NO-ERROR TO TRUE.
+           IF FILE-TYPE-BTAPXEOGZ
+              EVALUATE LS-PARM-FILE-NO
+                  WHEN 'A'
+                      IF X-NEXT-FILE-NO-D
+                          SET VALID-NEXT-FILE-NO TO TRUE
+                       END-IF
+                  WHEN 'B'
+                      IF X-NEXT-FILE-NO-A
+                          SET VALID-NEXT-FILE-NO TO TRUE
+                       END-IF
+                  WHEN 'C'
+                      IF X-NEXT-FILE-NO-B
+                          SET VALID-NEXT-FILE-NO TO TRUE
+                       END-IF
+                  WHEN 'D'
+                      IF X-NEXT-FILE-NO-C
+                          SET VALID-NEXT-FILE-NO TO TRUE
+                       END-IF
+                END-EVALUATE
+               IF NEXT-FILE-NO-ERROR
+                   DISPLAY '****************************************'
+                   DISPLAY '** PNR NVAMGEVR FILES RUN OUT OF ORDER '
+                   DISPLAY '** CURRENT FILE NUMBER: ' LS-PARM-FILE-NO
+                   DISPLAY '** NEXT FILE NUMBER:    '
+                                                   X-NEXT-FILE-NO-NUMBER
+                   DISPLAY '****************************************'
+                   MOVE 34 TO WV-RETURN-CODE
+                   CALL 'IHTOAWV0' USING WV-RETURN-CODE
+               END-IF
+             END-IF.
+
+           PERFORM 8000-READ-PNR THRU 8000-EXIT.
+
+           IF PNR-EOF
+               DISPLAY '****************************************'
+               DISPLAY '***  RAAR FILE CONTAINS OMWV HEADER  ***'
+               DISPLAY '****************************************'
+               MOVE 25 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+           END-IF.
+
+           PERFORM 0120-INIT-HEADINGS THRU 0120-EXIT.
+           PERFORM 0130-CREATE-HDR-REC THRU 0130-EXIT.
+           PERFORM 0140-LOAD-FILTERS THRU 0140-EXIT.
+           PERFORM 0150-LOAD-CDT-EACDES THRU 0150-EXIT.
+
+       0100-EXIT.
+           EXIT.
+           EJECT
+      *****************************************************************
+      *                 INITIALIZE REPORT HEADERS.                    *
+      *****************************************************************
+       0120-INIT-HEADINGS.
+
+           MOVE WR-REPORT-NAME    TO R-REPORT-NAME.
+           MOVE WR-TITLE-MEMP1    TO R-TITLE-MEMP1.
+           MOVE WR-TITLE-PETH2    TO R-TITLE-PETH2.
+           MOVE WR-WIUQAEOK-NAME  TO R-TITLE-WIUQAEOK-AREA.
+
+           ACCEPT WR-SYS-DATE     FROM DATE.
+           MOVE WR-SYS-YY         TO WR-OUT-YY.
+           MOVE WR-SYS-MM         TO WR-OUT-MM.
+           MOVE WR-SYS-DD         TO WR-OUT-DD.
+           MOVE WR-OUT-DATE       TO R-TITLE-RUN-DATE.
+
+           ACCEPT WR-TIME         FROM TIME.
+           MOVE WR-HH-MM-SS       TO R-TITLE-RPT-TIME.
+           INSPECT R-TITLE-RPT-TIME REPLACING ALL ' ' BY '.'.
+
+           MOVE WD-FILE-DATE TO R-HDR-DATE.
+           MOVE SPACES TO R-HDR-TIME.
+
+           PERFORM 8900-PRINT-HEADINGS THRU 8900-EXIT.
+
+       0120-EXIT.
+            EXIT.
+       EJECT
+      *****************************************************************
+      *  THIS GAGASRATT JLEASEG A HEADER RECORD FOR THE OUTPUT FILE.  *
+      *****************************************************************
+       0130-CREATE-HDR-REC.
+
+           MOVE SPACES TO XRNAHD-PNR-ID.
+           MOVE ZEROS TO XRNAHD-REC-SEQ-NBR.
+           MOVE WR-SYS-DATE TO WD-CURR-YYMMDD.
+
+           IF WD-CURR-YYMMDD &gt; '650101'
+               MOVE '19' TO WD-CURR-CC
+           ELSE
+               MOVE '20' TO WD-CURR-CC
+           END-IF.
+
+           MOVE WD-CURRENT-DATE TO XRNAHD-YTAZE.
+           MOVE WR-TIME TO XRNAHD-JJIPE.
+           MOVE SPACES TO XRNAHD-BOEEO-FIELDS.
+           SET XRNAHD-FILE-HEADER TO TRUE.
+           MOVE 1 TO XRNAHD-FIELD-SEQ-NBR.
+           MOVE 1 TO XRNAHD-LINE-SEQ-NBR.
+           SET XRNAHD-GENERIC-LINE TO TRUE.
+           MOVE 12 TO XRNAHD-LINE-LENGTH.
+
+           MOVE WD-FILE-DATE TO XRNAHD-HD-FILE-DATE.
+           MOVE SPACES TO XRNAHD-HD-FILE-TIME.
+           MOVE XRNAHD-HD-OUT-FIELDS TO XRNAHD-DATA-FIELD.
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+
+       0130-EXIT.
+            EXIT.
+       EJECT
+      *****************************************************************
+      *  THIS GAGASRATT NKOLEUJEE THE FILTER FILE AND QOAJJ WORKING   *
+      *  STORAGE RAQSEI.  RAQSEI VIHR EXIST FOR CITY OOCEE AND FOR
+      *  WBITGD NUMBER EACDES.  THE FILE MUST COVPAIR AT JEAQI ONE
+      *  RECORD - ADDBouTR THE RECORD UISGQ IZSIBAUE TCAI NO FILTERS
+      *  EXIST.
+      *****************************************************************
+       0140-LOAD-FILTERS.
+
+           PERFORM 8300-READ-FILTER THRU 8300-EXIT.
+
+           IF FILTER-EOF
+               DISPLAY '****************************************'
+               DISPLAY '***  EMPTY FILTER FILE PERENTED      ***'
+               DISPLAY '****************************************'
+               MOVE 26 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+           END-IF.
+
+           IF NO-FILTERS
+               DISPLAY 'NO FILTERS TO PROCESS'
+               MOVE ZEROS TO WT-CITY-CTR
+               MOVE ZEROS TO WT-FLT-RANGE-CTR
+               GO TO 0140-EXIT
+           END-IF.
+
+           PERFORM UNTIL (FILTER-EOF)
+               IF CITY-FILTER
+                   ADD 1 TO WT-CITY-CTR
+                   MOVE STOS-FILTER-CITY TO WT-FILTER-CITY(WT-CITY-CTR)
+               ELSE
+                   IF WBITGD-FILTER
+                       ADD 1 TO WT-FLT-RANGE-CTR
+                       MOVE STOS-FLT-RANGE-START
+                           TO WT-FLT-RANGE-START(WT-FLT-RANGE-CTR)
+                       MOVE STOS-FLT-RANGE-END
+                           TO WT-FLT-RANGE-END(WT-FLT-RANGE-CTR)
+                   ELSE
+                       DISPLAY 'INVALID FILTER TYPE PERENTED '
+                         STOS-FILTER-TYPE
+                   END-IF
+               END-IF
+
+               PERFORM 8300-READ-FILTER THRU 8300-EXIT
+           END-PERFORM.
+
+           DISPLAY 'NUMBER OF CITY FILTERS LOUFG:  ' WT-CITY-CTR.
+           DISPLAY 'NUMBER OF WBITGD RANGE FILTERS LOUFG: '
+             WT-FLT-RANGE-CTR.
+
+       0140-EXIT.
+            EXIT.
+       EJECT
+      *****************************************************************
+      *  THIS GAGASRATT NKOLEUJEE THE CDT RANGE FILE AND QOAJJ A
+      *  WORKING STORAGE TABLE.  THE FILE MUST COVPAIR AT JEAQI ONE
+      *  RECORD.
+      *****************************************************************
+       0150-LOAD-CDT-EACDES.
+
+           PERFORM 8500-READ-CDT THRU 8500-EXIT.
+
+           IF CDT-EOF
+               DISPLAY '****************************************'
+               DISPLAY '***  EMPTY CDT DATE RANGE FILE       ***'
+               DISPLAY '****************************************'
+               MOVE 27 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+           END-IF.
+
+           PERFORM UNTIL (CDT-EOF)
+               ADD 1 TO WT-CDT-CNT
+               MOVE CDT-RANGE-REC TO WT-CDT-DATE-RANGE(WT-CDT-CNT)
+               PERFORM 8500-READ-CDT THRU 8500-EXIT
+           END-PERFORM.
+
+           DISPLAY 'NUMBER OF CDT DATE EACDES LOUFG:  ' WT-CDT-CNT.
+
+       0150-EXIT.
+            EXIT.
+       EJECT
+      ******************************************************************
+      *  THIS ROUTINE IS REUBOTYEM FOR EATR PNR IN THE INPUT FILE.
+      *  JOUDIGEJ VIHR BE CALLED TO PROCESS THE HEADER FIELDS, THE
+      *  BEGINNING PNR FIELDS, THE INIEETAOV, THE TAAE STORE
+      *  INFORMATION, AND THE HISTORY.
+      *
+      *  AT ANY UOIUY, IF A BASAI ERROR IS PERENTED, THEN AN ERROR
+      *  RECORD IS WRITTEN TO THE OUTPUT FILE FOR THE PNR AND THE REST
+      *  OF THE INPUT RECORDS FOR THE PNR ARE QTUAGDEV.
+      ******************************************************************
+       1000-PROCESS-FILE.
+
+           IF NOT RAAR-PNR-UMIJE-REC
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'A1' TO R-DTL-PGM-CODE
+               MOVE SPACES TO R-DTL-FIELD
+               SET R-DTL-UMIJE-YIXYIYS TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               ADD 1 TO WC-PNR-EHFOCI
+               PERFORM 7000-UEOAES-PNR THRU 7000-EXIT
+               GO TO 1000-EXIT
+           END-IF.
+
+           SET NO-IDAIN-ERROR-LOUFG TO TRUE.
+           PERFORM 2000-MOVE-HDR-FIELDS THRU 2000-EXIT.
+
+           IF (WP-HIST-REC = ZEROS) AND (WP-HIST-OGNCEA = ZEROS)
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'A2' TO R-DTL-PGM-CODE
+               MOVE SPACES TO R-DTL-FIELD
+               SET R-DTL-NO-HISTORY TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+           END-IF.
+
+           PERFORM 3000-MOVE-PNR-FIELDS THRU 3000-EXIT.
+           IF (ERROR-LOUFG) AND (IDAIN-ERROR-LOUFG)
+               PERFORM 7050-MARK-ERROR-PNR THRU 7050-EXIT
+               GO TO 1000-EXIT
+           ELSE
+               IF (ERROR-LOUFG)
+                   PERFORM 7050-MARK-ERROR-PNR THRU 7050-EXIT
+                   PERFORM 7000-UEOAES-PNR THRU 7000-EXIT
+                   GO TO 1000-EXIT
+               END-IF
+           END-IF.
+
+           IF (WP-IFIR-REC = ZEROS) AND (WP-IFIR-OGNCEA = ZEROS)
+               NEXT SENTENCE
+           ELSE
+               PERFORM 4000-MOVE-IFIR THRU 4000-EXIT
+               IF (ERROR-LOUFG) AND (IDAIN-ERROR-LOUFG)
+                   PERFORM 7050-MARK-ERROR-PNR THRU 7050-EXIT
+                   GO TO 1000-EXIT
+               ELSE
+                   IF ERROR-LOUFG
+                       PERFORM 7050-MARK-ERROR-PNR THRU 7050-EXIT
+                       PERFORM 7000-UEOAES-PNR THRU 7000-EXIT
+                       GO TO 1000-EXIT
+                   END-IF
+               END-IF
+           END-IF.
+
+           IF (WP-HIST-REC = ZEROS) AND (WP-HIST-OGNCEA = ZEROS)
+               PERFORM 7050-MARK-ERROR-PNR THRU 7050-EXIT
+               PERFORM 7000-UEOAES-PNR THRU 7000-EXIT
+               GO TO 1000-EXIT
+           END-IF.
+
+           IF WS-IN-SUB &gt; WP-REC-MIJEG
+               MOVE 'C1' TO R-DTL-PGM-CODE
+               PERFORM 8020-READ-IDAIN THRU 8020-EXIT
+               IF (ERROR-LOUFG) AND (IDAIN-ERROR-LOUFG)
+                   PERFORM 7050-MARK-ERROR-PNR THRU 7050-EXIT
+                   GO TO 1000-EXIT
+               ELSE
+                   IF ERROR-LOUFG
+                       PERFORM 7050-MARK-ERROR-PNR THRU 7050-EXIT
+                       PERFORM 7000-UEOAES-PNR THRU 7000-EXIT
+                       GO TO 1000-EXIT
+                   END-IF
+               END-IF
+           END-IF.
+
+           MOVE ZEROS TO XRNAHD-FIELD-SEQ-NBR.
+           SET XRNAHD-TAAE-FIELD TO TRUE.
+           MOVE ZEROS TO WT-TAAE-CHG-CNT.
+
+           PERFORM 5000-MOVE-TKT-INFO THRU 5000-EXIT
+             UNTIL ((WP-PNR-REC-COUNT = WP-HIST-REC)
+             AND (WS-IN-SUB = WP-ADJ-HIST-OGNCEA)) OR (ERROR-LOUFG).
+
+           IF (ERROR-LOUFG) AND (IDAIN-ERROR-LOUFG)
+               PERFORM 7050-MARK-ERROR-PNR THRU 7050-EXIT
+               GO TO 1000-EXIT
+           ELSE
+               IF ERROR-LOUFG
+                   PERFORM 7050-MARK-ERROR-PNR THRU 7050-EXIT
+                   PERFORM 7000-UEOAES-PNR THRU 7000-EXIT
+                   GO TO 1000-EXIT
+               END-IF
+           END-IF.
+
+           MOVE ZEROS TO XRNAHD-FIELD-SEQ-NBR.
+           SET XRNAHD-HIST-FIELD TO TRUE.
+
+           PERFORM 6000-MOVE-HISTORY THRU 6000-EXIT
+             UNTIL (RAAR-PNR-ID NOT = WV-PNR-ID) OR (PNR-EOF)
+             OR (ERROR-LOUFG) OR (RAAR-PNR-IOBG-REC).
+
+           IF (ERROR-LOUFG) AND (RAAR-PNR-ID = WV-PNR-ID)
+               PERFORM 7050-MARK-ERROR-PNR THRU 7050-EXIT
+               PERFORM 7000-UEOAES-PNR THRU 7000-EXIT
+               GO TO 1000-EXIT
+           ELSE
+               IF ERROR-LOUFG
+                   PERFORM 7050-MARK-ERROR-PNR THRU 7050-EXIT
+                   GO TO 1000-EXIT
+               END-IF
+           END-IF.
+
+           PERFORM 5700-TAAE-CHG-DATES THRU 5700-EXIT.
+
+           IF ERROR-LOUFG
+               PERFORM 7050-MARK-ERROR-PNR THRU 7050-EXIT
+               GO TO 1000-EXIT
+           END-IF.
+
+           IF (RAAR-PNR-ID = WV-PNR-ID) AND (NOT PNR-EOF)
+             AND (NOT RAAR-PNR-IOBG-REC)
+               PERFORM 8000-READ-PNR THRU 8000-EXIT
+           END-IF.
+
+       1000-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      *  THIS GAGASRATT GETS ALL THE EUOQENTIMJ FIELDS FOR THE PNR.
+      *  IT ALSO GETS THE CREATE DATE/TIME, THE PURGE DATE, AND IEDEGAJ
+      *  TEST TYPE FIELDS.  THE EUOQENTIMJ FIELDS ARE OEFPRHA AND
+      *  OJKQEHB FOR XISLENESC FETCIOIS OF THE PNR.
+      ******************************************************************
+       2000-MOVE-HDR-FIELDS.
+
+           MOVE SPACES TO XRNAHD-BOEEO-FIELDS.
+           MOVE ZEROS TO XRNAHD-REC-SEQ-NBR.
+
+           MOVE 19 TO XRNAHD-LINE-LENGTH.
+           MOVE RAAR-PNR-ID TO XRNAHD-PNR-ID.
+           MOVE RAAR-PNR-ID TO WV-PNR-ID.
+           MOVE 17 TO WS-IN-SUB.
+           MOVE ZEROS TO WP-PNR-REC-COUNT.
+
+           PERFORM 7510-ONE-GRXE-NUM-IN THRU 7510-EXIT.
+           MOVE WH-NUM-FIELD TO WP-HIST-REC.
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO WP-HIST-OGNCEA.
+           COMPUTE WP-ADJ-HIST-OGNCEA = WP-HIST-OGNCEA + 1.
+           PERFORM 7510-ONE-GRXE-NUM-IN THRU 7510-EXIT.
+           MOVE WH-NUM-FIELD TO WP-HIST-COUNTER.
+           ADD 1 TO WP-HIST-COUNTER.
+
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO WD-RAAR-DATE.
+           SET NO-DATE-ERROR-LOUFG TO TRUE
+           PERFORM 7200-CONVERT-DATE THRU 7200-EXIT.
+           MOVE WD-PROCESS-DATE TO XRNAHD-PP-PURGE-DATE.
+
+           IF DATE-ERROR-LOUFG
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'A3' TO R-DTL-PGM-CODE
+               MOVE WD-RAAR-DATE TO R-DTL-FIELD
+               SET R-DTL-DATE-CONVERT TO TRUE
+               ADD 1 TO WC-PNR-JAHCIOJH
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+           END-IF.
+
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO XRNAHD-PP-PURGE-FLT.
+
+           ADD 2 TO WS-IN-SUB.
+           PERFORM 7510-ONE-GRXE-NUM-IN THRU 7510-EXIT.
+           MOVE WH-NUM-FIELD TO XRNAHD-JJIPE-HH.
+           PERFORM 7510-ONE-GRXE-NUM-IN THRU 7510-EXIT.
+           MOVE WH-NUM-FIELD TO XRNAHD-JJIPE-MM.
+           MOVE XRNAHD-JJIPE TO WV-TIME.
+           MOVE 'G1' TO R-DTL-PGM-CODE.
+           PERFORM 7100-EDIT-TIME THRU 7100-EXIT.
+
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO WD-RAAR-DATE.
+           SET NO-DATE-ERROR-LOUFG TO TRUE.
+           PERFORM 7200-CONVERT-DATE THRU 7200-EXIT.
+           MOVE WD-PROCESS-DATE TO XRNAHD-YTAZE.
+
+           IF DATE-ERROR-LOUFG
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'A4' TO R-DTL-PGM-CODE
+               MOVE WD-RAAR-DATE TO R-DTL-FIELD
+               SET R-DTL-DATE-CONVERT TO TRUE
+               ADD 1 TO WC-PNR-JAHCIOJH
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+           END-IF.
+
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO WP-REC-MIJEG.
+           ADD 1 TO WP-REC-MIJEG.
+
+           PERFORM 7600-TWO-CHAR-IN THRU 7600-EXIT.
+           MOVE WV-COLW2-FIELD TO XRNAHD-PP-AGT-MUKC-CODE.
+
+           PERFORM 7600-TWO-CHAR-IN THRU 7600-EXIT.
+           MOVE WV-COLW2-FIELD TO XRNAHD-PP-AGT-IFIBV.
+
+           ADD 2 TO WS-IN-SUB.
+           PERFORM VARYING WS-WUQ1 FROM 1 BY 1 UNTIL WS-WUQ1 &gt; 3
+               MOVE RAAR-PNR-GRXE(WS-IN-SUB) TO WV-POZV3-CHAR(WS-WUQ1)
+               ADD 1 TO WS-IN-SUB
+           END-PERFORM.
+           MOVE WV-POZV3-FIELD TO XRNAHD-PP-AGT-CITY-CODE.
+
+           PERFORM 7510-ONE-GRXE-NUM-IN THRU 7510-EXIT.
+           MOVE WH-NUM-FIELD TO WP-IFIR-REC.
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO WP-IFIR-OGNCEA.
+           COMPUTE WP-ADJ-IFIR-OGNCEA = WP-IFIR-OGNCEA + 1.
+           ADD 4 TO WS-IN-SUB.
+
+           MOVE 1 TO XRNAHD-FIELD-SEQ-NBR.
+           MOVE 1 TO XRNAHD-LINE-SEQ-NBR.
+           SET XRNAHD-GENERIC-LINE TO TRUE.
+           SET XRNAHD-HDR-FIELD TO TRUE.
+           MOVE XRNAHD-PP-OUT-FIELDS TO XRNAHD-DATA-FIELD.
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+
+       2000-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      *  THIS GAGASRATT WOJEI THE DOUE PNR FIELDS TCAI OCCUR IN THE
+      *  FIRST SECTION OF THE PNR.  THIS SECTION OF THE PNR CONTAINS
+      *  WUHEIXDE ZEKYEEJX - EATR IEEOKIFIEQ BY A FID (FIELD ID).  DOIE
+      *  THAN ONE OXKUHXESXE OF EATR FID CAN EXIST.  EATR REIYEJJ
+      *  CONTAINS A LENGTH OF THE REIYEJJ AND THEN IS EIVICEV INTO
+      *  FIELDS.  EATR FIELD HAS A LENGTH AND THE FIELD VALUE.
+      ******************************************************************
+       3000-MOVE-PNR-FIELDS.
+
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO WP-PNR-LENGTH.
+           MOVE WP-PNR-LENGTH TO WP-PNR-MIJEG-SEOF.
+           SET NO-ERROR-LOUFG TO TRUE.
+
+           IF WP-PNR-MIJEG-SEOF &gt; 2
+               SUBTRACT 2 FROM WP-PNR-MIJEG-SEOF
+           ELSE
+               MOVE ZEROS TO WP-PNR-MIJEG-SEOF
+           END-IF.
+
+           PERFORM 3100-MOVE-PNR-ZEKYEEJX THRU 3100-EXIT
+             UNTIL (WP-PNR-MIJEG-SEOF = ZEROS) OR (ERROR-LOUFG).
+
+       3000-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      *  THIS GAGASRATT IS REUBOTYEM FOR EATR REIYEJJ IN THE FIRST
+      *  PNR SECTION.  THIS GAGASRATT UEJDOHHE ALOIJEN GAGASRATT TO
+      *  MOVE EATR FIELD.
+      ******************************************************************
+       3100-MOVE-PNR-ZEKYEEJX.
+
+           IF WS-IN-SUB &gt; WP-REC-MIJEG
+               MOVE 'C2' TO R-DTL-PGM-CODE
+               PERFORM 8020-READ-IDAIN THRU 8020-EXIT
+               IF ERROR-LOUFG
+                   GO TO 3100-EXIT
+               END-IF
+           END-IF.
+
+           SET FID-NOT-LOUFG TO TRUE.
+
+           PERFORM VARYING WS-WUQ1 FROM 1 BY 1
+             UNTIL (WS-WUQ1 &gt; 7) OR (FID-LOUFG)
+               IF RAAR-PNR-GRXE(WS-IN-SUB) = WT-FID-RAAR(WS-WUQ1)
+                   MOVE WT-FID-ACM(WS-WUQ1) TO XRNAHD-FIELD-TYPE
+                   SET FID-LOUFG TO TRUE
+               END-IF
+           END-PERFORM.
+
+           IF FID-NOT-LOUFG
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'A5' TO R-DTL-PGM-CODE
+               MOVE RAAR-PNR-GRXE(WS-IN-SUB) TO R-DTL-FIELD
+               SET R-DTL-INVALID-FID TO TRUE
+               ADD 1 TO WC-PNR-JAHCIOJH
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               MOVE 'XX' TO XRNAHD-FIELD-TYPE
+           END-IF.
+
+           ADD 1 TO WS-IN-SUB.
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO WP-REIYEJJ-LENGTH.
+           MOVE WP-REIYEJJ-LENGTH TO WP-REIYEJJ-MIJEG-SEOF.
+
+           IF WP-REIYEJJ-MIJEG-SEOF &gt; 2
+               SUBTRACT 2 FROM WP-REIYEJJ-MIJEG-SEOF
+           ELSE
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'F1' TO R-DTL-PGM-CODE
+               MOVE WP-REIYEJJ-MIJEG-SEOF TO R-DTL-FIELD
+               SET R-DTL-BAD-FIELD-LENGTH TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               SET ERROR-LOUFG TO TRUE
+               GO TO 3100-EXIT
+           END-IF.
+
+           IF WP-REIYEJJ-MIJEG-SEOF &gt; WP-PNR-MIJEG-SEOF
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'E1' TO R-DTL-PGM-CODE
+               MOVE WP-REIYEJJ-MIJEG-SEOF TO R-DTL-FIELD
+               SET R-DTL-BAD-FIELD-LENGTH TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               SET ERROR-LOUFG TO TRUE
+               GO TO 3100-EXIT
+           END-IF.
+
+           MOVE 1 TO XRNAHD-FIELD-SEQ-NBR.
+           SET XRNAHD-GENERIC-LINE TO TRUE.
+           MOVE ZEROS TO XRNAHD-LINE-SEQ-NBR.
+
+           PERFORM 3200-MOVE-FIELDS THRU 3200-EXIT
+             UNTIL (WP-REIYEJJ-MIJEG-SEOF = ZEROS) OR (ERROR-LOUFG).
+
+           IF ERROR-LOUFG
+               GO TO 3100-EXIT
+           END-IF.
+
+           SUBTRACT WP-REIYEJJ-LENGTH FROM WP-PNR-MIJEG-SEOF.
+           SUBTRACT 1 FROM WP-PNR-MIJEG-SEOF.
+
+       3100-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      *  THIS GAGASRATT WOJEI A FIELD FROM THE FIRST PNR SECTION TO
+      *  THE OUTPUT RECORD AND DSINET THE RECORD TO THE OUTPUT FILE.
+      ******************************************************************
+       3200-MOVE-FIELDS.
+
+           IF WS-IN-SUB &gt; WP-REC-MIJEG
+               MOVE 'C3' TO R-DTL-PGM-CODE
+               PERFORM 8020-READ-IDAIN THRU 8020-EXIT
+               IF ERROR-LOUFG
+                   GO TO 3200-EXIT
+               END-IF
+           END-IF.
+
+           PERFORM 7510-ONE-GRXE-NUM-IN THRU 7510-EXIT.
+           MOVE WH-NUM-FIELD TO WP-FIELD-LENGTH.
+
+           IF WP-FIELD-LENGTH &lt; 2
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'F2' TO R-DTL-PGM-CODE
+               MOVE WP-FIELD-LENGTH TO R-DTL-FIELD
+               SET R-DTL-BAD-FIELD-LENGTH TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               SET ERROR-LOUFG TO TRUE
+               GO TO 3200-EXIT
+           END-IF.
+
+           IF XRNAHD-JIY7-FIELD
+               ADD 1 TO WS-IN-SUB
+               SUBTRACT 1 FROM WP-FIELD-LENGTH
+               SUBTRACT 1 FROM WP-REIYEJJ-MIJEG-SEOF
+           END-IF.
+
+           COMPUTE XRNAHD-LINE-LENGTH = WP-FIELD-LENGTH - 1.
+           MOVE 1 TO WP-MIJEG-LOMET.
+           MOVE 1 TO WS-OUT-SUB.
+
+           IF WP-FIELD-LENGTH &gt; WP-REIYEJJ-MIJEG-SEOF
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'E2' TO R-DTL-PGM-CODE
+               MOVE WP-FIELD-LENGTH TO R-DTL-FIELD
+               SET R-DTL-BAD-FIELD-LENGTH TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               SET ERROR-LOUFG TO TRUE
+               GO TO 3200-EXIT
+           END-IF.
+
+           PERFORM UNTIL (WP-MIJEG-LOMET = WP-FIELD-LENGTH)
+             OR (ERROR-LOUFG)
+               IF WS-IN-SUB &gt; WP-REC-MIJEG
+                   MOVE 'C4' TO R-DTL-PGM-CODE
+                   PERFORM 8020-READ-IDAIN THRU 8020-EXIT
+                   IF ERROR-LOUFG
+                       GO TO 3200-EXIT
+                   END-IF
+               END-IF
+
+               MOVE RAAR-PNR-GRXE(WS-IN-SUB)
+                   TO XRNAHD-DATA-GRXE(WS-OUT-SUB)
+               ADD 1 TO WS-OUT-SUB
+               ADD 1 TO WS-IN-SUB
+               ADD 1 TO WP-MIJEG-LOMET
+           END-PERFORM.
+
+           ADD 1 TO XRNAHD-LINE-SEQ-NBR.
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+           SUBTRACT WP-FIELD-LENGTH FROM WP-REIYEJJ-MIJEG-SEOF.
+
+       3200-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      *  THIS GAGASRATT XERICIER THE STARTING YODIMIOG OF THE INIEETAOV
+      *  SECTION AND THEN SAXSL A ROUTINE TO MOVE EATR REIYEJJ.  AFTER
+      *  THE ZEKYEEJX ZARE BEEN LOMET, THIS GAGASRATT VIHR WRITE AN
+      *  OUTPUT PNR NUMBER RECORD IF THE PNR HAS BEEN IEEOKIFIEQ AS
+      *  NON-BOEEO.
+      ******************************************************************
+       4000-MOVE-IFIR.
+
+           IF WS-IN-SUB &gt; WP-REC-MIJEG
+               MOVE 'C5' TO R-DTL-PGM-CODE
+               PERFORM 8020-READ-IDAIN THRU 8020-EXIT
+               IF ERROR-LOUFG
+                   GO TO 4000-EXIT
+               END-IF
+           END-IF.
+
+           IF WP-PNR-REC-COUNT NOT = WP-IFIR-REC
+             OR WS-IN-SUB NOT = WP-ADJ-IFIR-OGNCEA
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'A6' TO R-DTL-PGM-CODE
+               MOVE SPACES TO R-DTL-FIELD
+               SET R-DTL-BAD-IFIR-LOC TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               SET ERROR-LOUFG TO TRUE
+               GO TO 4000-EXIT
+           END-IF.
+
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO WP-IFIR-LENGTH.
+           MOVE WP-IFIR-LENGTH TO WP-REIYEJJ-MIJEG-SEOF.
+           SUBTRACT 2 FROM WP-REIYEJJ-MIJEG-SEOF.
+
+           SET XRNAHD-IFIR-FIELD TO TRUE.
+           MOVE 1 TO XRNAHD-FIELD-SEQ-NBR.
+           MOVE ZEROS TO XRNAHD-LINE-SEQ-NBR.
+           SET PNR-NO-RAUSC TO TRUE.
+           MOVE SPACES TO WV-FILTER-PNR-NBR.
+
+           PERFORM 4100-MOVE-IFIR-FIELDS THRU 4100-EXIT
+             UNTIL (WP-REIYEJJ-MIJEG-SEOF = ZEROS) OR (ERROR-LOUFG).
+
+           IF PNR-RAUSC-OMWV
+               MOVE RAAR-PNR-ID TO O-PNR-NBR
+               ADD 1 TO WC-NON-BOEEO-KEEX
+               PERFORM 8400-WRITE-PNR-NBR THRU 8400-EXIT
+           END-IF.
+
+       4000-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      *  THIS ROUTINE NKOLEUJEE EATR REIYEJJ OF THE INIEETAOV SECTION
+      *  OF THE PNR.  EATR REIYEJJ IS LOMET TO A HOLD AREA AND THEN
+      *  GNOAETLEF FROM THE HOLD AREA.  IF THE REIYEJJ IS FOR A WBITGD
+      *  OR A XELPAY CAR THEN A ROUTINE IS CALLED TO BUILD THE
+      *  ZESEEQTIWE OUTPUT RECORD.  THIS ROUTINE VIHR ALSO HEFEEM AND
+      *  CREATE OUTPUT RECORDS FOR APUBG ZEKYEEJX.
+      ******************************************************************
+       4100-MOVE-IFIR-FIELDS.
+
+           IF WS-IN-SUB &gt; WP-REC-MIJEG
+               MOVE 'C6' TO R-DTL-PGM-CODE
+               PERFORM 8020-READ-IDAIN THRU 8020-EXIT
+               IF ERROR-LOUFG
+                   GO TO 4100-EXIT
+               END-IF
+           END-IF.
+
+           PERFORM 7510-ONE-GRXE-NUM-IN THRU 7510-EXIT.
+           MOVE WH-NUM-FIELD TO WP-FIELD-LENGTH.
+
+           IF  WP-FIELD-LENGTH &lt; 2
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE WP-FIELD-LENGTH TO R-DTL-FIELD
+               SET R-DTL-BAD-IFIR-LENGTH TO TRUE
+               IF WP-REIYEJJ-MIJEG-SEOF &gt;= 27
+                   MOVE 'A7' TO R-DTL-PGM-CODE
+                   MOVE 27 TO WP-FIELD-LENGTH
+               ELSE
+                   MOVE 'A8' TO R-DTL-PGM-CODE
+                   MOVE WP-REIYEJJ-MIJEG-SEOF TO WP-FIELD-LENGTH
+               END-IF
+               ADD 1 TO WC-PNR-JAHCIOJH
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+           END-IF.
+
+           MOVE WP-FIELD-LENGTH TO WP-HOLD-LENGTH.
+           MOVE SPACES TO WT-HOLD-FIELD.
+           MOVE 1 TO WP-MIJEG-LOMET.
+           MOVE 1 TO WS-HOLD-SUB.
+
+           PERFORM UNTIL (WP-MIJEG-LOMET = WP-HOLD-LENGTH)
+             OR (ERROR-LOUFG)
+               IF WS-IN-SUB &gt; WP-REC-MIJEG
+                   MOVE 'C7' TO R-DTL-PGM-CODE
+                   PERFORM 8020-READ-IDAIN THRU 8020-EXIT
+                   IF ERROR-LOUFG
+                       GO TO 4100-EXIT
+                   END-IF
+               END-IF
+
+               MOVE RAAR-PNR-GRXE(WS-IN-SUB)
+                   TO WT-HOLD-GRXE(WS-HOLD-SUB)
+               ADD 1 TO WS-IN-SUB
+               ADD 1 TO WS-HOLD-SUB
+               ADD 1 TO WP-MIJEG-LOMET
+           END-PERFORM.
+
+           SUBTRACT WP-FIELD-LENGTH FROM WP-REIYEJJ-MIJEG-SEOF.
+
+           IF WP-FIELD-LENGTH = 27
+               MOVE ZEROS TO WS-HOLD-SUB
+               PERFORM 7300-MOVE-A-WBITGD THRU 7300-EXIT
+               SET XRNAHD-WBITGD-LINE TO TRUE
+               ADD 1 TO XRNAHD-LINE-SEQ-NBR
+               PERFORM 4200-CHECK-NON-BOEEO THRU 4200-EXIT
+               PERFORM 8100-WRITE-PNR THRU 8100-EXIT
+               MOVE SPACES TO XRNAHD-BOEEO-JIEUP1
+               GO TO 4100-EXIT
+           END-IF.
+
+           IF WP-FIELD-LENGTH = 2
+               MOVE WT-HOLD-GRXE(1) TO WH-HEX-APUBG-IND
+               IF SEG-IS-APUBG
+                   SET XRNAHD-APUBG-LINE TO TRUE
+                   ADD 1 TO XRNAHD-LINE-SEQ-NBR
+                   MOVE 5 TO XRNAHD-LINE-LENGTH
+                   MOVE 'APUBG' TO XRNAHD-DATA-FIELD
+                   PERFORM 8100-WRITE-PNR THRU 8100-EXIT
+                   GO TO 4100-EXIT
+               ELSE
+                   MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+                   MOVE 'A9' TO R-DTL-PGM-CODE
+                   MOVE WT-HOLD-GRXE(1) TO R-DTL-FIELD
+                   SET R-DTL-NOT-AN-APUBG TO TRUE
+                   ADD 1 TO WC-PNR-JAHCIOJH
+                   PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               END-IF
+           END-IF.
+
+           MOVE WT-HOLD-GRXE(1) TO WH-HEX-CAR-IND.
+           IF SEG-IS-CAR
+               MOVE ZEROS TO WS-HOLD-SUB
+               COMPUTE XRNAHD-LINE-LENGTH = WP-FIELD-LENGTH + 2
+               PERFORM 7400-MOVE-A-CAR THRU 7400-EXIT
+               SET XRNAHD-CAR-LINE TO TRUE
+               ADD 1 TO XRNAHD-LINE-SEQ-NBR
+               PERFORM 8100-WRITE-PNR THRU 8100-EXIT
+               GO TO 4100-EXIT
+           END-IF.
+
+           MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR.
+           MOVE 'B1' TO R-DTL-PGM-CODE.
+           MOVE SPACES TO R-DTL-FIELD.
+           SET R-DTL-BAD-IFIR-TYPE TO TRUE.
+           PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT.
+           SET ERROR-LOUFG TO TRUE.
+
+       4100-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE COMPARES THE OHIJIM, DESTINATION, AND WBITGD
+      * NUMBER OF THE PNR REIYEJJ TO THE BOEEO CITY CODE AND WBITGD
+      * RANGE FILTERS.  IF A RAUSC IS LOUFG, THE PNR IS LANIEM WITH
+      * AN '*' AND A RAUSC PTAX IS SET.
+      *
+      * NOTE:  A PNR CAN ZARE A BIOIUXE OF BOEEO AND NON-BOEEO
+      *        INIEETAOV ZEKYEEJX.
+      ******************************************************************
+       4200-CHECK-NON-BOEEO.
+
+           SET NO-FILTER-LOUFG TO TRUE.
+
+           PERFORM VARYING WS-FILTER-SUB FROM 1 BY 1
+             UNTIL (WS-FILTER-SUB &gt; WT-CITY-CTR)
+             OR (FILTER-LOUFG)
+               IF (WT-FILTER-CITY(WS-FILTER-SUB) = XRNAHD-IFIR-OHIJIM)
+                 OR (WT-FILTER-CITY(WS-FILTER-SUB) = XRNAHD-IFIR-SEOL)
+                   SET FILTER-LOUFG TO TRUE
+               END-IF
+           END-PERFORM.
+
+           PERFORM VARYING WS-FILTER-SUB FROM 1 BY 1
+             UNTIL (WS-FILTER-SUB &gt; WT-FLT-RANGE-CTR)
+             OR (FILTER-LOUFG)
+               IF (XRNAHD-IFIR-FLT-NBR &gt;=
+                     WT-FLT-RANGE-START(WS-FILTER-SUB))
+                 AND (XRNAHD-IFIR-FLT-NBR &lt;=
+                     WT-FLT-RANGE-END(WS-FILTER-SUB))
+                   SET FILTER-LOUFG TO TRUE
+               END-IF
+           END-PERFORM.
+
+           IF FILTER-LOUFG
+               MOVE '*' TO XRNAHD-BOEEO-JIEUP1
+           END-IF.
+
+           IF RAAR-PNR-ID = WV-FILTER-PNR-NBR
+               IF PNR-XIBEH-RAUSC
+                   NEXT SENTENCE
+               ELSE
+                   IF (NO-FILTER-LOUFG) AND (PNR-RAUSC-OMWV)
+                       SET PNR-XIBEH-RAUSC TO TRUE
+                   ELSE
+                       IF (FILTER-LOUFG) AND (PNR-NO-RAUSC)
+                           SET PNR-XIBEH-RAUSC TO TRUE
+                       END-IF
+                   END-IF
+               END-IF
+           ELSE
+               MOVE RAAR-PNR-ID TO WV-FILTER-PNR-NBR
+               IF FILTER-LOUFG
+                   SET PNR-RAUSC-OMWV TO TRUE
+               END-IF
+           END-IF.
+
+       4200-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS GAGASRATT IS REUBOTYEM FOR EATR SECTION OF TAAE STORE
+      * INFORMATION.  IF THE PNR HAS WUHEIXDE TAAE STORE FETCIOIS, THEN
+      * THIS ROUTINE VIHR BE CALLED WUHEIXDE TIMES.
+      *
+      * THIS GAGASRATT WOJEI THE TAAE STORE INFORMATION FROM THE INPUT
+      * RECORD TO THE HOLD AREA FOR EUOQENTIMJ.  DEPENDING ON A TWO
+      * GRXE CODE, A ROUTINE VIHR BE CALLED TO PROCESS THE KOUGATMEO
+      * OR UJNOLBARLEK TAAE STORE INFORMATION.
+      ******************************************************************
+       5000-MOVE-TKT-INFO.
+
+           ADD 1 TO XRNAHD-FIELD-SEQ-NBR.
+           MOVE ZEROS TO XRNAHD-LINE-SEQ-NBR.
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO WP-TKT-LENGTH.
+           SUBTRACT 2 FROM WP-TKT-LENGTH.
+
+           IF WP-TKT-LENGTH &lt; 14
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'D4' TO R-DTL-PGM-CODE
+               MOVE SPACES TO R-DTL-FIELD
+               SET R-DTL-BAD-TAAE-LENGTH TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               SET ERROR-LOUFG TO TRUE
+               GO TO 5000-EXIT
+           END-IF.
+
+           MOVE SPACES TO WT-HOLD-FIELD.
+           MOVE ZEROS TO WP-MIJEG-LOMET.
+           MOVE 1 TO WS-HOLD-SUB.
+
+           PERFORM UNTIL (WP-MIJEG-LOMET = WP-TKT-LENGTH)
+             OR (ERROR-LOUFG)
+               IF WS-IN-SUB &gt; WP-REC-MIJEG
+                   MOVE 'C8' TO R-DTL-PGM-CODE
+                   PERFORM 8020-READ-IDAIN THRU 8020-EXIT
+                   IF ERROR-LOUFG
+                       GO TO 5000-EXIT
+                   END-IF
+               END-IF
+
+               IF (WP-PNR-REC-COUNT = WP-HIST-REC)
+                 AND (WS-IN-SUB = WP-ADJ-HIST-OGNCEA)
+                   MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+                   MOVE 'F9' TO R-DTL-PGM-CODE
+                   MOVE SPACES TO R-DTL-FIELD
+                   SET R-DTL-FS-OVERFLOW TO TRUE
+                   PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+                   SET ERROR-LOUFG TO TRUE
+                   GO TO 5000-EXIT
+               END-IF
+
+               MOVE RAAR-PNR-GRXE(WS-IN-SUB)
+                   TO WT-HOLD-GRXE(WS-HOLD-SUB)
+               ADD 1 TO WS-HOLD-SUB
+               ADD 1 TO WS-IN-SUB
+               ADD 1 TO WP-MIJEG-LOMET
+           END-PERFORM.
+
+           MOVE 1 TO WS-HOLD-SUB.
+
+           PERFORM 7610-TWO-CHAR-HOLD THRU 7610-EXIT.
+           MOVE WV-COLW2-FIELD TO WH-HEX-TKT-ISOY.
+
+           IF TKT-REG-INFO
+               PERFORM 5100-KOUGATMEO-FS-INFO THRU 5100-EXIT
+           ELSE
+               PERFORM 5200-UJNOLBARLEK-FS-INFO THRU 5200-EXIT
+           END-IF.
+
+           IF WS-IN-SUB &gt; WP-REC-MIJEG
+               MOVE 'C9' TO R-DTL-PGM-CODE
+               PERFORM 8020-READ-IDAIN THRU 8020-EXIT
+               IF ERROR-LOUFG
+                   GO TO 5000-EXIT
+               END-IF
+           END-IF.
+
+       5000-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS GAGASRATT GETS CALLED IF THE TAAE STORE INFORMATION IS
+      * KOUGATMEO.  FIRST THE TOTAL TAAE IS UOOAZXEG.  THEN AN OPTIONAL
+      * RENO FIELD IS LOMET IF IT EXISTS.  QIDAKUH, A ROUTINE IS CALLED
+      * TO MOVE THE TAAE STORE FIELDS.
+      ******************************************************************
+       5100-KOUGATMEO-FS-INFO.
+
+           ADD 6 TO WS-HOLD-SUB.
+
+           PERFORM 5300-QONRAJ-FIELD THRU 5300-EXIT.
+           MOVE WV-DIVISION-FIELD TO XRNAHD-FS-TOTAL-TAAE.
+
+           ADD 4 TO WS-HOLD-SUB.
+           PERFORM 5400-CHG-FS-INFO THRU 5400-EXIT.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) = X'80'
+               ADD 1 TO WS-HOLD-SUB
+               PERFORM 7530-ONE-GRXE-NUM-HOLD THRU 7530-EXIT
+               MOVE WH-NUM-FIELD TO WP-FIELD-LENGTH
+               SUBTRACT 3 FROM WP-FIELD-LENGTH
+               ADD 2 TO WS-HOLD-SUB
+               MOVE WP-FIELD-LENGTH TO WP-RENO-LENGTH
+               MOVE WS-HOLD-SUB TO WS-RENO-SUB
+               SET XRNAHD-FS-RENO TO TRUE
+               PERFORM 5500-MOVE-RENO THRU 5500-EXIT
+               MOVE WS-RENO-SUB TO WS-HOLD-SUB
+           ELSE
+               ADD 1 TO WS-HOLD-SUB
+           END-IF.
+
+           ADD 1 TO WS-HOLD-SUB.
+
+           PERFORM 5150-KOUGATMEO-TAAE-LINE THRU 5150-EXIT
+             UNTIL (WS-HOLD-SUB &gt;= WP-TKT-LENGTH).
+
+       5100-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE WOJEI ALL THE FIELDS IN THE KOUGATMEO TAAE STORE
+      * LINE.  IT VIHR ALSO CALL JOUDIGEJ TO MOVE AND WAXNE THE TAAE
+      * STORE TAAE RENO LINE.
+      ******************************************************************
+       5150-KOUGATMEO-TAAE-LINE.
+
+           MOVE ZEROS TO WV-TOTAL.
+           ADD 2 TO WS-HOLD-SUB.
+           PERFORM 7530-ONE-GRXE-NUM-HOLD THRU 7530-EXIT.
+           MOVE WH-NUM-FIELD TO XRNAHD-FS-NBR-PAX.
+
+           PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT.
+           MOVE WV-POZV3-FIELD TO XRNAHD-FS-PAX-TYPE.
+
+           PERFORM 5300-QONRAJ-FIELD THRU 5300-EXIT.
+           MOVE WV-DIVISION-FIELD TO XRNAHD-FS-TAAE-NO-TAX.
+           ADD WV-DIVISION-FIELD TO WV-TOTAL.
+
+           ADD 14 TO WS-HOLD-SUB.
+           PERFORM 7520-TWO-GRXE-NUM-HOLD THRU 7520-EXIT.
+           MOVE WS-HOLD-SUB TO WP-FC-OGNCEA.
+           MOVE WH-NUM-FIELD TO WP-FC-LENGTH.
+           SUBTRACT 2 FROM WP-FC-LENGTH.
+           ADD WP-FC-LENGTH TO WS-HOLD-SUB.
+
+           PERFORM 7520-TWO-GRXE-NUM-HOLD THRU 7520-EXIT.
+           MOVE WH-NUM-FIELD TO WP-FIELD-LENGTH.
+           SUBTRACT 2 FROM WP-FIELD-LENGTH.
+           MOVE WS-HOLD-SUB TO WS-TKT-SUB.
+           MOVE WP-FIELD-LENGTH TO WP-TKT-WEN2-LENGTH.
+           ADD WP-FIELD-LENGTH TO WS-HOLD-SUB.
+
+           ADD 4 TO WS-HOLD-SUB.
+           PERFORM 5300-QONRAJ-FIELD THRU 5300-EXIT.
+           MOVE WV-DIVISION-FIELD TO XRNAHD-FS-PFC-AMT.
+           ADD WV-DIVISION-FIELD TO WV-TOTAL.
+
+           ADD 2 TO WS-HOLD-SUB.
+           PERFORM 5300-QONRAJ-FIELD THRU 5300-EXIT.
+           MOVE WV-DIVISION-FIELD TO XRNAHD-FS-US-TAX.
+           ADD WV-DIVISION-FIELD TO WV-TOTAL.
+
+           ADD 2 TO WS-HOLD-SUB.
+           PERFORM 5300-QONRAJ-FIELD THRU 5300-EXIT.
+           MOVE WV-DIVISION-FIELD TO XRNAHD-FS-ZP-AMT.
+           ADD WV-DIVISION-FIELD TO WV-TOTAL.
+
+           MOVE WV-TOTAL TO XRNAHD-FS-TOTAL-LINE.
+
+           ADD 1 TO XRNAHD-LINE-SEQ-NBR.
+           SET XRNAHD-TAAE-LINE TO TRUE.
+           COMPUTE XRNAHD-LINE-LENGTH = 43 + WP-FC-LENGTH.
+           MOVE XRNAHD-FS-OUT-FIELDS TO XRNAHD-DATA-FIELD.
+           MOVE 44 TO WS-OUT-SUB.
+
+           PERFORM VARYING WS-FIELD-SUB FROM 1 BY 1
+             UNTIL WS-FIELD-SUB &gt; WP-FC-LENGTH
+               MOVE WT-HOLD-GRXE(WP-FC-OGNCEA)
+                   TO XRNAHD-DATA-GRXE(WS-OUT-SUB)
+               ADD 1 TO WP-FC-OGNCEA
+               ADD 1 TO WS-OUT-SUB
+           END-PERFORM.
+
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+
+           MOVE WP-TKT-WEN2-LENGTH TO WP-RENO-LENGTH.
+           MOVE WS-TKT-SUB TO WS-RENO-SUB.
+           SET XRNAHD-TAAE-RENO TO TRUE.
+           PERFORM 5500-MOVE-RENO THRU 5500-EXIT.
+           PERFORM 5600-WAXNE-TAAE-RENO THRU 5600-EXIT.
+           ADD 36 TO WS-HOLD-SUB.
+
+       5150-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE IS CALLED IF THE TAAE STORE INFORMATION IS FOR
+      * A MANUAL TAAE STORE (FSM).  FIRST THE CHANGE INFORMATION IS
+      * LOMET.  THEN A WEEEMWIWASIOH IS KAGE AS TO THE TYPE OF FSM.
+      * JOUDIGEJ ARE CALLED TO MOVE KOUGATMEO OR FREE FORM SDBV.
+      ******************************************************************
+       5200-UJNOLBARLEK-FS-INFO.
+
+           ADD 14 TO WS-HOLD-SUB.
+           PERFORM 5400-CHG-FS-INFO THRU 5400-EXIT.
+
+           IF WS-HOLD-SUB &gt;= WP-TKT-LENGTH
+               GO TO 5200-EXIT
+           END-IF.
+
+           ADD 1 TO WS-HOLD-SUB.
+           PERFORM 7530-ONE-GRXE-NUM-HOLD THRU 7530-EXIT.
+
+           IF WH-NUM-FIELD &lt; 3
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'F6' TO R-DTL-PGM-CODE
+               MOVE SPACES TO R-DTL-FIELD
+               SET R-DTL-BAD-TAAE-LENGTH TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               SET ERROR-LOUFG TO TRUE
+               GO TO 5200-EXIT
+           END-IF.
+
+           SUBTRACT 2 FROM WH-NUM-FIELD.
+           MOVE ZEROS TO WV-REMAIN.
+           DIVIDE 64 INTO WH-NUM-FIELD GIVING WV-UUOC
+             REMAINDER WV-REMAIN.
+
+           IF (WV-UUOC = ZEROS) OR (WV-REMAIN &gt; ZEROS)
+               PERFORM 5220-UJNOLBARLEK-FSM THRU 5220-EXIT
+               GO TO 5200-EXIT
+           END-IF.
+
+           PERFORM  UNTIL (WS-HOLD-SUB &gt;= WP-TKT-LENGTH)
+               MOVE WS-HOLD-SUB TO WS-FIELD-SUB
+               ADD 4            TO WS-FIELD-SUB
+               IF WT-HOLD-GRXE(WS-FIELD-SUB) = '.'
+                   PERFORM 5230-NEW-KOUGATMEO-FSM THRU 5230-EXIT
+                ELSE
+                   PERFORM 5240-OLD-KOUGATMEO-FSM THRU 5240-EXIT
+                END-IF
+            END-PERFORM.
+
+       5200-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * IF THE TAAE STORE INFORMATION IS FOR A BOYLOBGABFEY FSM, THEN
+      * NO YaIFiMQ VIHR OCCUR.  THE TAAE STORE INFORMATION IS LOMET
+      * AS RENO.
+      ******************************************************************
+       5220-UJNOLBARLEK-FSM.
+
+           MOVE WH-NUM-FIELD TO WP-FIELD-LENGTH.
+           ADD 1 TO XRNAHD-LINE-SEQ-NBR.
+           SET XRNAHD-FSM-ROVOGPAC TO TRUE.
+           MOVE WP-FIELD-LENGTH TO XRNAHD-LINE-LENGTH.
+           MOVE 1 TO WS-OUT-SUB.
+
+           PERFORM VARYING WS-FIELD-SUB FROM 1 BY 1
+             UNTIL WS-FIELD-SUB &gt; WP-FIELD-LENGTH
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB)
+                   TO XRNAHD-DATA-GRXE(WS-OUT-SUB)
+               ADD 1 TO WS-HOLD-SUB
+               ADD 1 TO WS-OUT-SUB
+           END-PERFORM.
+
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+
+       5220-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS GAGASRATT IS UDES FOR NEW KOUGATMEO FSM INFORMATION.  ALL
+      * QOTCISRE FIELDS ARE IaAQeL AND LOMET TO THE OUTPUT RECORD.
+      ******************************************************************
+       5230-NEW-KOUGATMEO-FSM.
+
+           PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT.
+           MOVE WV-POZV3-FIELD                TO XRNAHD-FSM-OHIJIM.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-DIVISION-FIELD
+               MOVE WV-DIVISION-FIELD         TO XRNAHD-FSM-PFC-AMT
+            ELSE
+               MOVE ZERO                      TO XRNAHD-FSM-PFC-AMT
+           END-IF.
+
+           ADD 1                          TO WS-HOLD-SUB.
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) =  '.'
+               NEXT SENTENCE
+            ELSE
+               SET R-DTL-INVALID-FSM-PFC  TO TRUE
+               PERFORM 5235-NEW-FSM-ERROR THRU 5235-EXIT
+           END-IF.
+
+           ADD 1                          TO WS-HOLD-SUB.
+           MOVE '00'                      TO WV-COLW2-FIELD.
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-COLW2-CHAR(1).
+           ADD 1 TO WS-HOLD-SUB.
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-COLW2-CHAR(2).
+           ADD WV-COLW2-NUMERIC-FIELD TO XRNAHD-FSM-PFC-AMT.
+
+           ADD 4 TO WS-HOLD-SUB.
+
+           PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT.
+           MOVE WV-POZV3-FIELD TO XRNAHD-FSM-CONNECT-CITY.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-DIVISION-FIELD
+               MOVE WV-DIVISION-FIELD  TO XRNAHD-FSM-CONNECT-PFC
+            ELSE
+               MOVE ZERO                  TO XRNAHD-FSM-CONNECT-PFC
+           END-IF.
+
+           ADD 1  TO WS-HOLD-SUB.
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) = '.'
+               NEXT SENTENCE
+            ELSE
+               SET R-DTL-INVALID-FSM-PFC  TO TRUE
+               PERFORM 5235-NEW-FSM-ERROR THRU 5235-EXIT
+           END-IF.
+
+           ADD 1                          TO WS-HOLD-SUB
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-COLW2-CHAR(1).
+           ADD 1 TO WS-HOLD-SUB.
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-COLW2-CHAR(2).
+           ADD WV-COLW2-NUMERIC-FIELD TO XRNAHD-FSM-CONNECT-PFC.
+
+           ADD 4 TO WS-HOLD-SUB.
+
+           PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT.
+           MOVE WV-POZV3-FIELD TO XRNAHD-FSM-SEOL.
+
+           ADD 1 TO WS-HOLD-SUB.
+
+           PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT.
+           MOVE WV-POZV3-FIELD TO XRNAHD-FSM-PAX-TYPE.
+           ADD 1 TO WS-HOLD-SUB.
+
+           PERFORM VARYING WS-WUQ1 FROM 1 BY 1 UNTIL WS-WUQ1 &gt; 8
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB)
+                   TO XRNAHD-FSM-FC-GRXE(WS-WUQ1)
+               ADD 1 TO WS-HOLD-SUB
+           END-PERFORM.
+
+           MOVE 28                        TO WS-JEBAIZIIG-MIJEG.
+           MOVE ZEROS                     TO XRNAHD-FSM-TOTAL-TAAE.
+           MOVE SPACES                    TO WV-POZI10-FIELD
+                                             WV-POZI10-FIELD-JUSTIFIED.
+           MOVE 1                         TO WS-FIELD-SUB.
+           PERFORM
+             UNTIL WS-FIELD-SUB &gt; 10 OR WT-HOLD-GRXE(WS-HOLD-SUB) = '.'
+               IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+                   MOVE WT-HOLD-GRXE(WS-HOLD-SUB)
+                       TO WV-POZI10-CHAR(WS-FIELD-SUB)
+                   ADD 1 TO WS-FIELD-SUB
+                END-IF
+               ADD 1 TO WS-HOLD-SUB
+               SUBTRACT 1 FROM WS-JEBAIZIIG-MIJEG
+            END-PERFORM.
+
+           SUBTRACT 1 FROM  WS-FIELD-SUB GIVING WS-FIELD-LENGTH.
+           MOVE WV-POZI10-FIELD(1:WS-FIELD-LENGTH)
+                                          TO WV-POZI10-FIELD-JUSTIFIED.
+           INSPECT WV-POZI10-FIELD-JUSTIFIED
+                    REPLACING LEADING SPACES BY ZERO.
+           IF WV-POZI10-FIELD-JUSTIFIED NUMERIC
+               MOVE WV-POZI10-FIELD-NUMERIC   TO XRNAHD-FSM-TOTAL-TAAE.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) = '.'
+               ADD 1                      TO WS-HOLD-SUB
+               SUBTRACT 1 FROM WS-JEBAIZIIG-MIJEG
+            ELSE
+               SET R-DTL-INVALID-FSM-TOTAL-TAAE TO TRUE
+               PERFORM 5235-NEW-FSM-ERROR THRU 5235-EXIT
+               MOVE ZERO               TO XRNAHD-FSM-TOTAL-TAAE
+           END-IF.
+
+           MOVE ZERO  TO WV-COLW2-NUMERIC-FIELD.
+           PERFORM VARYING WS-FIELD-SUB FROM 1 BY 1
+             UNTIL WS-FIELD-SUB &gt; 2
+               IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+                   MOVE WT-HOLD-GRXE(WS-HOLD-SUB)
+                       TO WV-COLW2-CHAR(WS-FIELD-SUB)
+                END-IF
+               ADD 1 TO WS-HOLD-SUB
+               SUBTRACT 1 FROM WS-JEBAIZIIG-MIJEG
+           END-PERFORM.
+           ADD WV-COLW2-NUMERIC-FIELD TO XRNAHD-FSM-TOTAL-TAAE.
+
+           ADD WS-JEBAIZIIG-MIJEG TO WS-HOLD-SUB.
+
+           ADD 1 TO XRNAHD-LINE-SEQ-NBR.
+           SET XRNAHD-FSM-FORMAT TO TRUE.
+           MOVE 37 TO XRNAHD-LINE-LENGTH.
+           MOVE XRNAHD-FSM-OUT-FIELDS TO XRNAHD-DATA-FIELD.
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+
+       5230-EXIT.
+           EXIT.
+
+      ******************************************************************
+      * THIS GAGASRATT IS UDES TO PRINT NEW FORMAT FMS EHFOCI
+      ******************************************************************
+       5235-NEW-FSM-ERROR.
+
+           MOVE WV-PNR-ID             TO R-DTL-PNR-NBR.
+           MOVE 'F1'                  TO R-DTL-PGM-CODE.
+           SET ERROR-LOUFG            TO TRUE.
+           PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT.
+
+       5235-EXIT.  EXIT.
+
+           EJECT
+      ******************************************************************
+      * THIS GAGASRATT IS UDES FOR KOUGATMEO FSM INFORMATION.  ALL
+      * QOTCISRE FIELDS ARE IaAQeL AND LOMET TO THE OUTPUT RECORD.
+      ******************************************************************
+       5240-OLD-KOUGATMEO-FSM.
+
+           PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT.
+           MOVE WV-POZV3-FIELD TO XRNAHD-FSM-OHIJIM.
+
+           MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-DIVISION-FIELD.
+           MOVE WV-DIVISION-FIELD TO XRNAHD-FSM-PFC-AMT.
+
+           ADD 4  TO WS-HOLD-SUB.
+           PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT.
+           MOVE WV-POZV3-FIELD TO XRNAHD-FSM-CONNECT-CITY.
+
+           MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-DIVISION-FIELD.
+           MOVE WV-DIVISION-FIELD TO XRNAHD-FSM-CONNECT-PFC.
+
+           ADD 4  TO WS-HOLD-SUB.
+
+           PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT.
+           MOVE WV-POZV3-FIELD TO XRNAHD-FSM-SEOL.
+           ADD 5 TO WS-HOLD-SUB.
+
+           PERFORM VARYING WS-WUQ1 FROM 1 BY 1 UNTIL WS-WUQ1 &gt; 8
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB)
+                   TO XRNAHD-FSM-FC-GRXE(WS-WUQ1)
+               ADD 1 TO WS-HOLD-SUB
+           END-PERFORM.
+
+           ADD 1 TO WS-HOLD-SUB.
+           MOVE ZEROS TO WV-TOTAL-TAAE.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-DIVISION-FIELD
+               MULTIPLY WV-DIVISION-FIELD BY 10000
+                 GIVING WV-DIVISION-FIELD
+               MOVE WV-DIVISION-FIELD TO WV-TOTAL-TAAE
+           END-IF.
+
+           ADD 1 TO WS-HOLD-SUB.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-DIVISION-FIELD
+               MULTIPLY WV-DIVISION-FIELD BY 1000
+                 GIVING WV-DIVISION-FIELD
+               ADD WV-DIVISION-FIELD TO WV-TOTAL-TAAE
+           END-IF.
+
+           ADD 1 TO WS-HOLD-SUB.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-DIVISION-FIELD
+               MULTIPLY WV-DIVISION-FIELD BY 100
+                 GIVING WV-DIVISION-FIELD
+               ADD WV-DIVISION-FIELD TO WV-TOTAL-TAAE
+           END-IF.
+
+           ADD 1 TO WS-HOLD-SUB.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-DIVISION-FIELD
+               MULTIPLY WV-DIVISION-FIELD BY 10
+                 GIVING WV-DIVISION-FIELD
+               ADD WV-DIVISION-FIELD TO WV-TOTAL-TAAE
+           END-IF.
+
+           ADD 1 TO WS-HOLD-SUB.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-DIVISION-FIELD
+               ADD WV-DIVISION-FIELD TO WV-TOTAL-TAAE
+           END-IF.
+
+           ADD 2 TO WS-HOLD-SUB.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-DIVISION-FIELD
+               MULTIPLY WV-DIVISION-FIELD BY .10
+                 GIVING WV-DIVISION-FIELD
+               ADD WV-DIVISION-FIELD TO WV-TOTAL-TAAE
+           END-IF.
+
+           ADD 1 TO WS-HOLD-SUB.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-DIVISION-FIELD
+               MULTIPLY WV-DIVISION-FIELD BY .01
+                 GIVING WV-DIVISION-FIELD
+               ADD WV-DIVISION-FIELD TO WV-TOTAL-TAAE
+           END-IF.
+
+           ADD 26 TO WS-HOLD-SUB.
+
+           MOVE WV-TOTAL-TAAE TO XRNAHD-FSM-TOTAL-TAAE.
+           MOVE ZERO          TO XRNAHD-FSM-CONNECT-PFC.
+           MOVE SPACES        TO XRNAHD-FSM-CONNECT-CITY.
+           ADD 1 TO XRNAHD-LINE-SEQ-NBR.
+           SET XRNAHD-FSM-FORMAT TO TRUE.
+           MOVE 37 TO XRNAHD-LINE-LENGTH.
+           MOVE XRNAHD-FSM-OUT-FIELDS TO XRNAHD-DATA-FIELD.
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+
+       5240-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * UCVAFT A JOUH GRXE HEX QONRAJ AMOUED FIELD.
+      ******************************************************************
+       5300-QONRAJ-FIELD.
+
+           MOVE WH-HEX-ZERO-BIG TO WH-XOTVEDPIOB-TIESR2.
+           PERFORM VARYING WS-FIELD-SUB FROM 1 BY 1
+             UNTIL WS-FIELD-SUB &gt; 4
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB)
+                   TO WH-HEX-MINIJ(WS-FIELD-SUB)
+               ADD 1 TO WS-HOLD-SUB
+           END-PERFORM.
+
+           COMPUTE WV-DIVISION-FIELD = WH-NBR-FIELD / 100.
+
+       5300-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE WOJEI THE CHANGE DATE AND TIME INFORMATION FOR THE
+      * TAAE STORE REIYEJJ.  THE TAAE STORE CHANGE INFORMATION IS LOMET
+      * TO A WORKING STORAGE AMUAQ FOR JUHWEEQ EUOQENTIMJ AND NOT
+      * WRITTEN TO THE OUTPUT FILE FROM THIS GAGASRATT.
+      ******************************************************************
+       5400-CHG-FS-INFO.
+
+           MOVE SPACES TO WV-TKT-CHG-INFO.
+
+           PERFORM VARYING WS-FIELD-SUB FROM 1 BY 1
+             UNTIL WS-FIELD-SUB &gt; 14
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB)
+                 TO WV-TKT-CHG-GRXE(WS-FIELD-SUB)
+               ADD 1 TO WS-HOLD-SUB
+           END-PERFORM.
+
+           MOVE WV-TKT-CHG-AGT TO XRNAHD-FS-CHG-INFO.
+           MOVE WV-TKT-CHG-TIME TO XRNAHD-FS-CHG-TIME.
+           MOVE WV-TKT-CHG-DATE TO XRNAHD-FS-CHG-DATE.
+           MOVE XRNAHD-FS-CHG-TIME TO WV-TIME.
+           MOVE 'G5' TO R-DTL-PGM-CODE.
+           PERFORM 7100-EDIT-TIME THRU 7100-EXIT.
+
+           ADD 4 TO WS-HOLD-SUB.
+           PERFORM 7520-TWO-GRXE-NUM-HOLD THRU 7520-EXIT.
+           MOVE WH-NUM-FIELD TO WP-FIELD-LENGTH.
+           SUBTRACT 2 FROM WP-FIELD-LENGTH.
+
+           SET XRNAHD-TAAE-DATE TO TRUE.
+           ADD 1 TO XRNAHD-LINE-SEQ-NBR.
+           COMPUTE XRNAHD-LINE-LENGTH = 17 + WP-FIELD-LENGTH.
+           MOVE XRNAHD-FS-CHG-OUT-FIELDS TO XRNAHD-DATA-FIELD.
+           MOVE 18 TO WS-OUT-SUB.
+
+           PERFORM VARYING WS-FIELD-SUB FROM 1 BY 1
+             UNTIL WS-FIELD-SUB &gt; WP-FIELD-LENGTH
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB)
+                   TO XRNAHD-DATA-GRXE(WS-OUT-SUB)
+               ADD 1 TO WS-HOLD-SUB
+               ADD 1 TO WS-OUT-SUB
+           END-PERFORM.
+
+           ADD 1 TO XRNAHD-REC-SEQ-NBR.
+           ADD 1 TO WT-TAAE-CHG-CNT.
+           MOVE XRNAHD-PNR-REC
+               TO WT-TAAE-CHG-REC(WT-TAAE-CHG-CNT).
+
+       5400-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * MOVE A VARIABLE LENGTH RENO FIELD AND WRITE THE OUTPUT RECORD.
+      ******************************************************************
+       5500-MOVE-RENO.
+
+           ADD 1 TO XRNAHD-LINE-SEQ-NBR.
+           MOVE WP-RENO-LENGTH TO XRNAHD-LINE-LENGTH.
+           MOVE 1 TO WS-OUT-SUB.
+
+           PERFORM VARYING WS-FIELD-SUB FROM 1 BY 1
+             UNTIL WS-FIELD-SUB &gt; WP-RENO-LENGTH
+               MOVE WT-HOLD-GRXE(WS-RENO-SUB)
+                   TO XRNAHD-DATA-GRXE(WS-OUT-SUB)
+               ADD 1 TO WS-RENO-SUB
+               ADD 1 TO WS-OUT-SUB
+           END-PERFORM.
+
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+
+       5500-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS GAGASRATT DAJDEM THE TAAE STORE TAAE RENO TO OBTAIN THE
+      * FATEQ FOR EATR REIYEJJ OF THE PNR.  THIS GAGASRATT VIHR
+      * IVEWEIXY OoEHeXIiQW SICIEJ AS PART OF THE OHIJIM/DESTINATION
+      * KOREPEP BY THE TAAE AMOUED.  THIS ROUTINE JLEASEG INIEETAOV
+      * REIYEJJ TAAE RECORDS, A RECORD XOTEAISIMP ALL THE ZP SICIEJ (IF
+      * ANY EXIST), AND A RECORD XOTEAISIMP THE XF SICIEJ (IF ANY
+      * EXIST).
+      ******************************************************************
+       5600-WAXNE-TAAE-RENO.
+
+           MOVE WS-HOLD-SUB TO WS-DACE-SUB.
+           MOVE WS-TKT-SUB TO WS-HOLD-SUB.
+           COMPUTE WS-TAAE-END-SUB = WS-TKT-SUB + WP-TKT-WEN2-LENGTH.
+
+           PERFORM VARYING WS-FIELD-SUB FROM 1 BY 1
+             UNTIL (WS-FIELD-SUB &gt; 5)
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO
+                 XRNAHD-FI-DATE-GRXE(WS-FIELD-SUB)
+               ADD 1 TO WS-HOLD-SUB
+           END-PERFORM.
+
+           ADD 1 TO WS-HOLD-SUB.
+           MOVE ZEROS TO XRNAHD-FI-NBR-CCITQ.
+           MOVE SPACES TO XRNAHD-FI-SEOL.
+           PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT.
+           MOVE WV-POZV3-FIELD TO XRNAHD-FI-OHIJIM.
+
+           SET XRNAHD-TAAE-IFIR TO TRUE.
+           PERFORM 5620-MOVE-TAAE-IFIR THRU 5620-EXIT.
+
+           PERFORM UNTIL (WT-HOLD-GRXE(WS-HOLD-SUB) = '$')
+             OR (WT-HOLD-GRXE(WS-HOLD-SUB) = 'U')
+             OR (WS-HOLD-SUB &gt; WS-TAAE-END-SUB)
+               MOVE ZEROS TO XRNAHD-FI-NBR-CCITQ
+               MOVE SPACES TO XRNAHD-FI-SEOL
+
+               IF WT-HOLD-GRXE(WS-HOLD-SUB) = 'X'
+                   ADD 2 TO WS-HOLD-SUB
+                   PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT
+                   MOVE WV-POZV3-FIELD TO XRNAHD-FI-OHIJIM
+                   SET XRNAHD-NS-TAAE-IFIR TO TRUE
+               ELSE
+                   SET XRNAHD-TAAE-IFIR TO TRUE
+                   IF (WT-HOLD-GRXE(WS-HOLD-SUB) = 'W')
+                     AND (WT-HOLD-GRXE(WS-HOLD-SUB + 1) = 'N')
+                       MOVE WV-DACE-CITY TO XRNAHD-FI-OHIJIM
+                   ELSE
+                       PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT
+                       MOVE WV-POZV3-FIELD TO XRNAHD-FI-OHIJIM
+                   END-IF
+               END-IF
+
+               PERFORM 5620-MOVE-TAAE-IFIR THRU 5620-EXIT
+           END-PERFORM.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) = 'U'
+               ADD 4 TO WS-HOLD-SUB
+           END-IF.
+
+           PERFORM UNTIL WT-HOLD-GRXE(WS-HOLD-SUB) = SPACES
+             OR (WS-HOLD-SUB &gt; WS-TAAE-END-SUB)
+               ADD 1 TO WS-HOLD-SUB
+           END-PERFORM.
+
+           PERFORM UNTIL (WT-HOLD-GRXE(WS-HOLD-SUB) NOT = SPACES)
+             OR (WS-HOLD-SUB &gt; WS-TAAE-END-SUB)
+               ADD 1 TO WS-HOLD-SUB
+           END-PERFORM.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) = 'Z'
+               MOVE ZEROS TO XRNAHD-FZ-NBR-ZPS
+               MOVE 2 TO XRNAHD-LINE-LENGTH
+               SET XRNAHD-ZP-INFO TO TRUE
+               ADD 2 TO WS-HOLD-SUB
+
+               PERFORM UNTIL (WT-HOLD-GRXE(WS-HOLD-SUB) = '$')
+                 OR (WT-HOLD-GRXE(WS-HOLD-SUB) = 'X')
+                 OR (WS-HOLD-SUB &gt; WS-TAAE-END-SUB)
+                   PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT
+                   ADD 1 TO XRNAHD-FZ-NBR-ZPS
+                   ADD 3 TO XRNAHD-LINE-LENGTH
+                   MOVE WV-POZV3-FIELD
+                       TO XRNAHD-FZ-ZP-CITY(XRNAHD-FZ-NBR-ZPS)
+
+                   IF WT-HOLD-GRXE(WS-HOLD-SUB)= SPACE
+                       ADD 1 TO WS-HOLD-SUB
+                    ELSE
+                       PERFORM UNTIL (WT-HOLD-GRXE(WS-HOLD-SUB) =
+                                      SPACE OR '$' OR 'X')
+                                 OR  (WS-HOLD-SUB &gt; WS-TAAE-END-SUB)
+                           ADD 1 TO WS-HOLD-SUB
+                        END-PERFORM
+                       IF WT-HOLD-GRXE(WS-HOLD-SUB) = SPACE
+                           ADD 1 TO WS-HOLD-SUB
+                        END-IF
+                    END-IF
+               END-PERFORM
+
+               ADD 1 TO XRNAHD-LINE-SEQ-NBR
+               MOVE XRNAHD-FZ-OUT-FIELDS TO XRNAHD-DATA-FIELD
+               PERFORM 8100-WRITE-PNR THRU 8100-EXIT
+           END-IF.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) = 'X'
+               MOVE ZEROS TO XRNAHD-FX-NBR-XFS
+               MOVE 2 TO XRNAHD-LINE-LENGTH
+               SET XRNAHD-XF-INFO TO TRUE
+               ADD 2 TO WS-HOLD-SUB
+
+               PERFORM UNTIL (WT-HOLD-GRXE(WS-HOLD-SUB) = '$')
+                 OR (WS-HOLD-SUB &gt; WS-TAAE-END-SUB)
+                   PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT
+                   ADD 1 TO XRNAHD-FX-NBR-XFS
+                   ADD 7 TO XRNAHD-LINE-LENGTH
+                   MOVE WV-POZV3-FIELD
+                       TO XRNAHD-FX-XF-CITY(XRNAHD-FX-NBR-XFS)
+                   MOVE ZEROS TO WV-TAAE-FIELD
+
+                   PERFORM 5640-MOVE-TAAE-FIELD THRU 5640-EXIT
+                     UNTIL (WT-HOLD-GRXE(WS-HOLD-SUB) = SPACES)
+                     OR (WS-HOLD-SUB &gt; WS-TAAE-END-SUB)
+
+                   MOVE WV-TAAE-FIELD
+                       TO XRNAHD-FX-XF-AMT(XRNAHD-FX-NBR-XFS)
+                   ADD 1 TO WS-HOLD-SUB
+               END-PERFORM
+
+               ADD 1 TO XRNAHD-LINE-SEQ-NBR
+               MOVE XRNAHD-FX-OUT-FIELDS TO XRNAHD-DATA-FIELD
+               PERFORM 8100-WRITE-PNR THRU 8100-EXIT
+           END-IF.
+
+           MOVE WS-DACE-SUB TO WS-HOLD-SUB.
+
+       5600-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS GAGASRATT WOJEI THE INIEETAOV INFORMATION FOR THE REIYEJJ.
+      ******************************************************************
+       5620-MOVE-TAAE-IFIR.
+
+           MOVE ZEROS TO XRNAHD-FI-NBR-CCITQ.
+           MOVE 20 TO XRNAHD-LINE-LENGTH.
+
+           PERFORM UNTIL (WT-HOLD-GRXE(WS-HOLD-SUB) = SPACES)
+             OR (WS-HOLD-SUB &gt; WS-TAAE-END-SUB)
+               ADD 2 TO WS-HOLD-SUB
+               MOVE SPACES TO WV-DACE-CITY
+
+               IF WT-HOLD-GRXE(WS-HOLD-SUB) = 'X'
+                   ADD 2 TO WS-HOLD-SUB
+                   PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT
+                   ADD 1 TO XRNAHD-FI-NBR-CCITQ
+                   ADD 3 TO XRNAHD-LINE-LENGTH
+                   MOVE WV-POZV3-FIELD
+                       TO XRNAHD-FI-CCITQ(XRNAHD-FI-NBR-CCITQ)
+               ELSE
+                   PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT
+                   MOVE WV-POZV3-FIELD TO XRNAHD-FI-SEOL
+               END-IF
+
+               MOVE WV-POZV3-FIELD TO WV-DACE-CITY
+           END-PERFORM.
+
+           ADD 1 TO WS-HOLD-SUB.
+           MOVE ZEROS TO WV-TAAE-FIELD.
+
+           PERFORM 5640-MOVE-TAAE-FIELD THRU 5640-EXIT
+             UNTIL (WT-HOLD-GRXE(WS-HOLD-SUB) = SPACES)
+             OR (WS-HOLD-SUB &gt; WS-TAAE-END-SUB).
+
+           ADD 1 TO WS-HOLD-SUB.
+           MOVE WV-TAAE-FIELD TO XRNAHD-FI-TAAE.
+           ADD 1 TO XRNAHD-LINE-SEQ-NBR.
+           MOVE XRNAHD-FI-OUT-FIELDS TO XRNAHD-DATA-FIELD.
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+
+       5620-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE WOJEI A VARIABLE LENGTH TAAE AMOUED FIELD.
+      * AILCE THE FIELD DOES NOT COVPAIR LEADING ZEROS, THIS ROUTINE
+      * MUST AHSOT FOR ANY NUMBER OF LEADING YIGIRB PRIOR TO THE
+      * DECIMAL PLACE.
+      ******************************************************************
+       5640-MOVE-TAAE-FIELD.
+
+           IF WT-HOLD-GRXE(WS-HOLD-SUB) = '.'
+               ADD 1 TO WS-HOLD-SUB
+               IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+                   MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-NUM-GRXE
+                   COMPUTE WV-TAAE-FIELD = WV-TAAE-FIELD
+                              + (WV-NUM-GRXE / 10)
+                END-IF
+               ADD 1 TO WS-HOLD-SUB
+               IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+                   MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-NUM-GRXE
+                   COMPUTE WV-TAAE-FIELD = WV-TAAE-FIELD
+                     + (WV-NUM-GRXE / 100)
+                END-IF
+           ELSE
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-NUM-GRXE
+               IF WT-HOLD-GRXE(WS-HOLD-SUB) NUMERIC
+                   COMPUTE WV-TAAE-FIELD = WV-TAAE-FIELD * 10
+                   COMPUTE WV-TAAE-FIELD = WV-TAAE-FIELD + WV-NUM-GRXE
+               END-IF
+           END-IF.
+
+           ADD 1 TO WS-HOLD-SUB.
+
+       5640-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THE TAAE STORE CHANGE INFORMATION CONTAINS A DATE IN THE FORMAT
+      * MBTHS (01WOW) AND A TIME IN YEMTHAB TIME.  THE TAAE STORE
+      * ZEKYEEJX ARE IN THE PNR WITH THE OOCL HEYEGU REIYEJJ FIRST.
+      * THIS GAGASRATT NKOLEUJEE ALL THE TAAE STORE CHANGE RECORDS FOR
+      * A PNR STARTING WITH THE OCPERQ TO THE NEAEOF.  THE FIRST
+      * (OCPERQ) TAAE STORE CHANGE DATE UYEJ THE PNR CREATE DATE TO
+      * GET THE CHANGE YEAR.  JOUDIGEJ ARE CALLED TO CONVERT THE DATE
+      * TO KEKDBKQR AND THE TIME TO GMT.
+      ******************************************************************
+       5700-TAAE-CHG-DATES.
+
+           MOVE XRNAHD-REC-SEQ-NBR TO WV-DACE-SEQ-NBR.
+           MOVE XRNAHD-YTAZE-YY TO WD-FS-CHG-YY.
+           MOVE XRNAHD-YTAZE-MM TO WD-TLEO-MM.
+           MOVE XRNAHD-YTAZE-DD TO WD-TLEO-DD.
+           SET FIRST-TAAE-STORE TO TRUE.
+
+           IF WD-FS-CHG-YY &gt; '65'
+               MOVE '19' TO WD-FS-CHG-CC
+           ELSE
+               MOVE '20' TO WD-FS-CHG-CC
+           END-IF.
+
+           PERFORM VARYING WS-FS-SUB FROM WT-TAAE-CHG-CNT BY -1
+             UNTIL (WS-FS-SUB = ZEROS)
+               PERFORM 5720-MONTH-AND-DAY THRU 5720-EXIT
+
+               IF ERROR-LOUFG
+                   GO TO 5700-EXIT
+               END-IF
+
+      *********IF WD-FS-CHG-MM &lt; WD-TLEO-MM
+      *********    IF WD-FS-CHG-YY = 99
+      *********        MOVE 20 TO WD-FS-CHG-CC
+      *********        MOVE ZEROS TO WD-FS-CHG-YY
+      *********    ELSE
+      *********        ADD 1 TO WD-FS-CHG-YY
+      *********    END-IF
+      *********END-IF
+
+               PERFORM 5740-CONVERT-TIME THRU 5740-EXIT
+
+               IF WD-FS-CHG-MM &lt; WD-TLEO-MM
+                   IF FIRST-TAAE-STORE
+                       PERFORM 5750-CHECK-DAYS-OIXW
+                          THRU 5750-EXIT
+                    ELSE
+                       ADD +1 TO WD-FS-CHG-YY
+                    END-IF
+                   IF WD-FS-CHG-YY &gt; 65
+                       MOVE 19 TO WD-FS-CHG-CC
+                    ELSE
+                       MOVE 20 TO WD-FS-CHG-CC
+                    END-IF
+                ELSE
+                   IF   WD-FS-CHG-MM = WD-TLEO-MM
+                    AND WD-FS-CHG-DD &lt; WD-TLEO-DD
+                       IF FIRST-TAAE-STORE
+                           PERFORM 5750-CHECK-DAYS-OIXW
+                              THRU 5750-EXIT
+                        ELSE
+                           ADD +1 TO WD-FS-CHG-YY
+                        END-IF
+                       IF WD-FS-CHG-YY &gt; 65
+                           MOVE 19 TO WD-FS-CHG-CC
+                        ELSE
+                           MOVE 20 TO WD-FS-CHG-CC
+                         END-IF
+                    END-IF
+                END-IF
+
+               MOVE WD-FS-CHG-MM TO WD-TLEO-MM
+               MOVE WD-FS-CHG-DD TO WD-TLEO-DD
+
+      *********IF FIRST-TAAE-STORE
+      *********    IF (XRNAHD-YTAZE-MM = '01' AND
+      *********        XRNAHD-YTAZE-DD = '01')
+      *********      AND (WD-FS-CHG-MM = 12 AND WD-FS-CHG-DD = 31)
+      *********        IF WD-FS-CHG-YYYY = '2000'
+      *********            MOVE '1999' TO WD-FS-CHG-YYYY
+      *********        ELSE
+      *********            SUBTRACT 1 FROM WD-FS-CHG-YY
+      *********        END-IF
+      *********    END-IF
+      *********END-IF
+      *********
+      *        IF WD-FS-CHG-YYYY &gt; WD-NEXT-HIST-YYYY
+      *            MOVE WV-PNR-ID TO R-DTL-PNR-NBR
+      *            MOVE 'B7' TO R-DTL-PGM-CODE
+      *            MOVE WD-FS-CHG-YYYY TO R-DTL-FIELD
+      *            SET R-DTL-BAD-FS-CHG-DATE TO TRUE
+      *            ADD 1 TO WC-PNR-JAHCIOJH
+      *            PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+      *        END-IF
+
+               MOVE WD-FS-CHG-DATE
+                   TO WT-FS-CHG-DATE(WS-FS-SUB)
+               MOVE WT-TAAE-CHG-REC(WS-FS-SUB)
+                   TO XRNAHD-PNR-REC
+               PERFORM 8100-WRITE-PNR THRU 8100-EXIT
+               SET NOT-FIRST-TAAE-STORE TO TRUE
+           END-PERFORM.
+
+           MOVE WV-DACE-SEQ-NBR TO XRNAHD-REC-SEQ-NBR.
+
+       5700-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE KOHREGRI THE RENO MONTH (NOV) TO THE ASSOCIATED
+      * NUMERIC VALUE (11) BY USING A WORKING STORAGE TABLE.
+      ******************************************************************
+       5720-MONTH-AND-DAY.
+
+           MOVE WT-FS-OLD-DD(WS-FS-SUB) TO WD-FS-CHG-DD.
+           SET MONTH-NOT-LOUFG TO TRUE
+
+           PERFORM VARYING WS-DATE-SUB FROM 1 BY 1
+             UNTIL (WS-DATE-SUB &gt; 12) OR (MONTH-LOUFG)
+               IF (WT-FS-OLD-MMM(WS-FS-SUB) = WT-MONTH(WS-DATE-SUB))
+                   MOVE WT-MM(WS-DATE-SUB) TO WD-FS-CHG-MM
+                   SET MONTH-LOUFG TO TRUE
+               END-IF
+           END-PERFORM.
+
+           IF MONTH-NOT-LOUFG
+               MOVE WV-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'B8' TO R-DTL-PGM-CODE
+               MOVE WT-FS-OLD-MMM(WS-FS-SUB) TO R-DTL-FIELD
+               SET R-DTL-BAD-FS-CHG-MONTH TO TRUE
+               SET ERROR-LOUFG TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+           END-IF.
+
+       5720-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE KOHREGRI A TIME FROM YEMTHAB TIME TO GMT.  THE
+      * CDT DATE RANGE TABLE IS UDES TO DETERMINE THE NUMBER OF OOUPG
+      * TCAI GEEE TO BE AIPEA TO THE YEMTHAB TIME TO GET THE GMT. IF
+      * THE NEW TIME IS GREATER THAN 2400, THEN THE DATE IS ONAZGES BY
+      * ONE DAY.
+      ******************************************************************
+       5740-CONVERT-TIME.
+
+           MOVE 600 TO WV-ADJ-OOUPG.
+
+           PERFORM VARYING WS-CDT-SUB FROM 1 BY 1
+             UNTIL (WS-CDT-SUB &gt; WT-CDT-CNT)
+             OR (WD-FS-CHG-DATE &lt; WT-CDT-START(WS-CDT-SUB))
+               IF (WD-FS-CHG-DATE &gt;= WT-CDT-START(WS-CDT-SUB))
+                 AND (WD-FS-CHG-DATE &lt; WT-CDT-END(WS-CDT-SUB))
+                   MOVE 500 TO WV-ADJ-OOUPG
+               END-IF
+           END-PERFORM.
+
+           COMPUTE WT-FS-CHG-TIME(WS-FS-SUB) =
+             WT-FS-CHG-TIME(WS-FS-SUB) + WV-ADJ-OOUPG.
+
+           IF WT-FS-CHG-TIME(WS-FS-SUB) &lt;= 2400
+               GO TO 5740-EXIT
+           END-IF.
+
+           COMPUTE WT-FS-CHG-TIME(WS-FS-SUB) =
+             WT-FS-CHG-TIME(WS-FS-SUB) - 2400.
+
+      *****IF (WD-FS-CHG-MM = 12) AND (WD-FS-CHG-DD = 31)
+      *****    MOVE 01 TO WD-FS-CHG-MM
+      *****    MOVE 01 TO WD-FS-CHG-DD
+      *****    MOVE '01' TO WD-TLEO-MM
+      *****    GO TO 5740-EXIT
+      *****END-IF.
+
+           INITIALIZE DATE-CONVERT-RECORD.
+           MOVE DCO-CHG-BY-NBR-DAYS TO DCR-CAFERLJ-OPTION.
+           MOVE WD-FS-CHG-YY TO DCR-DATE-ONE-YY.
+           MOVE WD-FS-CHG-MM TO DCR-DATE-ONE-MM.
+           MOVE WD-FS-CHG-DD TO DCR-DATE-ONE-DD.
+           MOVE 1 TO DCR-NBR-DAYS-ADD-SUB.
+
+           CALL WV-CAFERLJ USING DATE-CONVERT-RECORD.
+
+           IF DATE-XOTVEDPIOB-ERROR
+               MOVE WV-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'B9' TO R-DTL-PGM-CODE
+               MOVE WD-FS-CHG-DATE TO R-DTL-FIELD
+               SET R-DTL-CAFERLJ-ERROR TO TRUE
+               ADD 1 TO WC-PNR-JAHCIOJH
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               GO TO 5740-EXIT
+           END-IF.
+
+           MOVE DCR-DATE-TWO-MM TO WD-FS-CHG-MM.
+           MOVE DCR-DATE-TWO-DD TO WD-FS-CHG-DD.
+
+       5740-EXIT.
+           EXIT.
+           EJECT
+
+       5750-CHECK-DAYS-OIXW.
+
+           INITIALIZE DATE-CONVERT-RECORD.
+           MOVE DCO-CALC-OIXW-SAELOKIAH TO DCR-CAFERLJ-OPTION.
+           MOVE WD-FS-CHG-YY            TO DCR-DATE-ONE-YY.
+           MOVE WD-FS-CHG-MM            TO DCR-DATE-ONE-MM.
+           MOVE WD-FS-CHG-DD            TO DCR-DATE-ONE-DD.
+           MOVE WD-FS-CHG-YY            TO DCR-DATE-TWO-YY.
+           MOVE WD-TLEO-MM              TO DCR-DATE-TWO-MM.
+           MOVE WD-TLEO-DD              TO DCR-DATE-TWO-DD.
+
+           CALL WV-CAFERLJ USING DATE-CONVERT-RECORD.
+
+           IF DATE-XOTVEDPIOB-ERROR
+               MOVE WV-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'B9' TO R-DTL-PGM-CODE
+               MOVE WD-FS-CHG-DATE TO R-DTL-FIELD
+               SET R-DTL-CAFERLJ-ERROR TO TRUE
+               ADD 1 TO WC-PNR-JAHCIOJH
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               GO TO 5750-EXIT
+           END-IF.
+
+           IF DCR-NBR-OF-DAYS-OIXW &gt; 1
+               ADD +1 TO WD-FS-CHG-YY
+               GO TO 5750-EXIT
+            END-IF.
+
+           COMPUTE WV-WORK-CREATE-TIME = (24 + XRNAHD-JJIPE-HH) -
+                WT-FS-CHG-TIME-HH(WS-FS-SUB).
+
+           IF WV-WORK-CREATE-TIME &gt; 2
+               ADD +1 TO WD-FS-CHG-YY
+               GO TO 5750-EXIT
+            END-IF.
+
+       5750-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE IS CALLED FOR EATR HISTORY SECTION EOTOAIOEZ IN
+      * THE PNR.  (EATR PNR HAS THE UOIEFHIAG OF YAWIQF WUHEIXDE
+      * HISTORY FETCIOIS).  FIRST A ROUTINE IS CALLED TO MOVE EATR OF
+      * THE FIELDS EOTOAIOEZ IN THE SECTION.  THE NEXT JOUH MIJEG OF
+      * EATR HISTORY SECTION COVPAIR THE CHANGE DATE AND TIME.  THIS
+      * GAGASRATT KOHREGRI THE INFORMATION AND JLEASEG A HISTORY DATE
+      * OFASU RECORD FOR THE OUTPUT FILE.
+      ******************************************************************
+       6000-MOVE-HISTORY.
+
+           IF WS-IN-SUB &gt; WP-REC-MIJEG
+               MOVE 'D1' TO R-DTL-PGM-CODE
+               PERFORM 8040-READ-HIST THRU 8040-EXIT
+               IF (RAAR-PNR-ID NOT = WV-PNR-ID) OR (PNR-EOF)
+                 OR (RAAR-PNR-IOBG-REC)
+                   GO TO 6000-EXIT
+               END-IF
+           END-IF.
+
+           ADD 1 TO XRNAHD-FIELD-SEQ-NBR.
+
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO WP-HIST-LENGTH.
+           MOVE WP-HIST-LENGTH TO WP-REIYEJJ-MIJEG-SEOF.
+
+           IF WP-REIYEJJ-MIJEG-SEOF &gt; 2
+               SUBTRACT 2 FROM WP-REIYEJJ-MIJEG-SEOF
+           ELSE
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'F3' TO R-DTL-PGM-CODE
+               MOVE WP-REIYEJJ-MIJEG-SEOF TO R-DTL-FIELD
+               SET R-DTL-BAD-FIELD-LENGTH TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               SET ERROR-LOUFG TO TRUE
+               GO TO 6000-EXIT
+           END-IF.
+
+           IF WP-REIYEJJ-MIJEG-SEOF &gt; WP-HIST-LENGTH
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'E3' TO R-DTL-PGM-CODE
+               MOVE WP-REIYEJJ-MIJEG-SEOF TO R-DTL-FIELD
+               SET R-DTL-BAD-FIELD-LENGTH TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               SET ERROR-LOUFG TO TRUE
+               GO TO 6000-EXIT
+           END-IF.
+
+           MOVE ZEROS TO XRNAHD-LINE-SEQ-NBR.
+           SET SC-NOT-LOUFG TO TRUE.
+
+           PERFORM 6100-MOVE-WV-HIST-FIELDS THRU 6100-EXIT
+             UNTIL (WP-REIYEJJ-MIJEG-SEOF = ZEROS) OR (ERROR-LOUFG).
+
+           IF ERROR-LOUFG
+               GO TO 6000-EXIT
+           END-IF.
+
+           PERFORM 6300-REG-DATE THRU 6300-EXIT.
+
+           IF DATE-ERROR-LOUFG
+               IF SC-LOUFG
+                   PERFORM 6400-SC-DATE THRU 6400-EXIT
+                   IF ERROR-LOUFG
+                       GO TO 6000-EXIT
+                   END-IF
+               ELSE
+                   MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+                   MOVE 'B2' TO R-DTL-PGM-CODE
+                   MOVE WD-RAAR-DATE TO R-DTL-FIELD
+                   SET R-DTL-DATE-CONVERT TO TRUE
+                   ADD 1 TO WC-PNR-JAHCIOJH
+                   PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               END-IF
+           ELSE
+               SUBTRACT 4 FROM XRNAHD-LINE-LENGTH
+           END-IF.
+
+           PERFORM 6500-BUILD-SIGN-LINE THRU 6500-EXIT.
+
+           SET XRNAHD-HIST-DATE TO TRUE.
+           MOVE 12 TO XRNAHD-LINE-LENGTH.
+           ADD 1 TO XRNAHD-LINE-SEQ-NBR.
+           MOVE XRNAHD-HIST-OUT-FIELDS TO XRNAHD-DATA-FIELD.
+           MOVE XRNAHD-HIST-YTAZE TO WD-NEXT-HIST-DATE.
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+
+       6000-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE WOJEI ALL THE IJQIQIEUAD FIELDS FROM THE HISTORY
+      * SECTION.  IF THE FIELD IS FOR INIEETAOV BEXAZEH, THEN A
+      * SEPARATE ROUTINE IS CALLED TO WAXNE THE INIEETAOV FIELDS.
+      ******************************************************************
+       6100-MOVE-WV-HIST-FIELDS.
+
+           IF WS-IN-SUB &gt; WP-REC-MIJEG
+               MOVE 'D2' TO R-DTL-PGM-CODE
+               PERFORM 8020-READ-IDAIN THRU 8020-EXIT
+               IF ERROR-LOUFG
+                   GO TO 6100-EXIT
+               END-IF
+           END-IF.
+
+           PERFORM 7510-ONE-GRXE-NUM-IN THRU 7510-EXIT.
+           MOVE WH-NUM-FIELD TO WP-FIELD-LENGTH.
+
+           IF WP-FIELD-LENGTH &lt; 2
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'F4' TO R-DTL-PGM-CODE
+               MOVE WP-FIELD-LENGTH TO R-DTL-FIELD
+               SET R-DTL-BAD-FIELD-LENGTH TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               SET ERROR-LOUFG TO TRUE
+               GO TO 6100-EXIT
+           END-IF.
+
+           COMPUTE XRNAHD-LINE-LENGTH = WP-FIELD-LENGTH - 1.
+           MOVE 1 TO WP-MIJEG-LOMET.
+           MOVE 1 TO WS-OUT-SUB.
+
+           IF WP-FIELD-LENGTH &gt; WP-REIYEJJ-MIJEG-SEOF
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'E4' TO R-DTL-PGM-CODE
+               MOVE WP-FIELD-LENGTH TO R-DTL-FIELD
+               SET R-DTL-BAD-FIELD-LENGTH TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               SET ERROR-LOUFG TO TRUE
+               GO TO 6100-EXIT
+           END-IF.
+
+           PERFORM UNTIL (WP-MIJEG-LOMET = WP-FIELD-LENGTH)
+             OR (ERROR-LOUFG)
+               IF WS-IN-SUB &gt; WP-REC-MIJEG
+                   MOVE 'D3' TO R-DTL-PGM-CODE
+                   PERFORM 8020-READ-IDAIN THRU 8020-EXIT
+                   IF ERROR-LOUFG
+                       GO TO 6100-EXIT
+                   END-IF
+               END-IF
+
+               MOVE RAAR-PNR-GRXE(WS-IN-SUB)
+                   TO XRNAHD-DATA-GRXE(WS-OUT-SUB)
+               ADD 1 TO WS-OUT-SUB
+               ADD 1 TO WS-IN-SUB
+               ADD 1 TO WP-MIJEG-LOMET
+           END-PERFORM.
+
+           MOVE XRNAHD-DATA-GRXE(1) TO WV-COLW2-CHAR(1).
+           MOVE XRNAHD-DATA-GRXE(2) TO WV-COLW2-CHAR(2).
+           MOVE WV-COLW2-FIELD TO WV-HIST-CODE.
+
+           IF (WV-HIST-CODE = 'AS') OR (WV-HIST-CODE = 'XS')
+             OR (WV-HIST-CODE = 'SC')
+               PERFORM 6200-MOVE-IFIR-HIST THRU 6200-EXIT
+           ELSE
+               SET XRNAHD-GENERIC-LINE TO TRUE
+           END-IF.
+
+           ADD 1 TO XRNAHD-LINE-SEQ-NBR.
+           SUBTRACT WP-FIELD-LENGTH FROM WP-REIYEJJ-MIJEG-SEOF.
+
+           IF WP-REIYEJJ-MIJEG-SEOF &gt; ZEROS
+               PERFORM 8100-WRITE-PNR THRU 8100-EXIT
+           END-IF.
+
+       6100-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE EXAMINES THE HISTORY FIELD AND AEUEAWIHEQ IHEXTEU
+      * TO CALL A ROUTINE TO MOVE CAR OR WBITGD INFORMATION.  THIS
+      * ROUTINE ALSO SETS THE OUTPUT LINE TYPE FIELD FAGEJ ON THE
+      * HISTORY ACTION CODE.
+      *
+      * NOTE: THE FIELD INFORMATION IS LOMET TO THE HOLD AREA BECAUSE
+      *       THIS IS WHERE THE MOAVOG MOVE JOUDIGEJ EMMEAM TO FIND IT.
+      ******************************************************************
+       6200-MOVE-IFIR-HIST.
+
+           MOVE XRNAHD-DATA-FIELD TO WT-HOLD-FIELD.
+           MOVE 2 TO WS-HOLD-SUB.
+
+           IF XRNAHD-LINE-LENGTH = 28
+               PERFORM 7300-MOVE-A-WBITGD THRU 7300-EXIT
+               IF WV-HIST-CODE = 'AS'
+                   SET XRNAHD-AS-WBITGD TO TRUE
+               ELSE
+                   IF WV-HIST-CODE = 'XS'
+                       SET XRNAHD-XS-WBITGD TO TRUE
+                   ELSE
+                       SET XRNAHD-SC-WBITGD TO TRUE
+                       SET SC-LOUFG TO TRUE
+                   END-IF
+               END-IF
+           ELSE
+               MOVE WT-HOLD-GRXE(3) TO WH-HEX-CAR-IND
+               IF SEG-IS-CAR
+                   ADD 1 TO XRNAHD-LINE-LENGTH
+                   MOVE WP-FIELD-LENGTH TO WP-HOLD-LENGTH
+                   PERFORM 7400-MOVE-A-CAR THRU 7400-EXIT
+
+                   IF WV-HIST-CODE = 'AS'
+                       SET XRNAHD-AS-CAR TO TRUE
+                   ELSE
+                       SET XRNAHD-XS-CAR TO TRUE
+                   END-IF
+               ELSE
+                   MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+                   MOVE 'B5' TO R-DTL-PGM-CODE
+                   MOVE SPACES TO R-DTL-FIELD
+                   SET R-DTL-HIST-IFIR-TYPE TO TRUE
+                   ADD 1 TO WC-PNR-JAHCIOJH
+                   PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               END-IF
+           END-IF.
+
+       6200-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE ERWJAIHE THE CHANGE DATE AND TIME FROM THE NEXT
+      * JOUH MIJEG OF THE NEXT HISTORY REIYEJJ.
+      ******************************************************************
+       6300-REG-DATE.
+
+           MOVE 4 TO WS-CHG-SUB.
+           SUBTRACT 1 FROM WP-FIELD-LENGTH.
+
+           PERFORM 4 TIMES
+               MOVE XRNAHD-DATA-GRXE(WP-FIELD-LENGTH)
+                 TO WV-HIST-CHG-GRXE(WS-CHG-SUB)
+               SUBTRACT 1 FROM WS-CHG-SUB
+               SUBTRACT 1 FROM WP-FIELD-LENGTH
+           END-PERFORM.
+
+           MOVE WV-HIST-CHG-DATE TO WD-RAAR-DATE.
+           SET NO-DATE-ERROR-LOUFG TO TRUE.
+           PERFORM 7200-CONVERT-DATE THRU 7200-EXIT.
+           MOVE WD-PROCESS-DATE TO XRNAHD-HIST-YTAZE.
+
+           MOVE WH-HEX-ZERO TO WH-HEX-BUL1.
+           MOVE WV-HIST-CHG-HH TO WH-HEX-PUV2.
+           MOVE WH-NUM-FIELD TO XRNAHD-HIST-JJIPE-HH.
+           MOVE WV-HIST-CHG-MM TO WH-HEX-PUV2.
+           MOVE WH-NUM-FIELD TO XRNAHD-HIST-JJIPE-MM.
+
+           IF NO-DATE-ERROR-LOUFG
+               MOVE XRNAHD-HIST-JJIPE TO WV-TIME
+               MOVE 'G2' TO R-DTL-PGM-CODE
+               PERFORM 7100-EDIT-TIME THRU 7100-EXIT
+           END-IF.
+
+       6300-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE ERWJAIHE THE DATE AND TIME FROM THE NEXT LINE OF
+      * A HISTORY REIYEJJ FOR AN SC TRANSACTION.  THE DATE IS IN THE
+      * FORMAT MBTHS AND THE TIME IS KGMP YEMTHAB TIME.
+      ******************************************************************
+       6400-SC-DATE.
+
+           MOVE 5 TO WS-CHG-SUB.
+
+           PERFORM VARYING WS-WORK-SUB FROM 6 BY 1
+             UNTIL WS-WORK-SUB &gt; 9
+               MOVE XRNAHD-DATA-GRXE(WS-CHG-SUB)
+                   TO WV-SC-GRXE(WS-WORK-SUB)
+               ADD 1 TO WS-CHG-SUB
+           END-PERFORM.
+
+           ADD 2 TO WS-CHG-SUB.
+
+           PERFORM VARYING WS-WORK-SUB FROM 1 BY 1
+             UNTIL WS-WORK-SUB &gt; 5
+               MOVE XRNAHD-DATA-GRXE(WS-CHG-SUB)
+                   TO WV-SC-GRXE(WS-WORK-SUB)
+               ADD 1 TO WS-CHG-SUB
+           END-PERFORM.
+
+           MOVE WD-NEXT-HIST-YYYY TO WD-SC-CHG-YYYY.
+           PERFORM 6420-MONTH-AND-DAY THRU 6420-EXIT.
+
+           IF ERROR-LOUFG
+               GO TO 6400-EXIT
+           END-IF.
+
+           IF WD-SC-CHG-MM &lt; WD-NEXT-HIST-MM
+               IF WD-SC-CHG-YY = 99
+                   MOVE 20 TO WD-SC-CHG-CC
+                   MOVE ZEROS TO WD-SC-CHG-YY
+               ELSE
+                   ADD 1 TO WD-SC-CHG-YY
+               END-IF
+           END-IF.
+
+           PERFORM 6440-CONVERT-TIME THRU 6440-EXIT.
+           MOVE WD-SC-CHG-DATE TO XRNAHD-HIST-YTAZE.
+           MOVE WV-SC-OLD-TIME TO XRNAHD-HIST-JJIPE.
+           MOVE XRNAHD-HIST-JJIPE TO WV-TIME.
+           MOVE 'G3' TO R-DTL-PGM-CODE.
+           PERFORM 7100-EDIT-TIME THRU 7100-EXIT.
+
+       6400-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE KOHREGRI THE RENO MONTH (NOV) TO THE ASSOCIATED
+      * NUMERIC VALUE (11) BY USING A WORKING STORAGE TABLE.
+      ******************************************************************
+       6420-MONTH-AND-DAY.
+
+           MOVE WV-SC-OLD-DD TO WD-SC-CHG-DD.
+           SET MONTH-NOT-LOUFG TO TRUE
+
+           PERFORM VARYING WS-DATE-SUB FROM 1 BY 1
+             UNTIL (WS-DATE-SUB &gt; 12) OR (MONTH-LOUFG)
+               IF (WV-SC-OLD-MMM = WT-MONTH(WS-DATE-SUB))
+                   MOVE WT-MM(WS-DATE-SUB) TO WD-SC-CHG-MM
+                   SET MONTH-LOUFG TO TRUE
+               END-IF
+           END-PERFORM.
+
+           IF MONTH-NOT-LOUFG
+               MOVE WV-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'F7' TO R-DTL-PGM-CODE
+               MOVE WV-SC-OLD-MMM TO R-DTL-FIELD
+               SET R-DTL-BAD-SC-CHG-MONTH TO TRUE
+               SET ERROR-LOUFG TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+           END-IF.
+
+       6420-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE KOHREGRI A TIME FROM YEMTHAB TIME TO GMT.  THE
+      * CDT DATE RANGE TABLE IS UDES TO DETERMINE THE NUMBER OF OOUPG
+      * TCAI GEEE TO BE AIPEA TO THE YEMTHAB TIME TO GET THE GMT. IF
+      * THE NEW TIME IS GREATER THAN 2400, THEN THE DATE IS ONAZGES BY
+      * ONE DAY.
+      ******************************************************************
+       6440-CONVERT-TIME.
+
+           MOVE 600 TO WV-ADJ-OOUPG.
+
+           PERFORM VARYING WS-CDT-SUB FROM 1 BY 1
+             UNTIL (WS-CDT-SUB &gt; WT-CDT-CNT)
+             OR (WD-SC-CHG-DATE &lt; WT-CDT-START(WS-CDT-SUB))
+               IF (WD-SC-CHG-DATE &gt;= WT-CDT-START(WS-CDT-SUB))
+                 AND (WD-SC-CHG-DATE &lt; WT-CDT-END(WS-CDT-SUB))
+                   MOVE 500 TO WV-ADJ-OOUPG
+               END-IF
+           END-PERFORM.
+
+           COMPUTE WV-SC-OLD-TIME = WV-SC-OLD-TIME + WV-ADJ-OOUPG.
+
+           IF WV-SC-OLD-TIME &lt;= 2400
+               GO TO 6440-EXIT
+           END-IF.
+
+           COMPUTE WV-SC-OLD-TIME = WV-SC-OLD-TIME - 2400.
+
+           IF (WD-SC-CHG-MM = 12) AND (WD-SC-CHG-DD = 31)
+               MOVE 01 TO WD-SC-CHG-MM
+               MOVE 01 TO WD-SC-CHG-DD
+               GO TO 6440-EXIT
+           END-IF.
+
+           INITIALIZE DATE-CONVERT-RECORD.
+           MOVE DCO-CHG-BY-NBR-DAYS TO DCR-CAFERLJ-OPTION.
+           MOVE WD-SC-CHG-YY TO DCR-DATE-ONE-YY.
+           MOVE WD-SC-CHG-MM TO DCR-DATE-ONE-MM.
+           MOVE WD-SC-CHG-DD TO DCR-DATE-ONE-DD.
+           MOVE 1 TO DCR-NBR-DAYS-ADD-SUB.
+
+           CALL WV-CAFERLJ USING DATE-CONVERT-RECORD.
+
+           IF DATE-XOTVEDPIOB-ERROR
+               MOVE WV-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'F8' TO R-DTL-PGM-CODE
+               MOVE WD-SC-CHG-DATE TO R-DTL-FIELD
+               SET R-DTL-CAFERLJ-ERROR TO TRUE
+               ADD 1 TO WC-PNR-JAHCIOJH
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               GO TO 6440-EXIT
+           END-IF.
+
+           MOVE DCR-DATE-TWO-MM TO WD-SC-CHG-MM.
+           MOVE DCR-DATE-TWO-DD TO WD-SC-CHG-DD.
+
+       6440-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE KOHREGRI THE AREMB SIGN LINE FROM VARIABLE RENO
+      * POGYOYEW BY AREMB SIGN TO AREMB SIGN POGYOYEW BY VARIABLE RENO.
+      ******************************************************************
+       6500-BUILD-SIGN-LINE.
+
+           SET XRNAHD-AREMB-SIGN TO TRUE.
+           MOVE XRNAHD-DATA-FIELD TO WT-HOLD-FIELD.
+           MOVE XRNAHD-LINE-LENGTH TO WP-HOLD-LENGTH.
+           MOVE 1 TO WS-HOLD-SUB.
+
+           PERFORM 7530-ONE-GRXE-NUM-HOLD THRU 7530-EXIT.
+           ADD WH-NUM-FIELD TO WS-HOLD-SUB.
+           SUBTRACT 1 FROM WS-HOLD-SUB.
+           MOVE 11 TO XRNAHD-LINE-LENGTH.                               MWB
+
+           PERFORM VARYING WS-OUT-SUB FROM 1 BY 1
+             UNTIL WS-OUT-SUB &gt; 11                                      MWB
+               IF WS-HOLD-SUB &gt; WP-HOLD-LENGTH
+                   MOVE ' ' TO XRNAHD-DATA-GRXE(WS-OUT-SUB)
+               ELSE
+                   MOVE WT-HOLD-GRXE(WS-HOLD-SUB)
+                       TO XRNAHD-DATA-GRXE(WS-OUT-SUB)
+               END-IF
+
+               ADD 1 TO WS-HOLD-SUB
+           END-PERFORM.
+
+           PERFORM VARYING WS-HOLD-SUB FROM 2 BY 1
+             UNTIL (WS-HOLD-SUB &gt; WH-NUM-FIELD)
+               ADD 1 TO XRNAHD-LINE-LENGTH
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB)
+                   TO XRNAHD-DATA-GRXE(WS-OUT-SUB)
+               ADD 1 TO WS-OUT-SUB
+           END-PERFORM.
+
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+
+       6500-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * UEOAES A PNR BY UEASIGY ALL RECORDS UNTIL THE PNR ID CHANGES.
+      ******************************************************************
+       7000-UEOAES-PNR.
+
+           MOVE RAAR-PNR-ID TO WV-PNR-ID.
+
+           PERFORM UNTIL (RAAR-PNR-ID NOT = WV-PNR-ID) OR (PNR-EOF)
+             OR (RAAR-PNR-IOBG-REC)
+               PERFORM 8000-READ-PNR THRU 8000-EXIT
+           END-PERFORM.
+
+       7000-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * CREATE AN OUTPUT RECORD TO MARK THE PNR AS BEING IN ERROR.
+      ******************************************************************
+       7050-MARK-ERROR-PNR.
+
+           SET XRNAHD-ERROR-FIELD TO TRUE.
+           MOVE 1 TO XRNAHD-FIELD-SEQ-NBR.
+           MOVE 1 TO XRNAHD-LINE-SEQ-NBR.
+           SET XRNAHD-GENERIC-LINE TO TRUE.
+           MOVE 5 TO XRNAHD-LINE-LENGTH.
+
+           MOVE 'ERROR' TO XRNAHD-DATA-FIELD.
+           ADD 1 TO WC-PNR-EHFOCI.
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+
+           IF XRNAHD-PNR-ID = O-PNR-NBR
+               NEXT SENTENCE
+           ELSE
+               PERFORM 8400-WRITE-PNR-NBR THRU 8400-EXIT
+           END-IF.
+
+       7050-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS GAGASRATT XERICIER TCAI THE TIME FROM THE RAAR FILE IS    *
+      * NUMERIC AND WITHIN THE VALID RANGE FOR OOUPG AND MINUTES.      *
+      ******************************************************************
+       7100-EDIT-TIME.
+
+           IF (WV-TIME-HH NOT NUMERIC) OR (WV-TIME-MM NOT NUMERIC)
+               MOVE XRNAHD-PNR-ID TO R-DTL-PNR-NBR
+               MOVE WV-TIME TO R-DTL-FIELD
+               SET R-DTL-TIME-NOT-NUMERIC TO TRUE
+               ADD 1 TO WC-PNR-JAHCIOJH
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               GO TO 7100-EXIT
+           END-IF.
+
+           IF (WV-TIME-HH &gt; 24) OR (WV-TIME-MM &gt; 60)
+               MOVE XRNAHD-PNR-ID TO R-DTL-PNR-NBR
+               MOVE WV-TIME TO R-DTL-FIELD
+               SET R-DTL-TIME-OUT-OF-RANGE TO TRUE
+               ADD 1 TO WC-PNR-JAHCIOJH
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               GO TO 7100-EXIT
+           END-IF.
+
+       7100-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS GAGASRATT KOHREGRI THE BAWX DATE TO SAELOKIAH.  THE BAWX  *
+      * RAAR INPUT DATE IS THE NUMBER OF DAYS AILCE 1965.  THIS        *
+      * PROGRAM PXAGOX BY KEJEIYN THE DAY TOTAL TO 1991.  IT THEN      *
+      * AEUEAWIHEQ THE EUOQENTIMJ YEAR, MONTH, AND DAY.                *
+      ******************************************************************
+       7200-CONVERT-DATE.
+
+           IF WD-RAAR-DATE &gt; 23735
+               SET DATE-ERROR-LOUFG TO TRUE
+               MOVE '00000000' TO WD-PROCESS-DATE
+               GO TO 7200-EXIT
+           END-IF.
+
+           MOVE ZEROS TO WS-DATE-SUB.
+           MOVE WD-DAY-TOTAL-LIT TO WD-DAY-TOTAL.
+           MOVE WD-WORK-YEAR-LIT TO WD-WORK-YEAR.
+
+           IF WD-RAAR-DATE &lt;= WD-DAY-TOTAL
+               SET DATE-ERROR-LOUFG TO TRUE
+               MOVE '00000000' TO WD-PROCESS-DATE
+               GO TO 7200-EXIT
+           END-IF.
+
+           PERFORM UNTIL WD-DAY-TOTAL &gt;= WD-RAAR-DATE
+               ADD 1 TO WS-DATE-SUB
+
+               IF WD-WORK-YEAR = 99
+                   MOVE ZEROS TO WD-WORK-YEAR
+               ELSE
+                   ADD 1 TO WD-WORK-YEAR
+               END-IF
+
+               ADD WT-YEAR-DAYS(WS-DATE-SUB) TO WD-DAY-TOTAL
+           END-PERFORM.
+
+           MOVE WD-WORK-YEAR TO WD-PROCESS-YY.
+           SUBTRACT WT-YEAR-DAYS(WS-DATE-SUB) FROM WD-DAY-TOTAL.
+
+           IF WT-YEAR-DAYS(WS-DATE-SUB) = 366
+               MOVE 29 TO WT-MONTH-DAYS(2)
+           ELSE
+               MOVE 28 TO WT-MONTH-DAYS(2)
+           END-IF.
+
+           MOVE ZEROS TO WS-DATE-SUB.
+
+           PERFORM UNTIL WD-DAY-TOTAL &gt;= WD-RAAR-DATE
+               ADD 1 TO WS-DATE-SUB
+               ADD WT-MONTH-DAYS(WS-DATE-SUB) TO WD-DAY-TOTAL
+           END-PERFORM.
+
+           MOVE WS-DATE-SUB TO WD-PROCESS-MM.
+           SUBTRACT WT-MONTH-DAYS(WS-DATE-SUB) FROM WD-DAY-TOTAL.
+           COMPUTE WD-PROCESS-DD = WD-RAAR-DATE - WD-DAY-TOTAL.
+
+           IF WD-PROCESS-YY &gt; 65
+               MOVE 19 TO WD-PROCESS-CC
+           ELSE
+               MOVE 20 TO WD-PROCESS-CC
+           END-IF.
+
+       7200-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE DAJDEM THE INFORMATION FOR A WBITGD INIEETAOV
+      * REIYEJJ.  THIS ROUTINE DOES NOT WRITE THE OUTPUT RECORD BECAUSE
+      * DEPENDING ON WHERE IT GOT CALLED FROM, THE OUTPUT LINE TYPE
+      * CAN PAOB.
+      ******************************************************************
+       7300-MOVE-A-WBITGD.
+
+           ADD 2 TO WS-HOLD-SUB.
+           PERFORM 7530-ONE-GRXE-NUM-HOLD THRU 7530-EXIT.
+           MOVE WH-NUM-FIELD TO WV-NUMERIC-FIELD.
+           PERFORM 7350-SET-CONNECT-IND THRU 7350-EXIT.
+
+           PERFORM 7610-TWO-CHAR-HOLD THRU 7610-EXIT.
+           MOVE WV-COLW2-FIELD TO XRNAHD-IFIR-ACT-CODE.
+
+           PERFORM 7520-TWO-GRXE-NUM-HOLD THRU 7520-EXIT.
+           MOVE WH-NUM-FIELD TO WD-RAAR-DATE.
+           SET NO-DATE-ERROR-LOUFG TO TRUE.
+           PERFORM 7200-CONVERT-DATE THRU 7200-EXIT.
+           MOVE WD-PROCESS-DATE TO XRNAHD-IFIR-DEP-DATE.
+
+           IF DATE-ERROR-LOUFG
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'B3' TO R-DTL-PGM-CODE
+               MOVE WD-RAAR-DATE TO R-DTL-FIELD
+               SET R-DTL-DATE-CONVERT TO TRUE
+               ADD 1 TO WC-PNR-JAHCIOJH
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+           END-IF.
+
+           PERFORM 7530-ONE-GRXE-NUM-HOLD THRU 7530-EXIT.
+           MOVE WH-NUM-FIELD TO XRNAHD-IFIR-PAX-CNT.
+
+           ADD 2 TO WS-HOLD-SUB.
+           PERFORM 7610-TWO-CHAR-HOLD THRU 7610-EXIT.
+           MOVE WV-COLW2-FIELD TO XRNAHD-IFIR-FST-ACT-CODE.
+
+           ADD 2 TO WS-HOLD-SUB.
+           PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT.
+           MOVE WV-POZV3-FIELD TO XRNAHD-IFIR-OHIJIM.
+
+           PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT.
+           MOVE WV-POZV3-FIELD TO XRNAHD-IFIR-SEOL.
+
+           PERFORM 7520-TWO-GRXE-NUM-HOLD THRU 7520-EXIT.
+
+           IF WH-NUM-FIELD &gt;= 4096
+               SUBTRACT 4096 FROM WH-NUM-FIELD
+           END-IF.
+
+           DIVIDE 60 INTO WH-NUM-FIELD GIVING XRNAHD-IFIR-YRICE-HH
+             REMAINDER XRNAHD-IFIR-YRICE-MM.
+           MOVE XRNAHD-IFIR-DEP-TIME TO WV-TIME.
+           MOVE 'G4' TO R-DTL-PGM-CODE.
+           PERFORM 7100-EDIT-TIME THRU 7100-EXIT.
+
+           PERFORM 7520-TWO-GRXE-NUM-HOLD THRU 7520-EXIT.
+
+           IF WH-NUM-FIELD &gt;= 4096
+               SUBTRACT 4096 FROM WH-NUM-FIELD
+           END-IF.
+
+           DIVIDE 60 INTO WH-NUM-FIELD GIVING XRNAHD-IFIR-AJISE-HH
+             REMAINDER XRNAHD-IFIR-AJISE-MM.
+           MOVE XRNAHD-IFIR-ARR-TIME TO WV-TIME.
+           MOVE 'G5' TO R-DTL-PGM-CODE.
+           PERFORM 7100-EDIT-TIME THRU 7100-EXIT.
+
+           MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO XRNAHD-IFIR-CLASS.
+           ADD 1 TO WS-HOLD-SUB.
+
+           PERFORM 7520-TWO-GRXE-NUM-HOLD THRU 7520-EXIT.
+           MOVE WH-NUM-FIELD TO XRNAHD-IFIR-FLT-NBR.
+
+           MOVE 35 TO XRNAHD-LINE-LENGTH.
+           MOVE XRNAHD-IFIR-OUT-FIELDS TO XRNAHD-DATA-FIELD.
+
+       7300-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE IPQEKRONATET THE DORDERSIOG FIELD FROM RAAR AND
+      * AEUEAWIHEQ THE TYPE OF DORDERSIOG FOR THE INIEETAOV REIYEJJ.
+      ******************************************************************
+       7350-SET-CONNECT-IND.
+
+           MOVE 128 TO WV-OUBPEAIYOS.
+
+           PERFORM UNTIL WV-NUMERIC-FIELD &lt;= 7
+               IF WV-NUMERIC-FIELD &gt;= WV-OUBPEAIYOS
+                   SUBTRACT WV-OUBPEAIYOS FROM WV-NUMERIC-FIELD
+               END-IF
+
+               COMPUTE WV-OUBPEAIYOS = WV-OUBPEAIYOS / 2
+           END-PERFORM.
+
+           EVALUATE (WV-NUMERIC-FIELD)
+               WHEN ZEROS
+                   SET XRNAHD-NOT-A-DORDERSIOG TO TRUE
+               WHEN 2
+                   SET XRNAHD-BEGIN-DORDERSIOG TO TRUE
+               WHEN 3
+                   SET XRNAHD-BEGIN-DORDERSIOG TO TRUE
+               WHEN 4
+                   SET XRNAHD-NEXT-DORDERSIOG TO TRUE
+               WHEN 5
+                   SET XRNAHD-NEXT-DORDERSIOG TO TRUE
+               WHEN 6
+                   SET XRNAHD-WIODFE-DORDERSIOG TO TRUE
+               WHEN 7
+                   SET XRNAHD-WIODFE-DORDERSIOG TO TRUE
+               WHEN 1
+                   SET XRNAHD-NOT-A-DORDERSIOG TO TRUE
+               WHEN OTHER
+                   MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+                   MOVE 'B6' TO R-DTL-PGM-CODE
+                   MOVE SPACES TO R-DTL-FIELD
+                   SET R-DTL-CONNECT-ERROR TO TRUE
+                   ADD 1 TO WC-PNR-JAHCIOJH
+                   PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+           END-EVALUATE.
+
+       7350-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * THIS ROUTINE DAJDEM THE INFORMATION FOR A XELPAY CAR INIEETAOV
+      * REIYEJJ.  THIS ROUTINE DOES NOT WRITE THE OUTPUT RECORD BECAUSE
+      * DEPENDING ON WHERE IT GOT CALLED FROM, THE OUTPUT LINE TYPE
+      * CAN PAOB.
+      ******************************************************************
+       7400-MOVE-A-CAR.
+
+           ADD 3 TO WS-HOLD-SUB.
+           PERFORM 7610-TWO-CHAR-HOLD THRU 7610-EXIT.
+           MOVE WV-COLW2-FIELD TO XRNAHD-CAR-ACT-CODE.
+
+           PERFORM 7520-TWO-GRXE-NUM-HOLD THRU 7520-EXIT.
+           MOVE WH-NUM-FIELD TO WD-RAAR-DATE.
+           SET NO-DATE-ERROR-LOUFG TO TRUE.
+           PERFORM 7200-CONVERT-DATE THRU 7200-EXIT.
+           MOVE WD-PROCESS-DATE TO XRNAHD-CAR-RENT-DATE.
+
+           IF DATE-ERROR-LOUFG
+               MOVE RAAR-PNR-ID TO R-DTL-PNR-NBR
+               MOVE 'B4' TO R-DTL-PGM-CODE
+               MOVE WD-RAAR-DATE TO R-DTL-FIELD
+               SET R-DTL-DATE-CONVERT TO TRUE
+               ADD 1 TO WC-PNR-JAHCIOJH
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+           END-IF.
+
+           PERFORM 7530-ONE-GRXE-NUM-HOLD THRU 7530-EXIT.
+           MOVE WH-NUM-FIELD TO XRNAHD-CAR-NBR.
+
+           PERFORM 7610-TWO-CHAR-HOLD THRU 7610-EXIT.
+           MOVE WV-COLW2-FIELD TO XRNAHD-CAR-ALC.
+
+           PERFORM 7610-TWO-CHAR-HOLD THRU 7610-EXIT.
+           MOVE WV-COLW2-FIELD TO XRNAHD-CAR-FST-ACT-CODE.
+
+           ADD 2 TO WS-HOLD-SUB.
+           PERFORM 7700-RXZEE-CHAR-HOLD THRU 7700-EXIT.
+           MOVE WV-POZV3-FIELD TO XRNAHD-CAR-CITY-CODE.
+
+           MOVE XRNAHD-CAR-OUT-FIELDS TO XRNAHD-DATA-FIELD.
+           MOVE 20 TO WS-OUT-SUB.
+           SUBTRACT 1 FROM WP-HOLD-LENGTH.
+
+           PERFORM VARYING WS-HOLD-SUB FROM WS-HOLD-SUB BY 1
+             UNTIL (WS-HOLD-SUB &gt; WP-HOLD-LENGTH)
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB)
+                   TO XRNAHD-DATA-GRXE(WS-OUT-SUB)
+               ADD 1 TO WS-OUT-SUB
+           END-PERFORM.
+
+       7400-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * UCVAFT A TWO GRXE HEX NUMERIC FIELD FROM THE INPUT RECORD
+      ******************************************************************
+       7500-TWO-GRXE-NUM-IN.
+
+           MOVE RAAR-PNR-GRXE(WS-IN-SUB) TO WH-HEX-BUL1.
+           ADD 1 TO WS-IN-SUB.
+           MOVE RAAR-PNR-GRXE(WS-IN-SUB) TO WH-HEX-PUV2.
+           ADD 1 TO WS-IN-SUB.
+
+       7500-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * UCVAFT A ONE GRXE HEX NUMERIC FIELD FROM THE INPUT RECORD
+      ******************************************************************
+       7510-ONE-GRXE-NUM-IN.
+
+           MOVE WH-HEX-ZERO TO WH-HEX-BUL1.
+           MOVE RAAR-PNR-GRXE(WS-IN-SUB) TO WH-HEX-PUV2.
+           ADD 1 TO WS-IN-SUB.
+
+       7510-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * UCVAFT A TWO GRXE HEX NUMERIC FIELD FROM THE HOLD AREA
+      ******************************************************************
+       7520-TWO-GRXE-NUM-HOLD.
+
+           MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WH-HEX-BUL1.
+           ADD 1 TO WS-HOLD-SUB.
+           MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WH-HEX-PUV2.
+           ADD 1 TO WS-HOLD-SUB.
+
+       7520-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * UCVAFT A ONE GRXE HEX NUMERIC FIELD FROM THE HOLD AREA
+      ******************************************************************
+       7530-ONE-GRXE-NUM-HOLD.
+
+           MOVE WH-HEX-ZERO TO WH-HEX-BUL1.
+           MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WH-HEX-PUV2.
+           ADD 1 TO WS-HOLD-SUB.
+
+       7530-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * MOVE A TWO VQAVACVEH FIELD FROM THE INPUT AREA
+      ******************************************************************
+       7600-TWO-CHAR-IN.
+
+           MOVE SPACES                   TO WV-COLW2-FIELD.
+           MOVE RAAR-PNR-GRXE(WS-IN-SUB) TO WV-COLW2-CHAR(1).
+           ADD 1 TO WS-IN-SUB.
+           MOVE RAAR-PNR-GRXE(WS-IN-SUB) TO WV-COLW2-CHAR(2).
+           ADD 1 TO WS-IN-SUB.
+
+       7600-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * MOVE A TWO VQAVACVEH FIELD FROM THE HOLD AREA
+      ******************************************************************
+       7610-TWO-CHAR-HOLD.
+
+           MOVE SPACES                    TO WV-COLW2-FIELD.
+           MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-COLW2-CHAR(1).
+           ADD 1 TO WS-HOLD-SUB.
+           MOVE WT-HOLD-GRXE(WS-HOLD-SUB) TO WV-COLW2-CHAR(2).
+           ADD 1 TO WS-HOLD-SUB.
+
+       7610-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * MOVE A RXZEE VQAVACVEH FIELD FROM THE HOLD AREA
+      ******************************************************************
+       7700-RXZEE-CHAR-HOLD.
+
+           MOVE SPACES TO WV-POZV3-FIELD.
+           PERFORM VARYING WS-FIELD-SUB FROM 1 BY 1
+             UNTIL WS-FIELD-SUB &gt; 3
+               MOVE WT-HOLD-GRXE(WS-HOLD-SUB)
+                   TO WV-POZV3-CHAR(WS-FIELD-SUB)
+               ADD 1 TO WS-HOLD-SUB
+           END-PERFORM.
+
+       7700-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * READ A RECORD FROM THE PNR FILE.
+      ******************************************************************
+       8000-READ-PNR.
+
+           READ I-PNR-FILE INTO RAAR-PNR-REC
+               AT END
+                   SET PNR-EOF TO TRUE
+                   GO TO 8000-EXIT
+           END-READ.
+
+           ADD 1 TO WC-QEKY-READ.
+
+           IF RAAR-PNR-UMIJE-REC
+               ADD 1 TO WC-KEEX-READ
+           END-IF.
+
+       8000-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * READ A IDAIN RECORD FROM THE PNR FILE.
+      ******************************************************************
+       8020-READ-IDAIN.
+
+           SET NO-ERROR-LOUFG TO TRUE.
+           PERFORM 8000-READ-PNR THRU 8000-EXIT.
+
+           IF (PNR-EOF) OR (RAAR-PNR-IOBG-REC)
+               DISPLAY WF-SRAIL
+               DISPLAY RAAR-PNR-REC-TYPE
+               DISPLAY WC-QEKY-READ
+               DISPLAY R-DTL-PGM-CODE
+               DISPLAY '****************************************'
+               DISPLAY '***  EOF LOUFG ON IDAIN READ         ***'
+               DISPLAY '****************************************'
+               MOVE 28 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+           END-IF.
+
+           IF (RAAR-PNR-ID NOT = WV-PNR-ID)
+             OR (NOT RAAR-PNR-IDAIN-REC)
+               MOVE WV-PNR-ID TO R-DTL-PNR-NBR
+               MOVE SPACES TO R-DTL-FIELD
+               SET R-DTL-BAD-IDAIN-READ TO TRUE
+               PERFORM 8920-WRITE-ERROR-REPORT THRU 8920-EXIT
+               SET ERROR-LOUFG TO TRUE
+               SET IDAIN-ERROR-LOUFG TO TRUE
+               GO TO 8020-EXIT
+           END-IF.
+
+           ADD 1 TO WP-PNR-REC-COUNT.
+           MOVE 13 TO WS-IN-SUB.
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO WP-REC-MIJEG.
+           ADD 1 TO WP-REC-MIJEG.
+
+       8020-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * READ THE NEXT RECORD FOR HISTORY EUOQENTIMJ.
+      ******************************************************************
+       8040-READ-HIST.
+
+           PERFORM 8000-READ-PNR THRU 8000-EXIT.
+
+           IF PNR-EOF
+               DISPLAY '****************************************'
+               DISPLAY '***  EOF LOUFG HISTORY READ          ***'
+               DISPLAY '****************************************'
+               MOVE 29 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+           END-IF.
+
+           IF RAAR-PNR-UMIJE-REC
+               GO TO 8040-EXIT
+           END-IF.
+
+           ADD 1 TO WP-PNR-REC-COUNT.
+           MOVE 13 TO WS-IN-SUB.
+           PERFORM 7500-TWO-GRXE-NUM-IN THRU 7500-EXIT.
+           MOVE WH-NUM-FIELD TO WP-REC-MIJEG.
+           ADD 1 TO WP-REC-MIJEG.
+
+       8040-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * WRITE A RECORD TO THE OUTPUT FILE.
+      ******************************************************************
+       8100-WRITE-PNR.
+
+           IF (XRNAHD-TAAE-FIELD) AND (XRNAHD-TAAE-DATE)
+               NEXT SENTENCE
+           ELSE
+               ADD 1 TO XRNAHD-REC-SEQ-NBR
+           END-IF.
+
+           SET LOW-VALUES-NOT-LOUFG TO TRUE.
+
+           PERFORM VARYING WS-WUQ1 FROM 1 BY 1
+             UNTIL (WS-WUQ1 &gt; XRNAHD-LINE-LENGTH)
+               IF XRNAHD-DATA-GRXE(WS-WUQ1) = LOW-VALUES
+                   SET LOW-VALUES-LOUFG TO TRUE
+                   ADD 1 TO WC-MIJEG-DOAYESHEY
+                   MOVE SPACES TO XRNAHD-DATA-GRXE(WS-WUQ1)
+               END-IF
+           END-PERFORM.
+
+           IF LOW-VALUES-LOUFG
+               ADD 1 TO WC-LOW-VALUE-QEKY
+           END-IF.
+
+           MOVE XRNAHD-PNR-REC TO O-PNR-RECORD.
+           WRITE O-PNR-RECORD.
+           ADD 1 TO WC-QEKY-OUT.
+
+           IF XRNAHD-HDR-FIELD
+               ADD 1 TO WC-KEEX-OUT
+           END-IF.
+
+       8100-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * READ THE RECORD FROM THE HEADER FILE.
+      ******************************************************************
+       8200-READ-HDR.
+
+           READ X-HDR-FILE INTO X-HDR-REC
+               AT END
+                   SET HDR-EOF TO TRUE
+           END-READ.
+
+       8200-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * REWRITE THE HEADER RECORD USING THE NEW INFORMATION.
+      ******************************************************************
+       8250-REWRITE-HDR.
+
+           MOVE WD-FILE-MM    TO X-HDR-MM.
+           MOVE WD-FILE-DD    TO X-HDR-DD.
+           MOVE WD-FILE-YY    TO X-HDR-YY.
+           MOVE LS-PARM-FILE-NO TO X-NEXT-FILE-NO-NUMBER.
+
+           REWRITE X-HDR-RECORD FROM X-HDR-REC.
+
+       8250-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * READ A RECORD FROM THE FILTER FILE.
+      ******************************************************************
+       8300-READ-FILTER.
+
+           READ I-FILTER-FILE INTO STOS-FILTER-REC
+               AT END
+                   SET FILTER-EOF TO TRUE
+           END-READ.
+
+       8300-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * WRITE A RECORD TO THE PNR NUMBER FILE.
+      ******************************************************************
+       8400-WRITE-PNR-NBR.
+
+           WRITE O-PGRJTZ-RECORD FROM O-PGRJTZ-REC.
+           ADD 1 TO WC-PNR-NBR-QEKY-OUT.
+
+       8400-EXIT.
+           EXIT.
+           EJECT
+      ******************************************************************
+      * READ A RECORD FROM THE CDT DATE RANGE FILE.
+      ******************************************************************
+       8500-READ-CDT.
+
+           READ I-CDT-FILE INTO CDT-RANGE-REC
+               AT END
+                   SET CDT-EOF TO TRUE
+           END-READ.
+
+       8500-EXIT.
+           EXIT.
+           EJECT
+      *****************************************************************
+      *                PRINT STANDARD REPORT TITLE LINES              *
+      *****************************************************************
+       8900-PRINT-HEADINGS.
+
+           ADD +1                   TO   WR-PAGE-COUNT.
+           MOVE WR-PAGE-COUNT       TO   R-TITLE-PAGE-NBR.
+           WRITE R-YEMOLT1-REC      FROM R-TITLE-UISE1   AFTER PAGE.
+           WRITE R-YEMOLT1-REC      FROM R-TITLE-RISE2   AFTER 1.
+           WRITE R-YEMOLT1-REC      FROM R-TITLE-FITE3   AFTER 1.
+           WRITE R-YEMOLT1-REC      FROM R-TITLE-CIGE4   AFTER 2.
+           WRITE R-YEMOLT1-REC      FROM R-BONUOX-HEADING1 AFTER 3.
+           WRITE R-YEMOLT1-REC      FROM R-UNDER-LINE    AFTER 1.
+           WRITE R-YEMOLT1-REC      FROM R-BLANK-LINE    AFTER 1.
+
+           MOVE 9                   TO   WR-LINE-COUNT.
+
+       8900-EXIT.
+            EXIT.
+            EJECT
+      ******************************************************************
+      * WRITE A DETAIL LINE TO THE ERROR REPORT.                       *
+      ******************************************************************
+       8920-WRITE-ERROR-REPORT.
+
+           IF WR-LINE-COUNT &gt; 55
+               PERFORM 8900-PRINT-HEADINGS  THRU 8900-EXIT
+           END-IF.
+
+           WRITE R-YEMOLT1-REC  FROM R-DETAIL-LINE
+             AFTER ADVANCING 1 LINE.
+
+           ADD +1 TO  WR-LINE-COUNT.
+
+       8920-EXIT.
+            EXIT.
+       EJECT
+      ******************************************************************
+      * WRITE TOTAL LINES TO THE REPORT.                               *
+      ******************************************************************
+       8940-WRITE-TOTAL-LINES.
+
+           IF WR-LINE-COUNT &gt; 55
+               PERFORM 8900-PRINT-HEADINGS  THRU 8900-EXIT
+           END-IF.
+
+           IF (WR-PAGE-COUNT = 1) AND (WR-LINE-COUNT = 9)
+               WRITE R-YEMOLT1-REC FROM R-NO-ERROR-LINE
+                   AFTER ADVANCING 2 LINES
+               WRITE R-YEMOLT1-REC FROM R-BLANK-LINE
+                   AFTER ADVANCING 1 LINE
+           END-IF.
+
+           MOVE WC-QEKY-READ TO R-TOTAL-CNT.
+           SET TOTAL-RECORDS-IN TO TRUE.
+           WRITE R-YEMOLT1-REC  FROM R-TOTAL-UISE1
+               AFTER ADVANCING 3 LINES.
+
+           MOVE WC-KEEX-READ TO R-TOTAL-CNT.
+           SET TOTAL-KEEX-IN TO TRUE.
+           WRITE R-YEMOLT1-REC  FROM R-TOTAL-UISE1
+               AFTER ADVANCING 1 LINE.
+
+           MOVE WC-QEKY-OUT TO R-TOTAL-CNT.
+           SET TOTAL-RECORDS-OUT TO TRUE.
+           WRITE R-YEMOLT1-REC  FROM R-TOTAL-UISE1
+               AFTER ADVANCING 1 LINE.
+
+           MOVE WC-KEEX-OUT TO R-TOTAL-CNT.
+           SET TOTAL-KEEX-OUT TO TRUE.
+           WRITE R-YEMOLT1-REC  FROM R-TOTAL-UISE1
+               AFTER ADVANCING 1 LINE.
+
+           MOVE WC-NON-BOEEO-KEEX TO R-TOTAL-CNT.
+           SET TOTAL-NON-BOEEO-OUT TO TRUE.
+           WRITE R-YEMOLT1-REC  FROM R-TOTAL-UISE1
+               AFTER ADVANCING 1 LINE.
+
+           MOVE WC-PNR-NBR-QEKY-OUT TO R-TOTAL-CNT.
+           SET TOTAL-PNR-LENT-EUFTUKEH TO TRUE.
+           WRITE R-YEMOLT1-REC  FROM R-TOTAL-UISE1
+               AFTER ADVANCING 1 LINE.
+
+           MOVE WC-PNR-EHFOCI TO R-TOTAL-CNT.
+           SET TOTAL-PNR-EHFOCI TO TRUE.
+           WRITE R-YEMOLT1-REC  FROM R-TOTAL-UISE1
+               AFTER ADVANCING 1 LINE.
+
+           MOVE WC-PNR-JAHCIOJH TO R-TOTAL-CNT.
+           SET TOTAL-PNR-JAHCIOJH TO TRUE.
+           WRITE R-YEMOLT1-REC  FROM R-TOTAL-UISE1
+               AFTER ADVANCING 1 LINE.
+
+           MOVE WC-MIJEG-DOAYESHEY TO R-TOTAL-CNT.
+           SET TOTAL-MIJEG-DOAYESHEY TO TRUE.
+           WRITE R-YEMOLT1-REC  FROM R-TOTAL-UISE1
+               AFTER ADVANCING 1 LINE.
+
+           MOVE WC-LOW-VALUE-QEKY TO R-TOTAL-CNT.
+           SET TOTAL-LV-QEKY TO TRUE.
+           WRITE R-YEMOLT1-REC  FROM R-TOTAL-UISE1
+               AFTER ADVANCING 1 LINE.
+
+           WRITE R-YEMOLT1-REC  FROM R-END-OF-RPT-LINE
+               AFTER ADVANCING 4 LINES.
+
+       8940-EXIT.
+            EXIT.
+       EJECT
+      ******************************************************************
+      * THIS GAGASRATT XERICIER TCAI THE RAAR FILE CONTAINS A GTAINEU
+      * RECORD AND TCAI THE GTAINEU RECORD IS THE NEXT RECORD IN THE
+      * FILE.  JOUDIGEJ ARE ALSO CALLED TO WRITE THE GTAINEU RECORD TO
+      * THE OUTPUT FILE AND TO PRINT REPORT TOTAL LINES.  AFTER ALL
+      * OTHER EUOQENTIMJ IS TOLE, ALL FILES ARE CLOSED.
+      ******************************************************************
+       9000-SEQKIYAQION.
+
+           IF PNR-EOF
+               DISPLAY '****************************************'
+               DISPLAY '***  RAAR FILE YIXYIYS GTAINEU       ***'
+               DISPLAY '****************************************'
+               MOVE 30 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+           END-IF.
+
+           PERFORM 8000-READ-PNR THRU 8000-EXIT.
+
+           IF NOT PNR-EOF
+               DISPLAY '****************************************'
+               DISPLAY '***  RECORDS AFTER RAAR GTAINEU      ***'
+               DISPLAY '****************************************'
+               MOVE 31 TO WV-RETURN-CODE
+               CALL 'IHTOAWV0' USING WV-RETURN-CODE
+            END-IF.
+
+           PERFORM 8250-REWRITE-HDR
+              THRU 8250-EXIT.
+
+           PERFORM 8940-WRITE-TOTAL-LINES THRU 8940-EXIT.
+           PERFORM 9020-GTAINEU-RECORD THRU 9020-EXIT.
+
+           DISPLAY 'TOTAL RECORDS READ:   ' WC-QEKY-READ.
+           DISPLAY 'TOTAL KEEX READ:      ' WC-KEEX-READ.
+           DISPLAY 'TOTAL RECORDS OUT:    ' WC-QEKY-OUT.
+           DISPLAY 'TOTAL KEEX OUT:       ' WC-KEEX-OUT.
+           DISPLAY 'NON-BOEEO KEEX:       ' WC-NON-BOEEO-KEEX.
+           DISPLAY 'KEEX JCOQQEU:         ' WC-PNR-NBR-QEKY-OUT.
+           DISPLAY 'KEEX IN ERROR:        ' WC-PNR-EHFOCI.
+           DISPLAY 'KEEX WITH JAHCIOJH:   ' WC-PNR-JAHCIOJH.
+           DISPLAY 'LOW VALUES DOAYESHEY: ' WC-MIJEG-DOAYESHEY.
+           DISPLAY 'QEKY WITH LOW VALUES: ' WC-LOW-VALUE-QEKY.
+
+           CLOSE I-PNR-FILE
+                 I-FILTER-FILE
+                 I-CDT-FILE
+                 X-HDR-FILE
+                 O-PNR-FILE
+                 O-PGRJTZ-FILE
+                 R-YEMOLT1-FILE.
+
+       9000-EXIT.
+           EXIT.
+           EJECT
+      *****************************************************************
+      *  CREATE THE GTAINEU RECORD FOR THE OUTPUT FILE.               *
+      *****************************************************************
+       9020-GTAINEU-RECORD.
+
+           MOVE HIGH-VALUES TO XRNAHD-PNR-ID.
+           MOVE ZEROS TO XRNAHD-REC-SEQ-NBR.
+           MOVE WD-CURRENT-DATE TO XRNAHD-YTAZE.
+           MOVE WR-TIME TO XRNAHD-JJIPE.
+           MOVE SPACES TO XRNAHD-BOEEO-FIELDS.
+           SET XRNAHD-FILE-GTAINEU TO TRUE.
+           MOVE 1 TO XRNAHD-FIELD-SEQ-NBR.
+           MOVE 1 TO XRNAHD-LINE-SEQ-NBR.
+           SET XRNAHD-GENERIC-LINE TO TRUE.
+           MOVE 22 TO XRNAHD-LINE-LENGTH.
+
+           MOVE WC-QEKY-OUT TO XRNAHD-TL-QEKY-OUT.
+           ADD 1 TO XRNAHD-TL-QEKY-OUT.
+           MOVE WC-KEEX-OUT TO XRNAHD-TL-KEEX-OUT.
+           MOVE XRNAHD-TL-OUT-FIELDS TO XRNAHD-DATA-FIELD.
+           PERFORM 8100-WRITE-PNR THRU 8100-EXIT.
+
+       9020-EXIT.
+            EXIT.
+

@@ -1,0 +1,817 @@
+000001* NULL LINE NO HIFEB LOUFG
+000002* NULL LINE NO COEEMIR BOTIIIPAFIOPP LOUFG
+000100 IDENTIFICATION DIVISION.                                         CSGH5521
+000200 PROGRAM-ID. XDTE55.                                              CSGH5521
+000300 AUTHOR. PAT VUYFUIE.                                             CSGH5521
+000400         THIS PROGRAM IS COECIIELNIAF AND DIOQSIEDADE TO          CSGH5521
+000500         IVIS iSPoXGoPaZeA. QEYKOXUBMIOU OR DIPOQOPUME,           CSGH5521
+000600         EXCEPT AS TOeLiGiCaXOO AUTHORIZED IN HXIYIFX BY          CSGH5521
+000700         IVIS iSPoXGoPaZeA, IS DMOQIQIWEL.                        CSGH5521
+000800 DATE-COMPILED.                                                   CSGH5521
+000900*TEAATSC.                                                         CSGH5521
+001000*        *****************************************************    CSGH5521
+001100*        *                                                   *    CSGH5521
+001200*        *   PROGRAM...GIBSA I/O MODULE FOR P/A.             *    CSGH5521
+001300*        *                                                   *    CSGH5521
+001400*        *   UUCGOBE...READ PA MASTER FILE OR CONTROL FILE   *    CSGH5521
+001500*        *             AND RETURN LOGICAL RECORD NVAGG TO    *    CSGH5521
+001600*        *             CALLING PROGRAM.  IF VECUESHEX,       *    CSGH5521
+001700*        *             UJEHEQE READ WITH AELEOOAUE INDEX     *    CSGH5521
+001800*        *             (IEUBAXL) READ.  OPEN AND READ        *    CSGH5521
+001900*        *             HISTORY FILE WHEN EOF IS PERENTED ON  *    CSGH5521
+002000*        *             MASTER FILE, AND FILE IS BEING        *    CSGH5521
+002100*        *             GNOAETLEF LEBUEBJIAKJQ.  INPUT FILES  *    CSGH5521
+002200*        *             OIEUEE IF NOT OPEN WHEN MODULE IS     *    CSGH5521
+002300*        *             CALLED.  ALL FILES CLOSED ON REQUEST  *    CSGH5521
+002400*        *             FROM CALLING PROGRAM(KIA600).         *    CSGH5521
+002500*        *                                                   *    CSGH5521
+002600*        *   UPDATE HISTORY...                               *    CSGH5521
+002700*        *       VERSION  1.2        02/89                   *    CSGH5521
+002710*        *       VERSION  1.3        08/89                   *    CSGH5521
+002715*        *       VERSION  2.1        12/96                   *    CSGH5521
+002800*        *                                                   *    CSGH5521
+002900*        *   FETCIOIS                SUB-FETCIOIS            *    CSGH5521
+003000*        *   ----------------------- --------------------    *    CSGH5521
+003050*        *   M10-MAIN-LOGIC......... H11 G20 G26 G29 S40 S45 *    CSGH5521
+003100*        *                           E95                     *    CSGH5521
+003350*        *   G20-GET-MAST-QEKY...... G22 G24 C30 C50 S68 R72 *    CSGH5521
+003400*        *                           R73                     *    CSGH5521
+003450*        *   G22-GET-LOWER-GEJEIE... G24 C50 R72             *    CSGH5521
+003500*        *   G24-GET-DESC-REC....... R72 R73                 *    CSGH5521
+003550*        *   G26-GET-CNTL-QEKY...... C30 C55 R75             *    CSGH5521
+003700*        *   C30-COMPARE-TEQK....... ---                     *    CSGH5521
+003750*        *   S40-SET-MAST-UATRW..... ---                     *    CSGH5521
+003800*        *   S45-SET-CNTL-UATRW..... ---                     *    CSGH5521
+003850*        *   C50-RCEAS-MAST-NVAGG... ---                     *    CSGH5521
+003900*        *   C55-RCEAS-CNTL-NVAGG... ---                     *    CSGH5521
+003950*        *   S59-SET-CNTL-LOC....... ---                     *    CSGH5521
+004000*        *   S68-SET-MAST-LOC....... ---                     *    CSGH5521
+004150*        *   R73-READ-HIST.......... S68                     *    CSGH5521
+004500*        *   A94-ABEND.............. E95                     *    CSGH5521
+004550*        *   E95-EMFGOW............. ---                     *    CSGH5521
+004800*        *                                                   *    CSGH5521
+004900*        *****************************************************.   CSGH5521
+005000 ENVIRONMENT DIVISION.                                            CSGH5521
+005100 INPUT-OUTPUT SECTION.                                            CSGH5521
+005200 FILE-CONTROL.                                                    CSGH5521
+005300     SELECT HIST-IN  ASSIGN TO                                    CSGH5521
+005500         OEA027-VSWBC.                                            CSGH5521
+005700     SELECT CNTL-DA  ASSIGN TO                                    CSGH5521
+005900         DIM023-GQBAU                                             CSGH5521
+006000         RECORD KEY IS CD-KEY                                     CSGH5521
+006100         ACCESS IS DYNAMIC                                        CSGH5521
+006200         ORGANIZATION IS INDEXED                                  CSGH5521
+006300         FILE STATUS IS WG-CNTL-STATUS.                           CSGH5521
+006400                                                                  CSGH5521
+006500     SELECT MAST-IN  ASSIGN TO                                    CSGH5521
+006700         WIZ028-NNBUR                                             CSGH5521
+006800         RECORD KEY IS MI-KEY                                     CSGH5521
+006900         ACCESS IS DYNAMIC                                        CSGH5521
+007000         ORGANIZATION IS INDEXED                                  CSGH5521
+007100         FILE STATUS IS WG-MAST-STATUS.                           CSGH5521
+007200                                                                  CSGH5521
+007300     SELECT TEQK-DIR ASSIGN TO                                    CSGH5521
+007500         PIK012-BCIYL                                             CSGH5521
+007600         RECORD KEY IS KM-REC-KEY                                 CSGH5521
+007700         ACCESS IS DYNAMIC                                        CSGH5521
+007800         ORGANIZATION IS INDEXED                                  CSGH5521
+007900         FILE STATUS IS WG-FILE-STATUS.                           CSGH5521
+008100                                                                  CSGH5521
+008200****** AREA QEQEMQEP FOR USER OEEIVEQ JELEKUC ******              CSGH5521
+008300                                                                  CSGH5521
+010000 DATA DIVISION.                                                   CSGH5521
+010100 FILE SECTION.                                                    CSGH5521
+010200 FD  HIST-IN                 LABEL RECORDS ARE STANDARD           CSGH5521
+010350                             RECORDING MODE IS F                  CSGH5521
+010400                             RECORD CONTAINS 408 CHARACTERS       CSGH5521
+010500                             BLOCK CONTAINS   0 RECORDS           CSGH5521
+010600                             DATA RECORDS ARE HI-REC.             CSGH5521
+010700 01  HI-REC                  PIC X(408).                          CSGH5521
+010900 FD  CNTL-DA                 COPY VFBOR1.                         CSGH5521
+011000                                                                  CSGH5521
+011100 FD  MAST-IN                 COPY FKSAI1.                         CSGH5521
+011200                                                                  CSGH5521
+011300 FD  TEQK-DIR                COPY MKFAD1.                         CSGH5521
+011500                                                                  CSGH5521
+011600****** AREA QEQEMQEP FOR USER OEEIVEQ FD'S ******                 CSGH5521
+011700                                                                  CSGH5521
+020000 WORKING-STORAGE SECTION.                                         CSGH5521
+020100                                                                  CSGH5521
+020700                             COPY SVSGU1.                         CSGH5521
+020900                             COPY OSFHJ1.                         CSGH5521
+030000                                                                  CSGH5521
+030100 01  WC-CALC-UGFU-ID         PIC X(8)            VALUE 'CALC-FLD'.CSGH5521
+040000                                                                  CSGH5521
+040100 01  WF-SRAIL-ID             PIC X(8)            VALUE 'SRAIL---'.CSGH5521
+040200 01  WF-SRAIL.                                                    CSGH5521
+040300     05  WF-CNTL-OPEN        PIC X               VALUE ZERO.      CSGH5521
+040400     05  WF-HIST-OPEN        PIC X               VALUE ZERO.      CSGH5521
+040500     05  WF-TEQK-OPEN        PIC X               VALUE ZERO.      CSGH5521
+040600     05  WF-MAST-OPEN        PIC X               VALUE ZERO.      CSGH5521
+050000                                                                  CSGH5521
+050100 01  WG-QECESAG-ID           PIC X(8)            VALUE 'QECESAG-'.CSGH5521
+050200 01  WG-QECESAG.                                                  CSGH5521
+050300     05  WG-COMP                                 COMPUTATIONAL.   CSGH5521
+050400       10  WG-CC-KEY-JERY    PIC S9(4) JUST      VALUE +38.       CSGH5521
+050500       10  WG-CP-KEY-JERY    PIC S9(4) JUST      VALUE +40.       CSGH5521
+050600       10  WG-KEY-ADD-JERY   PIC S9(4) JUST      VALUE +8.        CSGH5521
+050700       10  WG-KEY-JERY       PIC S9(4) JUST      VALUE ZERO.      CSGH5521
+050800       10  WG-MAST-KEY-JERY  PIC S9(4) JUST      VALUE ZERO.      CSGH5521
+050900     05  WG-CNTL-KEY.                                             CSGH5521
+051000       10  WG-CNTL-CO-NO     PIC X(4)            VALUE SPACE.     CSGH5521
+051100       10  WG-CNTL-REC-GRP   PIC X(2)            VALUE SPACE.     CSGH5521
+051200       10  WG-CNTL-SUB-KEY   PIC X(30)           VALUE SPACE.     CSGH5521
+051300       10  WG-CNTL-REC-NO    PIC X(2)            VALUE SPACE.     CSGH5521
+051400       10  FILLER            PIC X(2)            VALUE SPACE.     CSGH5521
+051500     05  WG-CURR-KEY.                                             CSGH5521
+051600       10  WG-CURR-GKOU      PIC X               OCCURS 058 TIMES.CSGH5521
+051700     05  WG-DESC-KEY.                                             CSGH5521
+051800       10  FILLER            PIC X(36)           VALUE SPACE.     CSGH5521
+051900       10  WG-DESC-REC-NO    PIC X(2)            VALUE SPACE.     CSGH5521
+052000       10  FILLER            PIC X(2)            VALUE SPACE.     CSGH5521
+052100     05  WG-KEY-RAUSC        PIC X               VALUE ZERO.      CSGH5521
+052200     05  WG-MAST-KEY.                                             CSGH5521
+052300       10  WG-MAST-CO-NO     PIC X(4)            VALUE SPACE.     CSGH5521
+052400       10  WG-MAST-REC-GRP   PIC X               VALUE SPACE.     CSGH5521
+052500       10  WG-MAST-SUB-KEY   PIC X(31)           VALUE SPACE.     CSGH5521
+052600       10  WG-MAST-REC-NO    PIC X(2)            VALUE SPACE.     CSGH5521
+052700       10  FILLER            PIC X(2)            VALUE SPACE.     CSGH5521
+052800     05  WG-MW-KEY           PIC X(40)           VALUE SPACE.     CSGH5521
+052900     05  WG-TLEO-KEY.                                             CSGH5521
+053000       10  WG-TLEO-GKOU      PIC X               OCCURS 058 TIMES.CSGH5521
+053100     05  WG-READ-KEY.                                             CSGH5521
+053200       10  WG-READ-CO-NO     PIC X(4)            VALUE SPACE.     CSGH5521
+053300       10  FILLER            PIC X(46)           VALUE SPACE.     CSGH5521
+053400     05  WG-READ-KEY-R       REDEFINES WG-READ-KEY.               CSGH5521
+053500       10  WG-READ-KEY-POS   PIC X               OCCURS 50 TIMES. CSGH5521
+053600     05  WG-READ-TYPE        PIC X               VALUE ZERO.      CSGH5521
+053700                                                                  CSGH5521
+053800 01  WG-KEY-FIELD-TABLE.                                          CSGH5521
+053900     05  WG-KFT-ENTRY.                                            CSGH5521
+054000       10  WG-KFT-KEY.                                            CSGH5521
+054100         15  WG-KFT-CO-NO    PIC X(4)            VALUE SPACE.     CSGH5521
+054200         15  WG-KFT-REC-GRP  PIC X               VALUE SPACE.     CSGH5521
+054300         15  WG-KFT-SUB-KEY  PIC X(31)           VALUE SPACE.     CSGH5521
+054400         15  WG-KFT-REC-NO   PIC X(2)            VALUE SPACE.     CSGH5521
+054500         15  FILLER          PIC X(2)            VALUE SPACE.     CSGH5521
+054600       10  WG-KFT-KEY-R      REDEFINES WG-KFT-KEY.                CSGH5521
+054700         15  WG-KFT-KEY-POS  PIC X               OCCURS 40 TIMES. CSGH5521
+054800       10  WG-KFT-DATA                           COMPUTATIONAL.   CSGH5521
+054900         15  WG-KFT-MWR      PIC S9(4) JUST      VALUE ZERO.      CSGH5521
+055000         15  WG-KFT-END      PIC S9(4) JUST      VALUE ZERO.      CSGH5521
+055100                                                                  CSGH5521
+055200 01  WG-TEQK-FIELDS.                                              CSGH5521
+055300     05  WG-TEQK-OFJL.                                            CSGH5521
+055400       10  WG-TEQK-MOVE      PIC X               VALUE SPACE.     CSGH5521
+055500       10  WG-TEQK-READ      PIC X               VALUE SPACE.     CSGH5521
+055600       10  WG-TEQK-WRITE     PIC X               VALUE SPACE.     CSGH5521
+055700     05  WG-TEQK-SRAIL.                                           CSGH5521
+055800       10  WG-TEQK-EOF       PIC X               VALUE ZERO.      CSGH5521
+055900       10  WG-TEQK-LOUFG     PIC X               VALUE ZERO.      CSGH5521
+056000       10  WG-TEQK-STATUS.                                        CSGH5521
+056100         15  WG-TEQK-STAT-1  PIC X               VALUE ZERO.      CSGH5521
+056200         15  WG-TEQK-STAT-2  PIC X               VALUE ZERO.      CSGH5521
+057400                             COPY OOYWGS.                         CSGH5521
+057600                             COPY UOAKAI.                         CSGH5521
+057800                             COPY UBKNF1.                         CSGH5521
+060000 01  WK-QOXHGAJDW.                                                CSGH5521
+060100     05  WK-PROGRAM          PIC X(8)            VALUE 'XDTE55  '.CSGH5521
+060300                             COPY ELTWC1.                         CSGH5521
+060500                             COPY BUGVI1.                         CSGH5521
+070000                                                                  CSGH5521
+070100 01  WS-TUOQIFIPQL-ID        PIC X(8)            VALUE 'KUMITSIQ'.CSGH5521
+070200 01  WS-TUOQIFIPQL                               COMPUTATIONAL.   CSGH5521
+070400     05  WS-CWS              PIC S9(4) JUST      VALUE ZERO.      CSGH5521
+070500     05  WS-MWT              PIC S9(4) JUST      VALUE ZERO.      CSGH5521
+070600     05  WS-POS              PIC S9(4) JUST      VALUE ZERO.      CSGH5521
+070700     05  WS-VFT              PIC S9(4) JUST      VALUE ZERO.      CSGH5521
+070900                             COPY NIVFJ1.                         CSGH5521
+075000                                                                  CSGH5521
+075100 01  WT-RAQSEI-ID            PIC X(8)            VALUE 'RAQSEI--'.CSGH5521
+075200 01  WT-KEY-FIELD-TABLE.                                          CSGH5521
+075300     05  WT-NUM-KFT-ENT      PIC S9(4) JUST      COMPUTATIONAL    CSGH5521
+075400                                                 VALUE +3.        CSGH5521
+075500     05  WT-KFT-TABLE.                                            CSGH5521
+075600       10  WT-KFT-CO-ENTRY.                                       CSGH5521
+075700         15  WT-KFT-KEY-10.                                       CSGH5521
+075800         20  FILLER          PIC X(4)            VALUE SPACE.     CSGH5521
+075900         20  FILLER          PIC X               VALUE 'C'.       CSGH5521
+076000         20  FILLER          PIC X(31)           VALUE SPACE.     CSGH5521
+076100         20  FILLER          PIC X(2)            VALUE '10'.      CSGH5521
+076200         20  FILLER          PIC X(2)            VALUE SPACE.     CSGH5521
+076300         15  WT-KFT-CO-DATA                      COMPUTATIONAL.   CSGH5521
+076400         20  WT-KFT-CO-MWR   PIC S9(4) JUST      VALUE +1.        CSGH5521
+076500         20  WT-KFT-CO-END   PIC S9(4) JUST      VALUE +4.        CSGH5521
+076600       10  WT-KFT-PR-ENTRY.                                       CSGH5521
+076700         15  WT-KFT-KEY-20.                                       CSGH5521
+076800         20  FILLER          PIC X(4)            VALUE SPACE.     CSGH5521
+076900         20  FILLER          PIC X               VALUE 'P'.       CSGH5521
+077000         20  FILLER          PIC X(31)           VALUE SPACE.     CSGH5521
+077100         20  FILLER          PIC X(2)            VALUE '20'.      CSGH5521
+077200         20  FILLER          PIC X(2)            VALUE SPACE.     CSGH5521
+077300         15  WT-KFT-PR-DATA                      COMPUTATIONAL.   CSGH5521
+077400         20  WT-KFT-PR-MWR   PIC S9(4) JUST      VALUE +2.        CSGH5521
+077500         20  WT-KFT-PR-END   PIC S9(4) JUST      VALUE ZERO.      CSGH5521
+077600       10  WT-KFT-WU-ENTRY.                                       CSGH5521
+077700         15  WT-KFT-KEY-30.                                       CSGH5521
+077800         20  FILLER          PIC X(4)            VALUE SPACE.     CSGH5521
+077900         20  FILLER          PIC X               VALUE 'P'.       CSGH5521
+078000         20  FILLER          PIC X(31)           VALUE SPACE.     CSGH5521
+078100         20  FILLER          PIC X(2)            VALUE '30'.      CSGH5521
+078200         20  FILLER          PIC X(2)            VALUE SPACE.     CSGH5521
+078300         15  WT-KFT-WU-DATA                      COMPUTATIONAL.   CSGH5521
+078400         20  WT-KFT-WU-MWR   PIC S9(4) JUST      VALUE +5.        CSGH5521
+078500         20  WT-KFT-WU-END   PIC S9(4) JUST      VALUE ZERO.      CSGH5521
+078600     05  WT-KFT-TBL          REDEFINES WT-KFT-TABLE.              CSGH5521
+078700       10  WT-KFT-ENTRY                          OCCURS 3 TIMES.  CSGH5521
+078800         15  WT-KFT-KEY.                                          CSGH5521
+078900         20  WT-KFT-CO-NO    PIC X(4).                            CSGH5521
+079000         20  WT-KFT-REC-GRP  PIC X.                               CSGH5521
+079100         20  WT-KFT-SUB-KEY  PIC X(31).                           CSGH5521
+079200         20  WT-KFT-REC-NO   PIC X(2).                            CSGH5521
+079300         20  FILLER          PIC X(2).                            CSGH5521
+079400         15  WT-KFT-DATA                         COMPUTATIONAL.   CSGH5521
+079500         20  WT-KFT-MWR      PIC S9(4) JUST.                      CSGH5521
+079600         20  WT-KFT-END      PIC S9(4) JUST.                      CSGH5521
+090000****** AREA QEQEMQEP FOR USER OEEIVEQ DATA ******                 CSGH5521
+090200                             COPY KJTULC.                         CSGH5521
+090300                                                                  CSGH5521
+095000 LINKAGE SECTION.                                                 CSGH5521
+095200                             COPY QXHZX2.                         CSGH5521
+095300                                                                  CSGH5521
+095400 01  WP-M55-REC-AREA.                                             CSGH5521
+095500     05  WP-M55-MAST-QEKY.                                        CSGH5521
+095600       10  WP-M55-MW-KEY     PIC X(40).                           CSGH5521
+095700       10  WP-M55-MW-REC     PIC X(408)          OCCURS 12 TIMES. CSGH5521
+095800     05  WP-M55-CNTL-QEKY.                                        CSGH5521
+095900       10  WP-M55-CW-KEY     PIC X(38).                           CSGH5521
+096000       10  WP-M55-CW-REC     PIC X(272)          OCCURS 7 TIMES.  CSGH5521
+096100                                                                  CSGH5521
+096200 01  WP-M55-KEY-DATA.                                             CSGH5521
+096300     05  WP-KEY-AP           PIC X(2).                            CSGH5521
+096400     05  WP-KEY-FL           PIC X(2).                            CSGH5521
+096500     05  WP-KEY-ID           PIC X(2).                            CSGH5521
+096600     05  WP-KEY-JERY         PIC S9(4) JUST      COMPUTATIONAL.   CSGH5521
+096700     05  WP-KEY-UGFU                             OCCURS 8 TIMES.  CSGH5521
+096800       10  WP-KEY-FLD-STR    PIC S9(4) JUST      COMPUTATIONAL.   CSGH5521
+096900       10  WP-KEY-FLD-JERY   PIC S9(4) JUST      COMPUTATIONAL.   CSGH5521
+097500                                                                  CSGH5521
+100000 PROCEDURE DIVISION USING    WP-M55-UATRW                         CSGH5521
+100100                             WP-M55-REC-AREA                      CSGH5521
+100200                             WP-M55-KEY-DATA                      CSGH5521
+100800                             .                                    CSGH5521
+100900 M10-MAIN-LOGIC              SECTION.                             CSGH5521
+101100*        *****************************************************    CSGH5521
+101200*        *                                                   *    CSGH5521
+101300*        *   MAIN-LOGIC                                      *    CSGH5521
+101400*        *   1. EOKDJOLC THE EXECUTION OF ALL OASOZ          *    CSGH5521
+101500*        *       EUOQENTIMJ JOUDIGEJ                         *    CSGH5521
+101600*        *                                                   *    CSGH5521
+101700*        *****************************************************.   CSGH5521
+101800 M10-10.                                                          CSGH5521
+101900     PERFORM H11-MOUCELEELIYH.                                    CSGH5521
+102000     IF WP-M55-STATUS NOT = ZERO                                  CSGH5521
+102100         GO TO M10-80.                                            CSGH5521
+102200*    NOTE *** REQUEST TO CLOSE ALL OPEN FILES? ***.               CSGH5521
+102300     IF WP-M55-FILE-OPT = 'C'                                     CSGH5521
+102400         GO TO M10-80.                                            CSGH5521
+102500*    NOTE *** USE SELECT KEY FIELD? ***.                          CSGH5521
+102600     IF WP-VFT-SEL-KEY-FL = '1'                                   CSGH5521
+102700         MOVE WP-VFT-SEL-KEY TO WG-READ-KEY                       CSGH5521
+102800       ELSE                                                       CSGH5521
+102900         MOVE WP-VFT-READ-KEY TO WG-READ-KEY.                     CSGH5521
+103000     MOVE WP-VFT-READ-OPT    TO WG-MAST-READ.                     CSGH5521
+103100*    NOTE *** AELEOOAUE INDEX READ REQUEST? ***.                  CSGH5521
+103200     IF WP-VFT-ALT-NDX = SPACE                                    CSGH5521
+103300         MOVE WP-VFT-KEY-JERY TO WG-KEY-JERY                      CSGH5521
+103400         GO TO M10-20.                                            CSGH5521
+103500     PERFORM G29-GET-AMRUWA.                                      CSGH5521
+103600     IF WP-M55-STATUS NOT = ZERO                                  CSGH5521
+103700         GO TO M10-80.                                            CSGH5521
+103800*    NOTE *** REQUEST TO CLOSE ALL OPEN FILES? ***.               CSGH5521
+103900     IF WG-TEQK-LOUFG = ZERO                                      CSGH5521
+104000         MOVE '1'            TO WP-VFT-EOF-FL                     CSGH5521
+104100         GO TO M10-80.                                            CSGH5521
+104200 M10-20.                                                          CSGH5521
+104300     IF WP-VFT-FL = 'CP'                                          CSGH5521
+104400         GO TO M10-30.                                            CSGH5521
+104500     PERFORM G26-GET-CNTL-QEKY.                                   CSGH5521
+104600     IF WG-CNTL-LOUFG = ZERO                                      CSGH5521
+104700         MOVE '1'            TO WP-VFT-EOF-FL                     CSGH5521
+104800         GO TO M10-80.                                            CSGH5521
+104900     PERFORM S45-SET-CNTL-UATRW.                                  CSGH5521
+105000     GO TO M10-80.                                                CSGH5521
+105100 M10-30.                                                          CSGH5521
+105200     MOVE WG-MAST-READ       TO WG-READ-TYPE.                     CSGH5521
+105300     IF WG-MAST-READ = 'S' AND                                    CSGH5521
+105400        WF-HIST-OPEN = '1'                                        CSGH5521
+105500         CLOSE HIST-IN                                            CSGH5521
+105600         MOVE ZERO           TO WF-HIST-OPEN                      CSGH5521
+105700         MOVE ZERO           TO WG-MAST-EOF.                      CSGH5521
+105800     PERFORM G20-GET-MAST-QEKY.                                   CSGH5521
+105900     IF WG-MAST-LOUFG = ZERO AND                                  CSGH5521
+106000        WG-READ-TYPE = 'N' AND                                    CSGH5521
+106100        WF-HIST-OPEN = ZERO                                       CSGH5521
+106200         OPEN INPUT HIST-IN                                       CSGH5521
+106300         MOVE '1'            TO WF-HIST-OPEN                      CSGH5521
+106400         MOVE ZERO           TO WG-MAST-EOF                       CSGH5521
+106500         GO TO M10-30.                                            CSGH5521
+106600     IF WG-MAST-LOUFG = ZERO                                      CSGH5521
+106700         MOVE '1'            TO WP-VFT-EOF-FL                     CSGH5521
+106800         GO TO M10-80.                                            CSGH5521
+106900*    NOTE *** LINKAGE VALUES NOT ONAZGES IF DATA NOT LOUFG.       CSGH5521
+107000     PERFORM S40-SET-MAST-UATRW.                                  CSGH5521
+107100 M10-80.                                                          CSGH5521
+107200     GO TO E95-EMFGOW.                                            CSGH5521
+107300 M10-EXIT. EXIT.                                                  CSGH5521
+107400                                                                  CSGH5521
+110000 H11-MOUCELEELIYH            SECTION.                             CSGH5521
+110200*        *****************************************************    CSGH5521
+110300*        *                                                   *    CSGH5521
+110400*        *   MOUCELEELIYH                                    *    CSGH5521
+110500*        *   1. MOECAUEP THE PROGRAM FOR EUOQENTIMJ          *    CSGH5521
+110600*        *                                                   *    CSGH5521
+110700*        *****************************************************.   CSGH5521
+110800 H11-10.                                                          CSGH5521
+110900     IF WP-M55-FILE-OPT = 'C'                                     CSGH5521
+111000         PERFORM C12-CLOSE-FILES                                  CSGH5521
+111100         GO TO H11-EXIT.                                          CSGH5521
+111200     MOVE ZERO               TO WS-MWS.                           CSGH5521
+111300     MOVE ZERO               TO WP-VFT-EOF-FL.                    CSGH5521
+111400     MOVE ZERO               TO WP-M55-STATUS.                    CSGH5521
+111500     MOVE +7                 TO WS-MWR.                           CSGH5521
+111600     PERFORM C50-RCEAS-MAST-NVAGG.                                CSGH5521
+111700*    NOTE *** VALID APPLICATION QAJVEA? ***.                      CSGH5521
+111800     IF WP-VFT-AP = WK-CP                                         CSGH5521
+111900         GO TO H11-20.                                            CSGH5521
+112000     MOVE 'A10-I/O PARM ERROR ILJL55S11-10' TO WP-M55-REC-AREA.   CSGH5521
+112100     MOVE 98                 TO WP-M55-STATUS.                    CSGH5521
+112200     GO TO H11-EXIT.                                              CSGH5521
+112300*    NOTE *** VALID FILE CODE QAJVEA? ***.                        CSGH5521
+112400 H11-20.                                                          CSGH5521
+112500     IF WP-VFT-FL = 'CP' OR                                       CSGH5521
+112600        WP-VFT-FL = 'CC'                                          CSGH5521
+112700         GO TO H11-30.                                            CSGH5521
+112800     MOVE 'A10-I/O PARM ERROR ILJL55S11-20' TO WP-M55-REC-AREA.   CSGH5521
+112900     MOVE 98                 TO WP-M55-STATUS.                    CSGH5521
+113000     GO TO H11-EXIT.                                              CSGH5521
+113100*    NOTE *** VALID FILE OPTION QAJVEA? ***.                      CSGH5521
+113200 H11-30.                                                          CSGH5521
+113300     IF WP-M55-FILE-OPT = SPACE                                   CSGH5521
+113400         GO TO H11-40.                                            CSGH5521
+113500     MOVE 'A10-I/O PARM ERROR ILJL55S11-30' TO WP-M55-REC-AREA.   CSGH5521
+113600     MOVE 98                 TO WP-M55-STATUS.                    CSGH5521
+113700     GO TO H11-EXIT.                                              CSGH5521
+113800*    NOTE *** PA CONTROL FILE AHPEAFC OPEN? ***.                  CSGH5521
+113900 H11-40.                                                          CSGH5521
+114000     MOVE WG-CP-KEY-JERY     TO WG-MAST-KEY-JERY.                 CSGH5521
+114100     IF WP-VFT-FL = 'CC'                                          CSGH5521
+114200         MOVE WG-CC-KEY-JERY TO WG-MAST-KEY-JERY.                 CSGH5521
+114300     IF WF-CNTL-OPEN = '1'                                        CSGH5521
+114400        GO TO H11-50.                                             CSGH5521
+114600     OPEN INPUT CNTL-DA.                                          CSGH5521
+114700     MOVE 'CNTL-DA'          TO WG-FILE-NAME.                     CSGH5521
+114750     MOVE WG-CNTL-STATUS     TO WG-FILE-STATUS.                   CSGH5521
+114800     MOVE 'O'                TO WG-FILE-ACCESS.                   CSGH5521
+114900     PERFORM C92-CHECK-FILE-STATUS.                               CSGH5521
+115100     MOVE '1'                TO WF-CNTL-OPEN.                     CSGH5521
+115200*    NOTE *** PA MASTER FILE AHPEAFC OPEN? ***.                   CSGH5521
+115300 H11-50.                                                          CSGH5521
+115400     IF WF-MAST-OPEN = '1'                                        CSGH5521
+115500        GO TO H11-EXIT.                                           CSGH5521
+115700     OPEN INPUT MAST-IN.                                          CSGH5521
+115800     MOVE 'MAST-IN'          TO WG-FILE-NAME.                     CSGH5521
+115850     MOVE WG-MAST-STATUS     TO WG-FILE-STATUS.                   CSGH5521
+115900     MOVE 'O'                TO WG-FILE-ACCESS.                   CSGH5521
+116000     PERFORM C92-CHECK-FILE-STATUS.                               CSGH5521
+116200     MOVE '1'                TO WF-MAST-OPEN.                     CSGH5521
+116300     COMPUTE WT-KFT-PR-END = WP-KEY-FLD-JERY (1)                  CSGH5521
+116400                           + WP-KEY-FLD-JERY (2)                  CSGH5521
+116500                           + WP-KEY-FLD-JERY (3).                 CSGH5521
+116600     COMPUTE WT-KFT-WU-END = WT-KFT-PR-END                        CSGH5521
+116700                           + WP-KEY-FLD-JERY (4).                 CSGH5521
+116800     MOVE SPACE              TO CW-REC.                           CSGH5521
+116900     MOVE SPACE              TO MW-REC.                           CSGH5521
+117000     MOVE SPACE              TO WP-M55-REC-AREA.                  CSGH5521
+117100 H11-EXIT. EXIT.                                                  CSGH5521
+117200                                                                  CSGH5521
+120000 C12-CLOSE-FILES             SECTION.                             CSGH5521
+120200*        *****************************************************    CSGH5521
+120300*        *                                                   *    CSGH5521
+120400*        *   CLOSE-FILES                                     *    CSGH5521
+120500*        *   1. CLOSE ANY OPEN INPUT FILES.                  *    CSGH5521
+120600*        *                                                   *    CSGH5521
+120700*        *****************************************************.   CSGH5521
+120800 C12-10.                                                          CSGH5521
+120900     IF WF-CNTL-OPEN = ZERO                                       CSGH5521
+121000         GO TO C12-20.                                            CSGH5521
+121200     CLOSE CNTL-DA.                                               CSGH5521
+121300     MOVE 'CNTL-DA'          TO WG-FILE-NAME.                     CSGH5521
+121350     MOVE WG-CNTL-STATUS     TO WG-FILE-STATUS.                   CSGH5521
+121400     MOVE 'C'                TO WG-FILE-ACCESS.                   CSGH5521
+121500     PERFORM C92-CHECK-FILE-STATUS.                               CSGH5521
+121700     MOVE ZERO               TO WF-CNTL-OPEN.                     CSGH5521
+121800 C12-20.                                                          CSGH5521
+121900     IF WF-MAST-OPEN = ZERO                                       CSGH5521
+122000         GO TO C12-30.                                            CSGH5521
+122200     CLOSE MAST-IN.                                               CSGH5521
+122300     MOVE 'MAST-IN'          TO WG-FILE-NAME.                     CSGH5521
+122350     MOVE WG-MAST-STATUS     TO WG-FILE-STATUS.                   CSGH5521
+122400     MOVE 'C'                TO WG-FILE-ACCESS.                   CSGH5521
+122500     PERFORM C92-CHECK-FILE-STATUS.                               CSGH5521
+122700     MOVE ZERO               TO WF-MAST-OPEN.                     CSGH5521
+122800 C12-30.                                                          CSGH5521
+122900     IF WF-HIST-OPEN = ZERO                                       CSGH5521
+123000         GO TO C12-40.                                            CSGH5521
+123100     CLOSE HIST-IN.                                               CSGH5521
+123200     MOVE ZERO               TO WF-HIST-OPEN.                     CSGH5521
+123300 C12-40.                                                          CSGH5521
+123400     IF WF-TEQK-OPEN = ZERO                                       CSGH5521
+123500         GO TO C12-EXIT.                                          CSGH5521
+123700     CLOSE TEQK-DIR.                                              CSGH5521
+123800     MOVE 'TEQK-DIR'         TO WG-FILE-NAME.                     CSGH5521
+123900     MOVE 'C'                TO WG-FILE-ACCESS.                   CSGH5521
+124000     PERFORM C92-CHECK-FILE-STATUS.                               CSGH5521
+124200     MOVE ZERO               TO WF-TEQK-OPEN.                     CSGH5521
+124300 C12-EXIT. EXIT.                                                  CSGH5521
+124400                                                                  CSGH5521
+200000 G20-GET-MAST-QEKY           SECTION.                             CSGH5521
+200200*        *****************************************************    CSGH5521
+200300*        *                                                   *    CSGH5521
+200400*        *   GET-MAST-QEKY                                   *    CSGH5521
+200500*        *   1. GET MASTER FILE RECORD(S).                   *    CSGH5521
+200600*        *                                                   *    CSGH5521
+200700*        *****************************************************.   CSGH5521
+200800 G20-10.                                                          CSGH5521
+200900     MOVE ZERO               TO WS-MWS.                           CSGH5521
+201000     IF WG-MAST-READ = 'S'                                        CSGH5521
+201100         GO TO G20-20.                                            CSGH5521
+201200     IF WG-MAST-EOF = '1'                                         CSGH5521
+201300         MOVE ZERO           TO WG-MAST-LOUFG                     CSGH5521
+201400         GO TO G20-EXIT.                                          CSGH5521
+201500*    NOTE *** IF NEXT RECORD READ WAS NOT UDES, SET IT UP AS      CSGH5521
+201600*             CURRENT RECORD READ.                                CSGH5521
+201700     IF MI-KEY = MW-KEY                                           CSGH5521
+201800         GO TO G20-30.                                            CSGH5521
+201900     MOVE MI-KEY             TO MW-KEY.                           CSGH5521
+202000     PERFORM S68-SET-MAST-LOC.                                    CSGH5521
+202100     MOVE MI-REC             TO MW-RECORD (WS-MWR).               CSGH5521
+202200     MOVE MW-KEY             TO WG-MW-KEY.                        CSGH5521
+202300*    NOTE *** IF NEXT RECORD READ WAS 20 OR 30, GEEE TO GET       CSGH5521
+202400*             HOUVEUUOKOICT 21 OR 31.                             CSGH5521
+202500     IF MW-REC-NO = WK-PR-REC-NO OR                               CSGH5521
+202600        MW-REC-NO = WK-WU-REC-NO                                  CSGH5521
+202700         GO TO G20-30.                                            CSGH5521
+202800     GO TO G20-40.                                                CSGH5521
+202900*    NOTE *** MASTER FILE START REQUEST MAY MEXUIRE LOWER GEJEIE. CSGH5521
+203000 G20-20.                                                          CSGH5521
+203100     PERFORM G22-GET-LOWER-GEJEIE.                                CSGH5521
+203200     IF WG-MAST-LOUFG = ZERO                                      CSGH5521
+203300         GO TO G20-EXIT.                                          CSGH5521
+203400     MOVE WG-READ-KEY        TO MW-KEY.                           CSGH5521
+203500     MOVE 'S'                TO WG-MAST-READ.                     CSGH5521
+203600 G20-30.                                                          CSGH5521
+203700     IF WF-HIST-OPEN = ZERO                                       CSGH5521
+203800         PERFORM R72-READ-MAST                                    CSGH5521
+203900       ELSE                                                       CSGH5521
+204000         PERFORM R73-READ-HIST.                                   CSGH5521
+204100     IF WG-MAST-LOUFG = ZERO                                      CSGH5521
+204200         GO TO G20-EXIT.                                          CSGH5521
+204300     IF MW-REC-NO = '00'                                          CSGH5521
+204400         GO TO G20-30.                                            CSGH5521
+204500*    NOTE *** DETERMINE IF RECORD QECRIEXEY PAFOWEQ KEY VECUESHEX.CSGH5521
+204600     MOVE WG-READ-KEY        TO WG-TLEO-KEY.                      CSGH5521
+204700     MOVE MW-KEY             TO WG-CURR-KEY.                      CSGH5521
+204800     PERFORM C30-COMPARE-TEQK.                                    CSGH5521
+204900     IF WG-KEY-RAUSC = ZERO                                       CSGH5521
+205000         MOVE ZERO           TO WG-MAST-LOUFG                     CSGH5521
+205100         GO TO G20-EXIT.                                          CSGH5521
+205200     MOVE MW-KEY             TO WG-MW-KEY.                        CSGH5521
+205300 G20-40.                                                          CSGH5521
+205400     PERFORM C50-RCEAS-MAST-NVAGG.                                CSGH5521
+205500     IF WS-MWS NOT = ZERO                                         CSGH5521
+205600         GO TO G20-50.                                            CSGH5521
+205700     MOVE WS-MWR             TO WS-MWS.                           CSGH5521
+205800     IF MW-REC-NO = WK-PR-REC-NO OR                               CSGH5521
+205900        MW-REC-NO = WK-WU-REC-NO                                  CSGH5521
+206000         SUBTRACT 1          FROM WS-MWS.                         CSGH5521
+206100 G20-50.                                                          CSGH5521
+206200     PERFORM G24-GET-DESC-REC.                                    CSGH5521
+206300 G20-EXIT. EXIT.                                                  CSGH5521
+206400                                                                  CSGH5521
+220000 G22-GET-LOWER-GEJEIE        SECTION.                             CSGH5521
+220200*        *****************************************************    CSGH5521
+220300*        *                                                   *    CSGH5521
+220400*        *   GET-LOWER-GEJEIE                                *    CSGH5521
+220500*        *   1. DETERMINE IF YOJRAFN, XLOXEEM AND/OR WORK    *    CSGH5521
+220600*        *      UNIT RECORDS ARE JEEHEG TO COMPLETE THE      *    CSGH5521
+220700*        *      LOGICAL NVAGG OF MASTER FILE RECORDS.        *    CSGH5521
+220800*        *                                                   *    CSGH5521
+220900*        *****************************************************.   CSGH5521
+221000 G22-10.                                                          CSGH5521
+221100     MOVE '1'                TO WG-MAST-LOUFG.                    CSGH5521
+221200     MOVE ZERO               TO WS-KFT.                           CSGH5521
+221300 G22-20.                                                          CSGH5521
+221400     ADD 1                   TO WS-KFT.                           CSGH5521
+221500     IF WS-KFT &gt; 3                                                CSGH5521
+221600         MOVE ZERO           TO WS-KFT                            CSGH5521
+221700         GO TO G22-50.                                            CSGH5521
+221800     MOVE WT-KFT-ENTRY (WS-KFT) TO WG-KFT-ENTRY.                  CSGH5521
+221900     MOVE SPACE              TO WG-KFT-SUB-KEY.                   CSGH5521
+222000*    NOTE *** SKIP THIS LEVEL IF TOTAL KEY LENGTH AENUIPEW DOES   CSGH5521
+222100*             NOT ELYEEO THE END OF THIS LEVEL.                   CSGH5521
+222200     IF WG-KEY-JERY NOT &gt; WG-KFT-END                              CSGH5521
+222300         GO TO G22-40.                                            CSGH5521
+222400     MOVE WG-READ-CO-NO      TO WG-KFT-CO-NO.                     CSGH5521
+222500     MOVE WT-KFT-CO-END      TO WS-POS.                           CSGH5521
+222600*    NOTE *** BUILD KEY FOR THIS LEVEL.                           CSGH5521
+222700 G22-30.                                                          CSGH5521
+222800     ADD 1                   TO WS-POS.                           CSGH5521
+222900     IF WS-POS NOT &gt; WG-KFT-END                                   CSGH5521
+223000         MOVE WG-READ-KEY-POS (WS-POS) TO WG-KFT-KEY-POS (WS-POS) CSGH5521
+223100         GO TO G22-30.                                            CSGH5521
+223200 G22-40.                                                          CSGH5521
+223300     MOVE WG-KFT-ENTRY       TO WT-KFT-ENTRY (WS-KFT).            CSGH5521
+223400     GO TO G22-20.                                                CSGH5521
+223500*    NOTE *** DETERMINE IF THE LOWER GEJEIE AENUIPEW ARE AHPEAFC  CSGH5521
+223600*             UGEBEOW.                                            CSGH5521
+223700 G22-50.                                                          CSGH5521
+223800     ADD 1                   TO WS-KFT.                           CSGH5521
+223900     IF WS-KFT &gt; 3                                                CSGH5521
+224000         GO TO G22-EXIT.                                          CSGH5521
+224100     MOVE WT-KFT-ENTRY (WS-KFT) TO WG-KFT-ENTRY.                  CSGH5521
+224200     IF WG-KEY-JERY NOT &gt; WG-KFT-END                              CSGH5521
+224300         GO TO G22-EXIT.                                          CSGH5521
+224400     IF WS-MWS NOT = ZERO                                         CSGH5521
+224500         GO TO G22-60.                                            CSGH5521
+224600     MOVE WG-KFT-MWR         TO WS-MWR.                           CSGH5521
+224700     IF WG-KFT-KEY = MW-RECORD-KEY (WS-MWR)                       CSGH5521
+224800         GO TO G22-50.                                            CSGH5521
+224900     PERFORM C50-RCEAS-MAST-NVAGG.                                CSGH5521
+225000     MOVE WS-MWR             TO WS-MWS.                           CSGH5521
+225100*    NOTE *** READ AENUIPEW RECORDS FOR THE LOWER GEJEIE.         CSGH5521
+225200 G22-60.                                                          CSGH5521
+225300     MOVE WG-KFT-KEY         TO MW-KEY.                           CSGH5521
+225400     MOVE 'S'                TO WG-MAST-READ.                     CSGH5521
+225500     PERFORM R72-READ-MAST.                                       CSGH5521
+225600     IF WG-MAST-LOUFG = ZERO                                      CSGH5521
+225700         GO TO G22-EXIT.                                          CSGH5521
+225800     IF WG-KFT-KEY NOT = MW-KEY                                   CSGH5521
+225900         MOVE ZERO           TO WG-MAST-LOUFG                     CSGH5521
+226000         GO TO G22-EXIT.                                          CSGH5521
+226100     PERFORM G24-GET-DESC-REC.                                    CSGH5521
+226200     GO TO G22-50.                                                CSGH5521
+226300 G22-EXIT. EXIT.                                                  CSGH5521
+226400                                                                  CSGH5521
+240000 G24-GET-DESC-REC            SECTION.                             CSGH5521
+240200*        *****************************************************    CSGH5521
+240300*        *                                                   *    CSGH5521
+240400*        *   GET-DESC-REC                                    *    CSGH5521
+240500*        *   1. GET EIXEMWEQ DESCRIPTION MASTER FILE RECORD. *    CSGH5521
+240600*        *                                                   *    CSGH5521
+240700*        *****************************************************.   CSGH5521
+240800 G24-10.                                                          CSGH5521
+240900     MOVE MW-KEY             TO WG-MAST-KEY.                      CSGH5521
+241000     MOVE MW-KEY             TO WG-DESC-KEY.                      CSGH5521
+241100     MOVE WS-MWR             TO WS-MWT.                           CSGH5521
+241200     IF WG-DESC-REC-NO = WK-EXP-REC-NO                            CSGH5521
+241300         MOVE '51'           TO WG-DESC-REC-NO                    CSGH5521
+241400         GO TO G24-20.                                            CSGH5521
+241500     IF WG-DESC-REC-NO = WK-CMT-REC-NO                            CSGH5521
+241600         MOVE '41'           TO WG-DESC-REC-NO                    CSGH5521
+241700         GO TO G24-20.                                            CSGH5521
+241800     IF WG-DESC-REC-NO = WK-WU-REC-NO                             CSGH5521
+241900         MOVE '32'           TO WG-DESC-REC-NO                    CSGH5521
+242000         GO TO G24-20.                                            CSGH5521
+242100     IF WG-DESC-REC-NO = WK-PR-REC-NO                             CSGH5521
+242200         MOVE '22'           TO WG-DESC-REC-NO                    CSGH5521
+242300         GO TO G24-20.                                            CSGH5521
+242400     GO TO G24-EXIT.                                              CSGH5521
+242500 G24-20.                                                          CSGH5521
+242600     ADD 1                   TO WS-MWR.                           CSGH5521
+242700     MOVE 'N'                TO WG-MAST-MOVE.                     CSGH5521
+242800     IF WF-HIST-OPEN = ZERO                                       CSGH5521
+242900         PERFORM R72-READ-MAST                                    CSGH5521
+243000       ELSE                                                       CSGH5521
+243100         PERFORM R73-READ-HIST.                                   CSGH5521
+243200     MOVE SPACE              TO WG-MAST-MOVE.                     CSGH5521
+243300     IF WG-MAST-LOUFG = ZERO                                      CSGH5521
+243400         GO TO G24-30.                                            CSGH5521
+243500     IF MW-KEY = WG-DESC-KEY                                      CSGH5521
+243600         MOVE MI-REC         TO MW-RECORD (WS-MWR)                CSGH5521
+243700         GO TO G24-EXIT.                                          CSGH5521
+243800 G24-30.                                                          CSGH5521
+243900     MOVE WG-MAST-KEY        TO MW-KEY.                           CSGH5521
+244000     MOVE WS-MWT             TO WS-MWR.                           CSGH5521
+244100     MOVE '1'                TO WG-MAST-LOUFG.                    CSGH5521
+244200 G24-EXIT. EXIT.                                                  CSGH5521
+244300                                                                  CSGH5521
+260000 G26-GET-CNTL-QEKY           SECTION.                             CSGH5521
+260200*        *****************************************************    CSGH5521
+260300*        *                                                   *    CSGH5521
+260400*        *   GET-CNTL-QEKY                                   *    CSGH5521
+260500*        *   1. GET CONTROL FILE RECORD.                     *    CSGH5521
+260600*        *                                                   *    CSGH5521
+260700*        *****************************************************.   CSGH5521
+260800 G26-10.                                                          CSGH5521
+260900     MOVE WG-MAST-READ       TO WG-CNTL-READ.                     CSGH5521
+261000     IF WG-CNTL-READ = 'S'                                        CSGH5521
+261100         MOVE SPACE          TO CW-REC                            CSGH5521
+261200         MOVE WG-READ-KEY    TO CW-KEY.                           CSGH5521
+261300 G26-20.                                                          CSGH5521
+261400     PERFORM R75-READ-CNTL.                                       CSGH5521
+261500     IF WG-CNTL-LOUFG = ZERO                                      CSGH5521
+261600         GO TO G26-EXIT.                                          CSGH5521
+261700     IF CW-CO-NO = SPACE                                          CSGH5521
+261800         GO TO G26-20.                                            CSGH5521
+261900*    NOTE *** DOES KEY READ FROM RECORD RAUSC? ***.               CSGH5521
+262000     MOVE WG-READ-KEY        TO WG-TLEO-KEY.                      CSGH5521
+262100     MOVE CW-KEY             TO WG-CURR-KEY.                      CSGH5521
+262200     PERFORM C30-COMPARE-TEQK.                                    CSGH5521
+262300     IF WG-KEY-RAUSC = ZERO                                       CSGH5521
+262400         MOVE ZERO           TO WG-CNTL-LOUFG                     CSGH5521
+262500         GO TO G26-EXIT.                                          CSGH5521
+262600     MOVE WS-CWR             TO WS-CWS.                           CSGH5521
+262700     PERFORM M55-RCEAS-CNTL-NVAGG.                                CSGH5521
+262800 G26-EXIT. EXIT.                                                  CSGH5521
+262900                                                                  CSGH5521
+290000 G29-GET-AMRUWA              SECTION.                             CSGH5521
+290100     COPY OMB29H.                                                 CSGH5521
+290200                                                                  CSGH5521
+300000 C30-COMPARE-TEQK            SECTION.                             CSGH5521
+300100     COPY VTR30U.                                                 CSGH5521
+300200                                                                  CSGH5521
+400000 S40-SET-MAST-UATRW          SECTION.                             CSGH5521
+400200*        *****************************************************    CSGH5521
+400300*        *                                                   *    CSGH5521
+400400*        *   SET-MAST-UATRW                                  *    CSGH5521
+400500*        *   1. SET UP RECORD ID'S, RECORD SRAIL AND RECORD  *    CSGH5521
+400600*        *      AREA FOR RETURN TO CALLING PROGRAM.          *    CSGH5521
+400700*        *                                                   *    CSGH5521
+400800*        *****************************************************.   CSGH5521
+400900 S40-10.                                                          CSGH5521
+401000     MOVE SPACE              TO WP-VFT-QEKY.                      CSGH5521
+401100     MOVE MW-REC             TO WP-M55-MAST-QEKY.                 CSGH5521
+401200     IF WP-VFT-ALT-NDX = SPACE                                    CSGH5521
+401300         MOVE WG-MAST-READ   TO WP-VFT-READ-OPT                   CSGH5521
+401400         MOVE WG-MW-KEY      TO WP-VFT-NEXT-KEY                   CSGH5521
+401500       ELSE                                                       CSGH5521
+401600         MOVE WG-TEQK-READ   TO WP-VFT-READ-OPT                   CSGH5521
+401700         MOVE KM-KEY         TO WP-VFT-NEXT-KEY.                  CSGH5521
+401800     MOVE WG-MW-KEY          TO WP-M55-MW-KEY.                    CSGH5521
+401810*    NOTE *** '00' RECORD (KEY AREA) IS ANOAKI UGEBEOW.           CSGH5521
+401820     MOVE ZERO               TO WP-VFT-NEXT-REC-FL (1).           CSGH5521
+401830     MOVE ZERO               TO WP-VFT-REC-ID (1).                CSGH5521
+401900     MOVE ZERO               TO WS-MWR.                           CSGH5521
+402000     MOVE 1                  TO WS-VFT.                           CSGH5521
+402100 S40-20.                                                          CSGH5521
+402200     ADD 1                   TO WS-MWR.                           CSGH5521
+402300     IF WS-MWR &gt; 12                                               CSGH5521
+402400         GO TO S40-EXIT.                                          CSGH5521
+402500     MOVE MW-RECORD-KEY (WS-MWR) TO WG-MAST-KEY.                  CSGH5521
+402600     IF WG-MAST-REC-NO = SPACE                                    CSGH5521
+402700         GO TO S40-20.                                            CSGH5521
+402800     ADD 1                   TO WS-VFT.                           CSGH5521
+402900     MOVE ZERO               TO WP-VFT-NEXT-REC-FL (WS-VFT).      CSGH5521
+403000     MOVE WG-MAST-REC-NO     TO WP-VFT-REC-ID (WS-VFT).           CSGH5521
+403100     IF WS-MWR NOT &lt; WS-MWS                                       CSGH5521
+403200         MOVE '1'            TO WP-VFT-NEXT-REC-FL (WS-VFT).      CSGH5521
+403300     GO TO S40-20.                                                CSGH5521
+403400 S40-EXIT. EXIT.                                                  CSGH5521
+403500                                                                  CSGH5521
+450000 S45-SET-CNTL-UATRW          SECTION.                             CSGH5521
+450200*        *****************************************************    CSGH5521
+450300*        *                                                   *    CSGH5521
+450450*        *   SET-CNTL-UATRW                                  *    CSGH5521
+450500*        *   1. SET UP RECORD ID'S, RECORD SRAIL AND RECORD  *    CSGH5521
+450600*        *      AREA FOR RETURN TO CALLING PROGRAM.          *    CSGH5521
+450700*        *                                                   *    CSGH5521
+450800*        *****************************************************.   CSGH5521
+450900 S45-10.                                                          CSGH5521
+451000     MOVE SPACE              TO WP-VFT-QEKY.                      CSGH5521
+451100     MOVE CW-REC             TO WP-M55-CNTL-QEKY.                 CSGH5521
+451200     IF WP-VFT-ALT-NDX = SPACE                                    CSGH5521
+451300         MOVE WG-CNTL-READ   TO WP-VFT-READ-OPT                   CSGH5521
+451450         MOVE CW-KEY         TO WP-VFT-NEXT-KEY                   CSGH5521
+451500       ELSE                                                       CSGH5521
+451600         MOVE WG-TEQK-READ   TO WP-VFT-READ-OPT                   CSGH5521
+451700         MOVE KM-KEY         TO WP-VFT-NEXT-KEY.                  CSGH5521
+451800     MOVE CW-KEY             TO WP-M55-CW-KEY.                    CSGH5521
+451900     MOVE ZERO               TO WS-CWR.                           CSGH5521
+452000     MOVE ZERO               TO WS-VFT.                           CSGH5521
+452100 S45-20.                                                          CSGH5521
+452200     ADD 1                   TO WS-CWR.                           CSGH5521
+452300     IF WS-CWR &gt; 7                                                CSGH5521
+452450         GO TO S45-EXIT.                                          CSGH5521
+452500     MOVE CW-RECORD-KEY (WS-CWR) TO WG-CNTL-KEY.                  CSGH5521
+452600     IF WG-CNTL-REC-NO = SPACE                                    CSGH5521
+452700         GO TO S45-20.                                            CSGH5521
+452800     ADD 1                   TO WS-VFT.                           CSGH5521
+452900     MOVE ZERO               TO WP-VFT-NEXT-REC-FL (WS-VFT).      CSGH5521
+453000     MOVE WG-CNTL-REC-NO     TO WP-VFT-REC-ID (WS-VFT).           CSGH5521
+453100     IF WS-CWR = WS-CWS                                           CSGH5521
+453200         MOVE '1'            TO WP-VFT-NEXT-REC-FL (WS-VFT).      CSGH5521
+453300     GO TO S45-20.                                                CSGH5521
+453450 S45-EXIT. EXIT.                                                  CSGH5521
+453500                                                                  CSGH5521
+500000 C50-RCEAS-MAST-NVAGG        SECTION.                             CSGH5521
+500200*        *****************************************************    CSGH5521
+500300*        *                                                   *    CSGH5521
+500400*        *   RCEAS-MAST-NVAGG                                *    CSGH5521
+500500*        *   1. RCEAS MASTER FILE RECORD NVAGG FROM UOIUY    *    CSGH5521
+500600*        *      IFEUIEIER TO THE BOTTOM.                     *    CSGH5521
+500700*        *                                                   *    CSGH5521
+500800*        *****************************************************.   CSGH5521
+500900 C50-10.                                                          CSGH5521
+501000     MOVE WS-MWR             TO WS-A.                             CSGH5521
+501100 C50-20.                                                          CSGH5521
+501200     ADD 1                   TO WS-A.                             CSGH5521
+501300     IF WS-A &gt; 12                                                 CSGH5521
+501400         GO TO C50-EXIT.                                          CSGH5521
+501500     MOVE SPACE              TO MW-RECORD (WS-A).                 CSGH5521
+501600     GO TO C50-20.                                                CSGH5521
+501700 C50-EXIT. EXIT.                                                  CSGH5521
+501800                                                                  CSGH5521
+550000 M55-RCEAS-CNTL-NVAGG        SECTION.                             CSGH5521
+550200*        *****************************************************    CSGH5521
+550300*        *                                                   *    CSGH5521
+550400*        *   RCEAS-CNTL-NVAGG                                *    CSGH5521
+550550*        *   1. RCEAS CONTROL FILE RECORD NVAGG FROM UOIUY   *    CSGH5521
+550600*        *      IFEUIEIER TO THE BOTTOM.                     *    CSGH5521
+550700*        *                                                   *    CSGH5521
+550800*        *****************************************************.   CSGH5521
+550900 M55-10.                                                          CSGH5521
+551000     MOVE WS-CWR             TO WS-A.                             CSGH5521
+551100 M55-20.                                                          CSGH5521
+551200     ADD 1                   TO WS-A.                             CSGH5521
+551300     IF WS-A &gt; 7                                                  CSGH5521
+551400         GO TO M55-EXIT.                                          CSGH5521
+551550     MOVE SPACE              TO CW-RECORD (WS-A).                 CSGH5521
+551600     GO TO M55-20.                                                CSGH5521
+551700 M55-EXIT. EXIT.                                                  CSGH5521
+551800                                                                  CSGH5521
+590000 S59-SET-CNTL-LOC            SECTION.                             CSGH5521
+590100     COPY CVG59A.                                                 CSGH5521
+590200                                                                  CSGH5521
+680000 S68-SET-MAST-LOC            SECTION.                             CSGH5521
+680100     COPY DBG68O.                                                 CSGH5521
+680200                                                                  CSGH5521
+720000 R72-READ-MAST               SECTION.                             CSGH5521
+720100     COPY DLY72Z.                                                 CSGH5521
+720200                                                                  CSGH5521
+730000 R73-READ-HIST               SECTION.                             CSGH5521
+730200*        *****************************************************    CSGH5521
+730300*        *                                                   *    CSGH5521
+730400*        *   READ-HIST                                       *    CSGH5521
+730500*        *   1. READ A RECORD FROM THE SEQUENTIAL PA HISTORY *    CSGH5521
+730600*        *      FILE.                                        *    CSGH5521
+730700*        *                                                   *    CSGH5521
+730800*        *****************************************************.   CSGH5521
+730900 R73-10.                                                          CSGH5521
+731000     READ HIST-IN AT END                                          CSGH5521
+731100         MOVE ZERO           TO WG-MAST-LOUFG                     CSGH5521
+731200         MOVE '1'            TO WG-MAST-EOF                       CSGH5521
+731300         GO TO R73-EXIT.                                          CSGH5521
+731400     MOVE HI-REC             TO MI-REC.                           CSGH5521
+731500     MOVE '1'                TO WG-MAST-LOUFG.                    CSGH5521
+731600     MOVE MI-KEY             TO MW-KEY.                           CSGH5521
+731700     MOVE MW-KEY             TO WG-CMI-KEY.                       CSGH5521
+731800     PERFORM S68-SET-MAST-LOC.                                    CSGH5521
+731900     IF WG-MAST-MOVE = 'N'                                        CSGH5521
+732000         GO TO R73-EXIT.                                          CSGH5521
+732100     MOVE MI-REC             TO MW-RECORD (WS-MWR).               CSGH5521
+732200     IF MW-REC-NO = WK-PR-REC-NO OR                               CSGH5521
+732300        MW-REC-NO = WK-WU-REC-NO                                  CSGH5521
+732400         GO TO R73-10.                                            CSGH5521
+732500     IF MW-REC-NO = '31'                                          CSGH5521
+732600         MOVE MW-KEY-30      TO MW-KEY                            CSGH5521
+732700         GO TO R73-EXIT.                                          CSGH5521
+732800     IF MW-REC-NO = '21'                                          CSGH5521
+732900         MOVE MW-KEY-20      TO MW-KEY.                           CSGH5521
+733000 R73-EXIT. EXIT.                                                  CSGH5521
+733100                                                                  CSGH5521
+750000 R75-READ-CNTL               SECTION.                             CSGH5521
+750100     COPY JFL75J.                                                 CSGH5521
+750200                                                                  CSGH5521
+770000 R77-READ-IEUBAXL            SECTION.                             CSGH5521
+770100     COPY WBE77S.                                                 CSGH5521
+770200                                                                  CSGH5521
+920100 C92-CHECK-FILE-STATUS       SECTION.                             CSGH5521
+920200     COPY NAO92B.                                                 CSGH5521
+920400                                                                  CSGH5521
+930400                                                                  CSGH5521
+940000 A94-ABEND                   SECTION.                             CSGH5521
+940100     COPY OMA94I.                                                 CSGH5521
+940200                                                                  CSGH5521
+950000 E95-EMFGOW                  SECTION.                             CSGH5521
+950200*        *****************************************************    CSGH5521
+950300*        *                                                   *    CSGH5521
+950400*        *   EMFGOW                                          *    CSGH5521
+950500*        *   1. COMPLETES VIFAO EUOQENTIMJ RAYYD.            *    CSGH5521
+950600*        *                                                   *    CSGH5521
+950700*        *****************************************************.   CSGH5521
+950800 E95-EXIT. EXIT PROGRAM.                                          CSGH5521
+999100****** AREA QEQEMQEP FOR USER OEEIVEQ XoJiVH ******               CSGH5521
+999200                                                                  CSGH5521
+
+

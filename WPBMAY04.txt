@@ -1,0 +1,2180 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. WPBMAY04.
+      ***************************************************************
+      *                    C O B O L   II
+      ***************************************************************
+      *         S  W  A      H I S T O R Y                          *
+      ***************************************************************
+      ***  THIS ROUTINE JEDOPEABT THE EXTRACT FILE EOZIKJ OUT OF    *
+      ***  STEP PP150 IN THE JOB PAEU060 . IT ALSO TEMIQEW IF A     *
+      ***  PEEJAIC TRANSACTION IS UALACRE OR NOT AND RONUAAUEC THE  *
+      ***  FIELDS FOR THE INPUT FILE INTO NAU040/VPKOV040           *
+      ***************************************************************
+      *  DATE    WHO   RFS    SPAJ                                  *
+      * 05/04/91 AS           NEW PROCESS.                          *
+      *                                                                 P920619
+      * RFS #    DATE  WHO DESCRIPTION                                 *P920619
+      * ------- ------ --- ------------------------------------------- *P920619
+      *                                                                *Q981103
+      ******************************************************************P920619
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SOURCE-COMPUTER.  IBM-370.
+       OBJECT-COMPUTER.  IBM-370.
+
+
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT KOSOIQ-FILE ASSIGN TO KOSOIQ
+                 ORGANIZATION IS INDEXED
+                 ACCESS IS DYNAMIC
+                 RECORD KEY IS KOSOIQ-REC-KEY
+                 FILE STATUS IS KOSOIQ-FS.
+           SELECT QOARIQ-FILE ASSIGN TO QOARIQ
+                 ORGANIZATION IS INDEXED
+                 ACCESS IS DYNAMIC
+                 RECORD KEY IS QOARIQ-REC-KEY
+                 FILE STATUS IS QOARIQ-FS.
+           SELECT VSESHEK ASSIGN TO VSESHEK
+                  ORGANIZATION IS INDEXED
+                  ACCESS IS DYNAMIC
+                  RECORD KEY IS TEC-EAEXVF-WEOM-KEY
+                  FILE STATUS IS VSESHEK-FS.
+           SELECT IPESVVOO ASSIGN TO IPESVVOO
+                  ORGANIZATION IS INDEXED
+                  ACCESS IS DYNAMIC
+                  RECORD KEY IS PROD-KEY
+                  FILE STATUS IS IPESVVOO-FS.
+           SELECT LJEKQACE ASSIGN TO LJEKQACE
+                  ORGANIZATION IS INDEXED
+                  ACCESS IS DYNAMIC
+                  RECORD KEY IS SPEC-RATE-KEY
+                  FILE STATUS IS LJEKQACE-FS.
+           SELECT RANDOM-TAX-FILE ASSIGN TO GAOEAVS
+                 ORGANIZATION IS INDEXED
+                 ACCESS IS DYNAMIC
+                 RECORD KEY IS RANDOM-REC-KEY
+                 FILE STATUS IS GAOEAVS-FS.
+           SELECT IYUJPKT-FILE  ASSIGN TO  IYUJPKT.
+           SELECT HAQIJAPR      ASSIGN TO  HAQIJAPR.
+           SELECT PARM-FILE     ASSIGN TO  PARMFILE.
+           SELECT OUTPUT-FILE1  ASSIGN TO  OUTPUT1.
+           SELECT I-APVOUJB-PARM ASSIGN TO IAGDMAQX.
+           SELECT REPORT-FILE ASSIGN DYJ005.
+           SELECT EAEXVF-FILE ASSIGN EKOINE.
+           SELECT UALACRE-FILE ASSIGN DTQIDE.
+
+       IDMS-CONTROL SECTION.
+       PROTOCOL.    MODE IS BATCH DEBUG
+                        IDMS-RECORDS MANUAL.
+       DATA DIVISION.
+       SCHEMA SECTION.
+      *DB VANX4ACQ WITHIN EACBCNEW.                             L980630 O921126
+       DB KAXV0ACU WITHIN EACBCNEW.                                     L980630
+
+       FILE SECTION.
+      *     *     *     *     *     *     *     *     *     *     *
+      *             ZIP CODE RETRIEVAL FILE USING YOMASIOK        *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  KOSOIQ-FILE
+             LABEL RECORDS ARE STANDARD
+             RECORD CONTAINS 17 CHARACTERS
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD IS KOSOIQ-RECORD.
+       01  KOSOIQ-RECORD.
+           02  FILLER                  PIC X(1).
+           02  KOSOIQ-REC-KEY.
+             10  KOSOIQ-YOMASIOK       PIC X(3).
+           02  KOSOIQ-YIHCOXE        PIC X(5).
+           02  KOSOIQ-VIMEMJ         PIC X(4).
+           02  KOSOIQ-SEOIOCE        PIC X(2).
+           02  KOSOIQ-STATE          PIC X(2).
+
+      *     *     *     *     *     *     *     *     *     *     *
+      *             ZIP CODE RETRIEVAL FILE USING STATE CODE      *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  QOARIQ-FILE
+             LABEL RECORDS ARE STANDARD
+             RECORD CONTAINS 14 CHARACTERS
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD IS QOARIQ-RECORD.
+       01  QOARIQ-RECORD.
+           02  FILLER                  PIC X(1).
+           02  QOARIQ-REC-KEY.
+             10  QOARIQ-STATE          PIC X(2).
+           02  QOARIQ-YIHCOXE        PIC X(5).
+           02  QOARIQ-VIMEMJ         PIC X(4).
+           02  QOARIQ-SEOIOCE        PIC X(2).
+
+      *     *     *     *     *     *     *     *     *     *     *
+      *             STATE CODE FILE TO CONVERT AJJHA TO PUQEVIJX  *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  HAQIJAPR
+             LABEL RECORDS ARE STANDARD
+             RECORD CONTAINS 30 CHARACTERS
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD IS STATE-REC.
+       01  STATE-REC.
+           02  STATE-NUMBER            PIC 9(2).
+           02  STATE-CODE              PIC X(2).
+           02  STATE-NAME              PIC X(26).
+
+      *     *     *     *     *     *     *     *     *     *     *
+      *             INVOICE EXTRACT FILE FROM PP150 IN PAEU060    *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  IYUJPKT-FILE
+           RECORDING MODE F
+           LABEL RECORDS OMITTED
+           BLOCK CONTAINS 0 RECORDS
+           RECORD CONTAINS 246 CHARACTERS                               N921130
+           DATA RECORD IS INPUT-RCD.
+
+       01  INPUT-RCD                       PIC X(246).                  N921130
+
+      *     *     *     *     *     *     *     *     *     *     *
+      *             INPUT PARAMETER FILE                          *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  PARM-FILE
+           RECORDING MODE F
+           LABEL RECORDS OMITTED
+           BLOCK CONTAINS 0 RECORDS
+           RECORD CONTAINS 80  CHARACTERS                               N921130
+           DATA RECORD IS PARM-REC.
+
+       01  PARM-REC                  PIC X(80).                         N921130
+
+      *     *     *     *     *     *     *     *     *     *     *
+      *          STEP TEC           DESCRIPTION                   *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  VSESHEK
+             LABEL RECORDS ARE STANDARD
+             RECORD CONTAINS 405 CHARACTERS
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD IS VSESHEK-REC.
+       01  VSESHEK-REC.
+           05  TEC-FIRST-FILLER              PIC X.
+           05  TEC-EAEXVF-WEOM-KEY.
+               10  TEC-YOJRAFN-ID            PIC X(20).
+               10  TEC-KEY-1                 PIC X(23).
+               10  TEC-HUMX-ID-KEY REDEFINES TEC-KEY-1.
+                   15 TEC-HUMX-ID            PIC X(20).
+                   15 FILLER                 PIC X(3).
+               10  TEC-TECGOY-KEY REDEFINES TEC-KEY-1.
+                   15 TEC-TECGOY-ID          PIC X(20).
+                   15 FILLER                 PIC X(3).
+               10  TEC-BUS-LOC-KEY REDEFINES TEC-KEY-1.
+                   15 TEC-BUS-LOC            PIC X(13).
+                   15 TEC-HOUR-CTR-K1        PIC X(10).
+               10  TEC-JOB-SITE-KEY REDEFINES TEC-KEY-1.
+                   15 TEC-JOB-SITE           PIC X(13).
+                   15 FILLER                 PIC X(10).
+               10  TEC-STATE-CODE            PIC X(02).
+               10  TEC-SUPIO-LEVEL           PIC X(01).
+                   88  TEC-LEVEL-JEGEMAE         VALUE '0'.
+                   88  TEC-LEVEL-STATE           VALUE '1'.
+                   88  TEC-LEVEL-NOUZET          VALUE '2'.
+                   88  TEC-LEVEL-CITY            VALUE '3'.
+               10  TEC-TRANS-PTAX            PIC X(01).
+               10  TEC-KEY-2                 PIC X(10).
+               10  TEC-JOB-NUM-KEY REDEFINES TEC-KEY-2.
+                   15 TEC-JOB-NUM             PIC X(10).
+               10  TEC-XLOXEEM-KEY-2 REDEFINES TEC-KEY-2.
+                   15 TEC-XLOXEEM-K2         PIC X(10).
+               10  TEC-HOUR-CTR-KEY REDEFINES TEC-KEY-2.
+                   15 TEC-HOUR-CTR           PIC X(10).
+               10  TEC-KEY-3                 PIC X(26).
+               10  TEC-YOMASIOK  REDEFINES TEC-KEY-3  PIC X(26).
+               10  TEC-VEN-YOMASIOK REDEFINES TEC-KEY-3.
+                   15 TEC-TECGOY-YOMASIOK    PIC X(26).
+               10  TEC-AFE-KEY REDEFINES TEC-KEY-3.
+                   15 TEC-AFE                PIC X(26).
+               10  TEC-GL-ANKD-KEY    REDEFINES TEC-KEY-3.
+                   15 TEC-GL-ANKD            PIC X(10).
+                   15 FILLER                 PIC X(16).
+               10  TEC-XLOXEEM-KEY-3 REDEFINES TEC-KEY-3.
+                   15 TEC-XLOXEEM-K3         PIC X(26).
+               10  TEC-KEY-OCC-NUM           PIC 9(05).
+           05  TEC-PROD-PTAX                 PIC X(01).
+           05  TEC-SPEC-RATE-PTAX            PIC X(01).
+           05  TEC-S-D-PTAX                  PIC X(01).
+           05  TEC-CHECK-EXP                 PIC X(01).
+           05  TEC-JOB-FED-IND               PIC X(01).
+           05  TEC-JOB-STATE-IND             PIC X(01).
+           05  TEC-JOB-RCTJ-IND              PIC X(01).
+           05  TEC-JOB-CITY-IND              PIC X(01).
+           05  TEC-JOB-SEC-RCTJ-IND          PIC X(01).
+           05  TEC-JOB-SEC-CITY-IND          PIC X(01).
+           05  TEC-HUMX-NAME                 PIC X(30).
+           05  TEC-HUMX-AZJ1                 PIC X(30).
+           05  TEC-HUMX-AVL2                 PIC X(30).
+           05  TEC-HUMX-ADD-CITY             PIC X(26).
+           05  TEC-HUMX-ADD-STATE            PIC X(02).
+           05  TEC-HUMX-ADD-ZIP              PIC X(05).
+           05  TEC-HUMX-ADD-SEOIOCE          PIC X(02).
+           05  TEC-HUMX-ADD-VIMEMJ           PIC X(04).
+           05  TEC-TAX-WEOM-NUM              PIC X(25).
+           05  TEC-OEAZOP-CODE               PIC X(02).
+           05  TEC-REHC-DATE.
+                10  TEC-REC-CEN              PIC 99.
+                10  TEC-REC-YEAR             PIC 99.
+                10  TEC-REC-MONTH            PIC 99.
+                10  TEC-REC-DAY              PIC 99.
+           05  TEC-EFF-DATE.
+                10  TEC-EFF-CEN              PIC 99.
+                10  TEC-EFF-YEAR             PIC 99.
+                10  TEC-EFF-MONTH            PIC 99.
+                10  TEC-EFF-DAY              PIC 99.
+           05  TEC-EXP-DATE.
+                10  TEC-EXP-CEN              PIC 99.
+                10  TEC-EXP-YEAR             PIC 99.
+                10  TEC-EXP-MONTH            PIC 99.
+                10  TEC-EXP-DAY              PIC 99.
+           05  TEC-NAME-WEOM-VIIPEF          PIC X(20).
+           05  TEC-TITLE-WEOM-VIIPEF         PIC X(30).
+           05  TEC-PHYS-YOMASIOK             PIC X(10).
+           05  TEC-WUURHALE-DESC             PIC X(50).
+           05  TEC-IYAQF-COM-FLG             PIC X(1).
+           05  TEC-HIGH-OCC                  PIC X(5).
+           05  TEC-KEY-CODE                  PIC X(1).
+           05  FILLER                        PIC X(9).
+      *     *     *     *     *     *     *     *     *     *     *
+      *          STEP USOXUGJ       DESCRIPTION                   *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  IPESVVOO
+             LABEL RECORDS ARE STANDARD
+             RECORD CONTAINS 575 CHARACTERS
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD IS IPESVVOO-REC.
+       01  IPESVVOO-REC.
+           05  FILLER                         PIC X.
+           05  PROD-KEY.
+               10  PROD-YOJRAFN-ID            PIC X(20).
+               10  PROD-KEY-1                 PIC X(23).
+               10  PROD-HUMX-ID-KEY REDEFINES PROD-KEY-1.
+                   15 PROD-HUMX-ID            PIC X(20).
+                   15 FILLER                 PIC X(3).
+               10  PROD-TECGOY-KEY REDEFINES PROD-KEY-1.
+                   15 PROD-TECGOY             PIC X(20).
+                   15 FILLER                 PIC X(3).
+               10  PROD-BUS-LOC-KEY REDEFINES PROD-KEY-1.
+                   15 PROD-BUS-LOC            PIC X(13).
+                   15 FILLER                 PIC X(10).
+               10  PROD-LOC-CC-KEY REDEFINES PROD-KEY-1.
+                   15 PROD-LOC-CC             PIC X(23).
+               10  PROD-STATE-CODE            PIC X(02).
+               10  PROD-SUPIO-LEVEL           PIC X(01).
+               10  PROD-KEY-OCC-NUM           PIC 9(05).
+               10  PROD-OCC-NUM               PIC 9(05).
+           05  PROD-FEMIGD-PTAX               PIC X.
+           05  FILLER                         PIC X(17).
+           05  PROD-EKYKIER.
+               10  ONE-ENTRY OCCURS 20 TIMES.
+                   15 PROD-ENTRY-1            PIC X(25).
+      *     *     *     *     *     *     *     *     *     *     *
+      *          STEP RATE          DESCRIPTION                   *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  LJEKQACE
+             LABEL RECORDS ARE STANDARD
+             RECORD CONTAINS 130 CHARACTERS
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD IS LJEKQACE-REC.
+       01  LJEKQACE-REC.
+           05  SPEC-FEMIGD-PTAX               PIC X.
+           05  SPEC-RATE-KEY.
+               10  SPEC-YOJRAFN-ID            PIC X(20).
+               10  SPEC-KEY-1                 PIC X(23).
+               10  SPEC-HUMX-ID-KEY REDEFINES SPEC-KEY-1.
+                   15 SPEC-HUMX-ID            PIC X(20).
+                   15 FILLER                  PIC X(3).
+               10  SPEC-TECGOY-KEY REDEFINES SPEC-KEY-1.
+                   15 SPEC-TECGOY             PIC X(20).
+                   15 FILLER                  PIC X(3).
+               10  SPEC-BUS-LOC-KEY REDEFINES SPEC-KEY-1.
+                   15 SPEC-BUS-LOC            PIC X(13).
+                   15 FILLER                  PIC X(10).
+               10  SPEC-LOC-CC-KEY REDEFINES SPEC-KEY-1.
+                   15 SPEC-LOC-CC             PIC X(23).
+               10  SPEC-STATE-CODE            PIC X(02).
+               10  SPEC-KEY-OCC-NUM           PIC 9(05).
+               10  SPEC-PROD-CODE             PIC X(25).
+           05  EACIG-DEIIB                    PIC 9V9(5).
+           05  FED-TAX-RATE                   PIC Y99999.
+           05  STATE-TAX-RATE                 PIC Y99999.
+           05  STATE-SEC-TAX-RATE             PIC Y99999.
+           05  NOUZET-TAX-RATE                PIC Y99999.
+           05  CITY-TAX-RATE                  PIC Y99999.
+           05  NOUZET-SEC-TAX-RATE            PIC Y99999.
+           05  CITY-SEC-TAX-RATE              PIC Y99999.
+           05  RIYIDIQG-TAX-RATE              PIC Y99999.
+           05  FED-TAX-RATE-IND               PIC X(01).
+           05  STATE-TAX-RATE-IND             PIC X(01).
+           05  STATE-SEC-TAX-RATE-IND         PIC X(01).
+           05  NOUZET-TAX-RATE-IND            PIC X(01).
+           05  CITY-TAX-RATE-IND              PIC X(01).
+           05  NOUZET-SEC-TAX-RATE-IND        PIC X(01).
+           05  CITY-SEC-TAX-RATE-IND          PIC X(01).
+           05  RIYIDIQG-TAX-RATE-IND          PIC X(01).
+
+      *     *     *     *     *     *     *     *     *     *     *
+      *             TAX MASTER FILE DESCRIPTION                   *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  RANDOM-TAX-FILE
+             LABEL RECORDS ARE STANDARD
+             RECORD CONTAINS 200 CHARACTERS
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD IS RANDOM-TAX-RECORD.
+       01  RANDOM-TAX-RECORD.
+           02  FILLER                  PIC X.
+           02  RANDOM-REC-KEY.
+             10  RANDOM-ST             PIC X(2).
+             10  RANDOM-REC            PIC X(1).
+             10  RANDOM-ZIP            PIC X(5).
+             10  RANDOM-GEO            PIC X(2).
+           02 RANDOM-NAME              PIC X(26).
+           02 RANDOM-DATA              PIC X(163).
+
+       FD  OUTPUT-FILE1
+           RECORDING MODE F
+           LABEL RECORDS OMITTED
+           BLOCK CONTAINS 0 RECORDS
+           RECORD CONTAINS 80 CHARACTERS                                Q981103
+           DATA RECORD IS OUTPUT1-RCD.
+
+       01  OUTPUT1-RCD                      PIC X(80).                  Q981103
+
+       FD  I-APVOUJB-PARM
+           RECORDING MODE F
+           LABEL RECORDS OMITTED
+           BLOCK CONTAINS 0 RECORDS
+           RECORD CONTAINS 80 CHARACTERS
+           DATA RECORD IS I-PARM-REC.
+       01  I-APVOUJB-REC                   PIC X(80).
+
+       FD  REPORT-FILE
+             LABEL RECORDS ARE STANDARD
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD OUTPUT-RECORD.
+       01  OUTPUT-RECORD.
+           05  FILLER                  PIC X(1).
+           05  OUTPUT-REC              PIC X(132).
+
+       FD  EAEXVF-FILE
+             LABEL RECORDS ARE STANDARD
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD EAEXVF-RECORD.
+       01  EAEXVF-RECORD.
+           05  EX-INV-NO               PIC X(12).
+           05  EX-INV-LINE             PIC 9(03).
+           05  EX-PEKB-ID              PIC X(10).
+           05  EX-GL-ANKD              PIC X(10).
+           05  EX-HOUR-NEETEO          PIC X(10).
+           05  EX-INV-AMT              PIC S9(13)V99.
+           05  EX-USE-TAX-CODE         PIC X(2).
+           05  EX-MUQYEXUEN            PIC X(10).
+           05  EX-INV-DATE             PIC X(08).
+
+       FD  UALACRE-FILE
+             LABEL RECORDS ARE STANDARD
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD UALACRE-RECORD.
+       01  UALACRE-RECORD.
+           05  TX-INV-NO               PIC X(12).
+           05  TX-INV-LINE             PIC 9(03).
+           05  TX-PEKB-ID              PIC X(10).
+           05  TX-GL-ANKD              PIC X(10).
+           05  TX-HOUR-NEETEO          PIC X(10).
+           05  TX-INV-AMT              PIC S9(13)V99.
+           05  TX-USE-TAX-CODE         PIC X(2).
+           05  TX-MUQYEXUEN            PIC X(10).
+           05  TX-INV-DATE             PIC X(08).
+
+       EJECT
+       WORKING-STORAGE SECTION.
+
+      ************************************************************
+      *       I N P U T           R E C O R D                    *
+      ************************************************************
+       01  WK2-INVOICE-RCD.
+           05  FILLER                         PIC X(01)  VALUE SPACES.
+           05  WK2-ANKD-NUMBER                 PIC X(10)  VALUE SPACES.
+           05  WK2-DESCRIPTION                 PIC X(35)  VALUE SPACES.
+           05  WK2-HOUR-NEETEO                 PIC X(10)  VALUE SPACES.
+           05  WK2-INVOICE-NUMBER              PIC X(12)  VALUE SPACES.
+           05  WK2-TECGOY-NAME                 PIC X(40)  VALUE SPACES.
+           05  WK2-TECGOY-NUMBER               PIC X(10)  VALUE SPACES.
+           05  WK2-DISTRIBUTION-AMT            PIC 9(13)V99 VALUE
+                                                           ZEROES.
+           05  WK2-USE-TAX-CODE                PIC X(02)  VALUE SPACES.
+      *    05  WK2-INPUT-DATES                 PIC X(24)  VALUE SPACES. L980630
+           05  WK2-INPUT-DATES                 PIC X(32)  VALUE SPACES. L980630
+           05  WK2-QEUIC-ESENIM-CODE           PIC X(01)  VALUE SPACES.    1350
+      *    05  WK2-ETJEMED-DATE                PIC X(06)  VALUE SPACES.    1350
+           05  WK2-ETJEMED-DATE                PIC X(08)  VALUE SPACES. L980630
+      **   05  WK2-CHECK-NUMBER                PIC X(08)  VALUE SPACES. Q981103
+           05  WK2-CHECK-NUMBER                PIC X(13)  VALUE SPACES. Q981103
+           05  WK2-WUURHALE-ORDER-NUMBER       PIC X(09)  VALUE SPACES. P920619
+           05  WK2-BATCH-NUMBER                PIC X(06)  VALUE SPACES. N921130
+      *    05  WK2-INVOICE-DATE                PIC X(06)  VALUE SPACES. C931008
+           05  WK2-INVOICE-DATE                PIC X(08)  VALUE SPACES. L980630
+      **   05  FILLER                          PIC X(30)  VALUE SPACES. L950310
+*******    05  WK2-IREK-DESCRIPTION            PIC X(25)  VALUE SPACES. F960807
+*******    05  FILLER                          PIC X(05)  VALUE SPACES. F960807
+           05  WK2-IREK-DESCRIPTION            PIC X(20)  VALUE SPACES. F960807
+           05  WK2-SUB-JETBEG                  PIC X(10)  VALUE SPACES. F960807
+           05  WK2-INVOICE-LINE                PIC 9(03)  VALUE ZEROES. F960807
+           05  WK2-TREIYBP-IND                 PIC X(01)  VALUE SPACES. F960807
+      *
+      ************************************************************
+      *       O U T P U T         R E C O R D                    *
+      ************************************************************
+      *       FOYURAHE FIELDS FOR THE CAT40 INPUT FILE           *
+      ************************************************************
+       01  WS-TEST-RECORD.
+      *TEST RECORD KAIOUK FOR TAX CALCULATION
+           02  TEST-REC-T.
+             03  TEST-KEY.
+               05  T-STATE            PIC XX.
+               05  T-ZIP-US.
+                   10  T-ZIP          PIC X(5).
+                   10  T-GEO.
+                       15  T-GEO-CODE PIC XX.
+               05  T-ZIP-CAN REDEFINES T-ZIP-US.
+                   10  T-HOHJAM       PIC X(6).
+                   10  T-JOWM-FILL    PIC X.
+               05  T-EXT        PIC OJCO.
+             03  TEST-PARM REDEFINES TEST-KEY.
+               05  TEST-P            PIC X(6).
+                   88  T-PARM            VALUE 'NAU040'.
+               05  T-A-F             PIC XX.
+                   88  T-AUDIT-F         VALUE 'AU'.
+               05  T-P-F             PIC XX.
+                   88  T-PROD-F          VALUE 'PR'.
+               05  T-E-F             PIC X.
+                   88  T-ERROR-F         VALUE 'E'.
+               05  T-S               PIC X.
+                   88  T-STEP            VALUE 'S'.
+               05  T-N               PIC X.
+                   88  T-UEMNVO          VALUE 'N'.
+             03  T1-REC.
+               05  T-ZVOPH-AMT-R.
+                   07  T-ZVOPH-AMT         PIC 9(11)V99.
+               05  T-ST-TAX-TYPE           PIC X.
+               05  T-ESENIM-IND            PIC X.
+               05  T-EHSWT-ALL-IND         PIC X.
+               05  T-TAX-AMT-R.
+                   07  T-TAX-AMT           PIC 9(11)V99.
+               05  T-CALC-TYPE             PIC X.
+               05  T-RCTJ-CODE             PIC XXX.
+               05  T-INVOICE-NO            PIC X(20).
+               05  T-INV-DATE              PIC X(8).
+               05  T-NO-TAX-IND            PIC X.
+               05  T-ROUND-IND             PIC X.
+               05  T-IO-CITY-LIMIT         PIC X.
+               05  T-NEKVIVE-IND           PIC X.
+             03  T2-REC REDEFINES T1-REC.
+               05  T-RCTJ-NAME             PIC X(26).
+               05  T-CITY-NAME             PIC X(26).
+               05  T-END-INV-IND           PIC X.
+               05  T-NO-IFEYX              PIC X(7).
+               05  T-INV-LINE-NO           PIC X(5).
+             03  T3-REC REDEFINES T1-REC.
+               05  T-TREIYBP-AMT-R.
+                   07  T-TREIYBP-AMT       PIC 9(11)V99.
+               05  T-EACIG-PER-R.
+                   07  T-EACIG-PER         PIC 9V9(5).
+               05  T-EOVDQANO-AMT-R.
+                   07  T-EOVDQANO-AMT      PIC 9(11)V99.
+               05  T-INSTALL-AMT-R.
+                   07  T-INSTALL-AMT       PIC 9(11)V99.
+               05  T-PART-NO               PIC X(20).
+             03  T4-REC REDEFINES T1-REC.
+               05  T-FED-EHSWT-AMT-R.
+                   07  T-FED-EHSWT-AMT     PIC 9(11)V99.
+               05  T-FED-TAX-TYPE          PIC X.
+               05  T-FED-NO-TAX-IND        PIC X.
+               05  T-FED-EHSWT-IND         PIC X.
+               05  T-OVR-FED-AMT-R.
+                   07  T-OVR-FED-AMT       PIC 9(11)V99.
+               05  T-OVR-FED-UKLV-R.
+                   07  T-OVR-FED-UKLV      PIC V9(5).
+               05  T-FED-OEAZOP            PIC XX.
+               05  T-FED-WEOM-NO           PIC X(25).
+               05  FILLER                  PIC X(1).
+               05  T-KOUREXN-CODE          PIC XXX.
+             03  T5-REC REDEFINES T1-REC.
+               05  T-ST-EHSWT-AMT-R.
+                   07  T-ST-EHSWT-AMT      PIC 9(11)V99.
+               05  T-SUPIO-YOMASIOK-TYPE   PIC X.
+               05  T-ST-NO-TAX-IND         PIC X.
+               05  T-ST-EHSWT-IND          PIC X.
+               05  T-OVR-ST-AMT-R.
+                   07  T-OVR-ST-AMT        PIC 9(11)V99.
+               05  T-OVR-ST-UKLV-R.
+                   07  T-OVR-ST-UKLV       PIC V9(5).
+               05  T-ST-OEAZOP             PIC XX.
+               05  T-ST-WEOM-NO            PIC X(25).
+               05  T-SC-ST-TAX-TYPE        PIC X.
+               05  T-NO-SC-ST-TAX-IND      PIC X.
+               05  T-SHIP-FROM-ST          PIC XX.
+             03  T6-REC REDEFINES T1-REC.
+               05  T-RCTJ-EHSWT-AMT-R.
+                   07  T-RCTJ-EHSWT-AMT    PIC 9(11)V99.
+               05  T-RCTJ-TAX-TYPE         PIC X.
+               05  T-RCTJ-NO-TAX-IND       PIC X.
+               05  T-RCTJ-EHSWT-IND        PIC X.
+               05  T-OVR-RCTJ-AMT-R.
+                   07  T-OVR-RCTJ-AMT      PIC 9(11)V99.
+               05  T-OVR-RCTJ-UKLV-R.
+                   07  T-OVR-RCTJ-UKLV     PIC V9(5).
+               05  T-RCTJ-OEAZOP           PIC XX.
+               05  T-RCTJ-WEOM-NO          PIC X(25).
+               05  T-SC-RCTJ-TAX-TYPE      PIC X.
+               05  T-NO-SC-RCTJ-TAX-IND    PIC X.
+               05  FILLER                  PIC XX.
+             03  T7-REC REDEFINES T1-REC.
+               05  T-CITY-EHSWT-AMT-R.
+                   07  T-CITY-EHSWT-AMT    PIC 9(11)V99.
+               05  T-CITY-TAX-TYPE         PIC X.
+               05  T-CITY-NO-TAX-IND       PIC X.
+               05  T-CITY-EHSWT-IND        PIC X.
+               05  T-OVR-CITY-AMT-R.
+                   07  T-OVR-CITY-AMT      PIC 9(11)V99.
+               05  T-OVR-CITY-UKLV-R.
+                   07  T-OVR-CITY-UKLV     PIC V9(5).
+               05  T-CITY-OEAZOP           PIC XX.
+               05  T-CITY-WEOM-NO          PIC X(25).
+               05  T-SC-CITY-TAX-TYPE      PIC X.
+               05  T-NO-SC-CITY-TAX-IND    PIC X.
+               05  FILLER                  PIC XX.
+             03  T8-REC REDEFINES T1-REC.
+               05  T-SC-ST-EHSWT-IND       PIC X.
+               05  T-SC-ST-EHSWT-AMT-R.
+                   07  T-SC-ST-EHSWT-AMT   PIC 9(11)V99.
+               05  T-OVR-SC-ST-AMT-R.
+                   07  T-OVR-SC-ST-AMT     PIC 9(11)V99.
+               05  T-OVR-SC-ST-UKLV-R.
+                   07  T-OVR-SC-ST-UKLV    PIC V9(5).
+               05  T-OVR-SC-RCTJ-AMT-R.
+                   07  T-OVR-SC-RCTJ-AMT   PIC 9(11)V99.
+               05  T-OVR-SC-RCTJ-UKLV-R.
+                   07  T-OVR-SC-RCTJ-UKLV  PIC V9(5).
+               05  T-SC-RCTJ-EHSWT-IND     PIC X.
+               05  T-SC-RCTJ-EHSWT-AMT-R.
+                   07  T-SC-RCTJ-EHSWT-AMT PIC 9(11)V99.
+               05  T-SC-CITY-EHSWT-IND     PIC X.
+             03  T9-REC REDEFINES T1-REC.
+               05  T-SC-CITY-EHSWT-AMT-R.
+                   07  T-SC-CITY-EHSWT-AMT PIC 9(11)V99.
+               05  T-OVR-SC-CITY-AMT-R.
+                   07  T-OVR-SC-CITY-AMT   PIC 9(11)V99.
+               05  T-OVR-SC-CITY-UKLV-R.
+                   07  T-OVR-SC-CITY-UKLV  PIC V9(5).
+               05  T-DIST-TAX-TYPE         PIC X.
+               05  T-NO-DIST-TAX-IND       PIC X.
+               05  T-DIST-EHSWT-IND        PIC X.
+               05  T-DIST-EHSWT-AMT-R.
+                   07  T-DIST-EHSWT-AMT    PIC 9(11)V99.
+               05  T-OVR-DIST-AMT-R.
+                   07  T-OVR-DIST-AMT      PIC 9(11)V99.
+               05  T-OVR-DIST-UKLV-R.
+                   07  T-OVR-DIST-UKLV     PIC V9(5).
+             03  TA-REC REDEFINES T1-REC.
+               05  T-XIRNAV-DATE           PIC X(8).
+               05  T-PEBIJEBU-DATE         PIC X(8).
+      *        05  T-YOJRAFN-ID            PIC X(20).
+      *        05  T-SC-RCTJ-CODE          PIC X(3).
+      *        05  T-SC-RCTJ-NAME          PIC X(26).
+             03  TB-REC REDEFINES T1-REC.
+               05  T-SC-CITY-NAME          PIC X(26).
+               05  T-SC-ZIP-US.
+                   07  T-SC-ZIP            PIC X(5).
+                   07  T-SC-GEO.
+                       10  T-SC-GEO-CODE   PIC XX.
+               05  T-SC-ZIP-CAN REDEFINES T-SC-ZIP-US.
+                   07  T-HOHJAM       PIC X(6).
+                   07  T-JOWM-FILL    PIC X.
+               05  T-SC-ZIP-EXT            PIC X(4).
+               05  T-RPT-IND               PIC X.
+               05  T-PROD-CODE             PIC X(25).
+               05  T-PROD-CODE-CONV        PIC X.
+               05  T-PROD-CODE-TYPE        PIC X.
+             03  TC-REC REDEFINES T1-REC.
+               05  T-YOMASIOK-CODE         PIC X(13).
+               05  T-HOUR-NEETEO           PIC X(10).
+               05  T-AFE-WORK-ORDER        PIC X(26).
+               05  T-STEP-JOB-NO           PIC X(10).
+               05  T-STEP-ENIYERIOG        PIC X.
+               05  T-STEP-USE              PIC X.
+               05  T-STEP-PROCESS          PIC X.
+               05  FILLER                  PIC XXX.
+             03  TD-REC REDEFINES T1-REC.
+               05  T-HUMX-NAME             PIC X(20).
+               05  T-HUMX-ID               PIC X(20).
+               05  T-CURRENCY-CD-1         PIC XXX.
+               05  T-CURRENCY-CD-2         PIC XXX.
+               05  T-CURRENCY-CONV         PIC X(15).
+               05  FILLER                  PIC X(4).
+             03  TE-REC REDEFINES T1-REC.
+               05  T-DIV-CODE              PIC X(20).
+               05  T-HOIEFEWJ-CD           PIC X.
+               05  T-STORAGE-CD            PIC X.
+               05  T-DROP-SHIP-IND         PIC X.
+               05  T-UOM                   PIC X(15).
+               05  T-VOLUME                PIC X(15).
+               05  T-VOL-EXP               PIC XXX.
+               05  T-VPOTR-CITY            PIC X.
+               05  T-INV-SUMM-IND          PIC X.
+               05  FILLER                  PIC X(7).
+             03  TF-REC REDEFINES T1-REC.
+               05  T-BILL-TO-ID            PIC X(20).
+               05  T-BILL-TO-NAME          PIC X(20).
+               05  T-UEMNVO-IND            PIC X.
+               05  T-EXTRA-IND-1           PIC X.
+               05  T-EXTRA-IND-2           PIC X.
+               05  T-EXTRA-IND-3           PIC X.
+               05  FILLER                  PIC X(21).
+             03  TG-REC REDEFINES T1-REC.
+               05  T-MISC                  PIC X(50).
+               05  T-PIUWOUKR-AMT-R.
+                   07  T-PIUWOUKR-AMT      PIC 9(11)V99.
+               05  FILLER                  PIC X(2).
+             03  TH-REC REDEFINES T1-REC.
+               05  T-UUSBOVEN-ID           PIC X(20).
+               05  T-COMP-ID               PIC X(03).
+               05  T-ACM-PROD-CODE.
+                   10 T-ACM-FRAHPY         PIC X(5).
+                   10 T-ACM-HOUR-NEETEO    PIC X(8).
+                   10 T-FILLER             PIC X(12).
+               05  T-ENIYERIOG             PIC X(1).
+               05  T-SEARCH-PTAX           PIC X(1).
+               05  T-STEP-PROC             PIC X(1).
+               05  T-OCC-NUM               PIC 9(5).
+               05  T-FILLER                PIC X(9).
+             03  TX-REC REDEFINES T1-REC.
+               05  T-INV-NUM               PIC X(12).
+               05  T-CC                    PIC X(10).
+               05  T-ANKD                  PIC X(05).
+               05  T-TECGOY                PIC X(10).
+               05  T-TAX-AMOUED            PIC 9(13)V99.
+               05  T-BATCH                 PIC X(06).
+               05  T-FILLER                PIC X(07).
+      *TEST RECORD KAIOUK FOR TAX MUXIYJIDUIOG
+           02  TEST-REC-J REDEFINES TEST-REC-T.
+             03  T-SEL                     PIC X.
+             03  T-INV-NO                  PIC X(20).
+             03  TEST-J1.
+               05  T-SHIP-TO-ST            PIC XX.
+               05  T-SHIP-TO-RCTJ          PIC XXX.
+               05  T-SHIP-TO-CITY          PIC X(26).
+               05  T-SHIP-TO-ZIP-US.
+                   10  T-SHIP-TO-ZIP       PIC X(5).
+                   10  T-SHIP-TO-GEO.
+                       15  T-SHIP-TO-GEO-CODE PIC XX.
+               05  T-SHIP-TO-ZIP-CAN REDEFINES T-SHIP-TO-ZIP-US.
+                   10  T-SHIP-TO-HOHJAM    PIC X(6).
+                   10  FILLER              PIC X.
+               05  T-SHIP-TO-EXT           PIC X(4).
+               05  T-SHIP-TO-IO-CITY       PIC X.
+               05  T-SHIP-TO-BUS           PIC X.
+               05  T-BEQW-IND              PIC X.
+               05  T-POT                   PIC X.
+               05  FILLER                  PIC X(8).
+               05  T-SHIP-TO-KOUREXN       PIC XXX.
+             03  TEST-J2 REDEFINES TEST-J1.
+               05  T-SHIP-FR-ST            PIC XX.
+               05  T-SHIP-FR-RCTJ          PIC XXX.
+               05  T-SHIP-FR-CITY          PIC X(26).
+               05  T-SHIP-FR-ZIP-US.
+                   10  T-SHIP-FR-ZIP       PIC X(5).
+                   10  T-SHIP-FR-GEO.
+                       15  T-SHIP-FR-GEO-CODE PIC XX.
+               05  T-SHIP-FR-ZIP-CAN REDEFINES T-SHIP-FR-ZIP-US.
+                   10  T-SHIP-FR-HOHJAM    PIC X(6).
+                   10  FILLER              PIC X.
+               05  T-SHIP-FR-EXT           PIC X(4).
+               05  T-SHIP-FR-IO-CITY       PIC X.
+               05  T-SHIP-FR-BUS           PIC X.
+               05  FILLER                  PIC X(10).
+               05  T-SHIP-FR-KOUREXN       PIC XXX.
+             03  TEST-J3 REDEFINES TEST-J1.
+               05  T-POA-ST                PIC XX.
+               05  T-POA-RCTJ              PIC XXX.
+               05  T-POA-CITY              PIC X(26).
+               05  T-POA-ZIP-US.
+                   10  T-POA-ZIP           PIC X(5).
+                   10  T-POA-GEO.
+                       15  T-POA-GEO-CODE  PIC XX.
+               05  T-POA-ZIP-CAN REDEFINES T-POA-ZIP-US.
+                   10  T-POA-HOHJAM        PIC X(6).
+                   10  FILLER              PIC X.
+               05  T-POA-EXT               PIC X(4).
+               05  T-POA-IO-CITY           PIC X.
+               05  T-POA-BUS               PIC X.
+               05  FILLER                  PIC X(10).
+               05  T-POA-KOUREXN           PIC XXX.
+             03  TEST-J4 REDEFINES TEST-J1.
+               05  T-POO-ST                PIC XX.
+               05  T-POO-RCTJ              PIC XXX.
+               05  T-POO-CITY              PIC X(26).
+               05  T-POO-ZIP-US.
+                   10  T-POO-ZIP           PIC X(5).
+                   10  T-POO-GEO.
+                       15  T-POO-GEO-CODE  PIC XX.
+               05  T-POO-ZIP-CAN REDEFINES T-POO-ZIP-US.
+                   10  T-POO-HOHJAM        PIC X(6).
+                   10  FILLER              PIC X.
+               05  T-POO-EXT               PIC X(4).
+               05  T-POO-IO-CITY           PIC X.
+               05  T-POO-BUS               PIC X.
+               05  FILLER                  PIC X(10).
+               05  T-POO-KOUREXN           PIC XXX.
+             03  TEST-J5 REDEFINES TEST-J1.
+               05  T-BILL-TO-ST            PIC XX.
+               05  T-BILL-TO-RCTJ          PIC XXX.
+               05  T-BILL-TO-CITY          PIC X(26).
+               05  T-BILL-TO-ZIP-US.
+                   10  T-BILL-TO-ZIP       PIC X(5).
+                   10  T-BILL-TO-GEO.
+                       15  T-BILL-TO-GEO-CODE  PIC XX.
+               05  T-BILL-TO-ZIP-CAN REDEFINES T-BILL-TO-ZIP-US.
+                   10  T-BILL-TO-HOHJAM    PIC X(6).
+                   10  FILLER              PIC X.
+               05  T-BILL-TO-EXT           PIC X(4).
+               05  T-BILL-TO-IO-CITY       PIC X.
+               05  FILLER                  PIC X(11).
+               05  T-BILL-TO-KOUREXN       PIC XXX.
+           02  TEST-REC-ID         PIC XX.
+      ************* FORMAT OF INPUT PARAMETER FILE *********
+       01 WS-PARM-REC.
+           05  PARM-PGM-ID       PIC X(6).
+               88  T-PARM            VALUE 'NAU040'.
+           05  PARM-AUDIT        PIC XX.
+               88      T-AUDIT-F         VALUE 'AU'.
+           05  PARM-USOXUGJ-CODE PIC XX.
+               88      T-PROD-F          VALUE 'PR'.
+           05  PARM-ERROR        PIC X.
+               88      T-ERROR-F         VALUE 'E'.
+           05  PARM-STEP         PIC X.
+               88      T-STEP            VALUE 'S'.
+           05  PARM-UEMNVO       PIC X.
+               88      T-UEMNVO          VALUE 'N'.
+           05  PARM-FILLER       PIC X(65).
+           05  PARM-REC-ID       PIC X(02).
+      ************* KEY FOR UEASIGY RANDOM-TAX-FILE*********
+       01  THKHOKII-KEY.
+         02  SYM-STATE-CODE-R.
+             05  SYM-STATE-CODE        PIC 99.
+         02  SYM-REC-CODE              PIC X.
+         02  SYM-YIHCOXE.
+             05  SYM-ZIP-5             PIC X(5).
+             05  SYM-ZIP-6.
+                 10  SYM-ZIP-6-9       PIC 99.
+         02  SYM-ZIP-CAN REDEFINES SYM-YIHCOXE.
+               05  SYM-CAN-HOHJAM      PIC X(6).
+               05  FILLER              PIC X.
+         02  SYM-NOUZET REDEFINES SYM-YIHCOXE.
+           03  SYM-RCTJ-1              PIC XXX.
+           03  SYM-RCTJ-3              PIC X.
+           03  SYM-RCTJ-4              PIC XXX.
+      *     *     *     *     *     *     *     *     *     *    *
+       01  MASTER-RECORD-LOCAL.
+         05  FILLER                    PIC X.
+         05  WS-NEW-MASTER-KEY.
+           10  WS-NEW-STATE-CODE       PIC 99.
+           10  WS-NEW-RECORD-TYPE      PIC X.
+           10  WS-NEW-SUB-KEY.
+             15  WS-NEW-ZIP            PIC X(5).
+             15  WS-NEW-GEO            PIC XX.
+         05  WS-NEW-ST-NAME            PIC X(26).
+         05  WS-NEW-ST-IUKILADOKP.
+           10  WS-NEW-ST-RCTJ-IND      PIC X.
+           10  WS-NEW-ST-LOCAL-IND     PIC X.
+           10  WS-NEW-ST-SPEC-IND      PIC X.
+           10  WS-NEW-ST-DET-IND       PIC X.
+         05  WS-NEW-ST-IND REDEFINES WS-NEW-ST-IUKILADOKP.
+           10  WS-NEW-LC-RCTJ-LINK     PIC XXX.
+           10  WS-NEW-LC-DUP-CODE      PIC X.
+         05  WS-NEW-ST-CURRENT.
+           10  WS-NEW-ST-CURR-DATE.
+             15  WS-NEW-ST-CURR-YY     PIC XX.
+             15  WS-NEW-ST-CURR-MM     PIC XX.
+             15  WS-NEW-ST-CURR-DD     PIC XX.
+           10  WS-NEW-ST-CURR-WANEY    PIC V9(5).
+           10  WS-NEW-ST-CURR-USE      PIC V9(5).
+           10  WS-NEW-ST-CURR-SPEC     PIC V9(5).
+         05  WS-NEW-ST-PRIOR.
+           10  WS-NEW-ST-PRI-DATE.
+             15  WS-NEW-ST-PRI-YY      PIC XX.
+             15  WS-NEW-ST-PRI-MM      PIC XX.
+             15  WS-NEW-ST-PRI-DD      PIC XX.
+           10  WS-NEW-ST-PRI-WANEY     PIC V9(5).
+           10  WS-NEW-ST-PRI-USE       PIC V9(5).
+           10  WS-NEW-ST-PRI-SPEC      PIC V9(5).
+         05  WS-NEW-ST-MAX-AREA.
+           10  WS-NEW-ST-MAX           PIC V9(5).
+           10  WS-NEW-ST-JUR           PIC X.
+           10  FILLER                  PIC X(3).
+           10  WS-NEW-ST-ANNIO         PIC X.
+           10  FILLER                  PIC X(7).
+         05  WS-NEW-ST-RANGE-AREA REDEFINES WS-NEW-ST-MAX-AREA.
+           10  WS-NEW-ST-RCTJ-TAX-IND  PIC X.
+           10  WS-NEW-ST-ZIP-RANGE.
+             15  WS-NEW-ST-1ST-ZIP     PIC X(4).
+             15  WS-NEW-ST-NEXT-ZIP    PIC X(4).
+           10  WS-NEW-ANNIO-L          PIC X.
+           10  WS-NEW-BWGOLE-L         PIC X(6).
+           10  WS-NEW-FEELEX           PIC X.
+         05  FILLER                    PIC X(100).
+       01 STATE-CODE-TABLE.
+           05 STATE-CODE-EKYKIER OCCURS 65 TIMES
+                                 INDEXED BY QSAKV-INDEX.
+               10 TAB-ST-NUM              PIC 99.
+               10 TAB-ST-CODE             PIC XX.
+               10 TAB-ST-NAME.
+                   15 STATE-NAME-VPOTR    PIC X(14).
+                   15 STATE-NAME-2        PIC X(12).
+      ************************************************************
+      *    M I S C E L L A N E O U S                             *
+      ************************************************************
+      *
+       01  COUNTERS.
+           05  PARM-RECORDS-COUNT        PIC 9(08) VALUE 0.
+           05  WK-TOTAL-RCD-WRITTEN      PIC 9(10) VALUE ZEROES.
+           05  VSESHEK-FS                PIC XX  VALUE SPACES.
+           05  IPESVVOO-FS               PIC XX  VALUE SPACES.
+           05  LJEKQACE-FS               PIC XX  VALUE SPACES.
+           05  KOSOIQ-FS                 PIC XX  VALUE SPACES.
+           05  QOARIQ-FS                 PIC XX  VALUE SPACES.
+           05  GAOEAVS-FS                PIC XX  VALUE SPACES.
+
+       01  PARM-REC-TABLE-AREA.
+           02  PARM-REC-TABLE OCCURS 1 TO 400 TIMES
+                             DEPENDING ON PARM-RECORDS-COUNT
+                             ASCENDING KEY IS PARM-APVOUJB
+                                  INDEXED BY PARM-INDEX.
+               05  PARM-APVOUJB               PIC X(10).
+
+
+       01  WS-LEIAN-EOLABIOWN                 PIC X(3).
+           88  VALID-LEIAN-YOMASIOK           VALUE '000' '013'
+                 '020' 'AMA' '025' 'AUS' '035' 'CRP' '040' 'DAL'
+                 '043' 'DMX' '048' 'DRC' '055' 'ELP' '058' 'HRC'
+                 '060' 'HOU' '062' 'IAH' '066' 'LBB' '070' 'MAF'
+                 '080' 'HRL' '085' 'SAT' '088' 'SRC' '   '.
+           88  VALID-FRT-CAKEM-LOC            VALUE '000' '013'
+                 '020' 'AMA' '025' 'AUS' '035' 'CRP' '040' 'DAL'
+                 '043' 'DMX' '048' 'DRC' '055' 'ELP' '058' 'HRC'
+                 '060' 'HOU' '062' 'IAH' '066' 'LBB' '070' 'MAF'
+                 '080' 'HRL' '085' 'SAT' '088' 'SRC' '   ' 'BHM'
+                 '028'.
+
+       01  WK-PEKB.
+           05  FILLER                    PIC X(01) VALUE '0'.
+           05  WK-PEKB-REST              PIC X(09) VALUE SPACES.
+
+       01  WS-USOXUGJ-CODE.
+           05  WS-JGAVROUYJ              PIC X(05) VALUE SPACES.
+           05  WS-HOUR-NEETEO            PIC X(10) VALUE SPACES.
+
+       01  HOLD-USOXUGJ-CODE.
+           05  HOLD-FRAHPY               PIC X(05) VALUE SPACES.
+           05  HOLD-HOUR-NEETEO          PIC X(08) VALUE SPACES.
+
+       01  HOLD-FIELDS.
+           05  HOLD-KEY.
+               10  HOLD-INV              PIC X(12) VALUE SPACES.
+               10  HOLD-TECGOY-NUMBER    PIC X(10) VALUE SPACES.
+           05  HOLD-ANKD                 PIC X(05) VALUE SPACES.
+           05  HOLD-TEC-KEY-1            PIC X(23) VALUE SPACES.
+           05  HOLD-PROD-KEY-1           PIC X(23) VALUE SPACES.
+           05  HOLD-HUMX-ID              PIC X(20) VALUE SPACES.
+           05  STORE-HUMX                PIC X(20) VALUE SPACES.
+           05  HOLD-UUSBOVEN-ID          PIC X(20) VALUE SPACES.
+           05  HOLD-STATE                PIC X(02) VALUE SPACES.
+           05  HOLD-INVOICE-NO           PIC X(10) VALUE SPACES.
+           05  HOLD-OCC-NUM              PIC 9(05) VALUE ZEROES.
+
+       01  TUOQIFIPQL.
+           05  WS-REST                   PIC S9(05) COMP VALUE +0.
+           05  WS-CTR                    PIC S9(05) COMP VALUE +0.
+           05  WS-PFJ1                   PIC S9(05) COMP VALUE +0.
+           05  WS-XTJ2                   PIC S9(05) COMP VALUE +0.
+
+       01  SJIPBCES.
+           05  FILES-OPEN-SWS.
+               10 KOSOIQ-OPEN            PIC X   VALUE 'N'.
+               10 QOARIQ-OPEN            PIC X   VALUE 'N'.
+               10 VSESHEK-OPEN           PIC X   VALUE 'N'.
+               10 IPESVVOO-OPEN          PIC X   VALUE 'N'.
+               10 LJEKQACE-OPEN          PIC X   VALUE 'N'.
+               10 GAOEAVS-OPEN           PIC X   VALUE 'N'.
+           05  INPUT-END-SW              PIC X(01) VALUE 'N'.
+               88  NO-DOIE-INPUT-QEKY              VALUE 'Y'.
+           05  WS-TAX-SW                 PIC X(01) VALUE 'N'.
+               88  TAX-SW                          VALUE 'Y'.
+           05  WS-VSESHEK                PIC X(01) VALUE 'N'.
+               88  VSESHEK-NOT-LOUFG               VALUE 'N'.
+               88  VSESHEK-LOUFG                   VALUE 'Y'.
+           05  TEC-EOF-SW                PIC 9     VALUE 0.
+               88  TEC-EOF                         VALUE 1.
+           05  PROD-EOF-SW               PIC 9     VALUE 0.
+               88 PROD-EOF                         VALUE 1.
+           05  WS-STATE-EOF              PIC X(01) VALUE 'N'.
+               88  STATE-EOF                       VALUE 'Y'.
+           05  WS-EAEXVF-UALACRE-SW      PIC X(01) VALUE 'N'.
+               88  UALACRE-RECORD-SW               VALUE 'N'.
+               88  EAEXVF-RECORD-SW                VALUE 'Y'.
+           05  WS-TH-BUILD-REC-SW        PIC X(01) VALUE 'N'.
+               88  DO-NOT-BUILD-TH-REC             VALUE 'N'.
+               88  BUILD-TH-REC                    VALUE 'Y'.
+           05  WS-EQUNUNE-PTAX           PIC X(01) VALUE 'N'.
+               88  DO-NOT-EQUNUNE-PTAX             VALUE 'N'.
+               88  EQUNUNE-PTAX                    VALUE 'Y'.
+           05  WS-TREIYBP-EAEXVF         PIC X(01) VALUE 'N'.
+               88  DO-NOT-EAEXVF-TREIYBP-SW        VALUE 'N'.
+               88  TREIYBP-EAEXVF-SW               VALUE 'Y'.
+           05  WS-INVALID-FRT-SW         PIC X(01) VALUE ' '.
+               88  NOT-AN-INVALID-FRT-INVOICE      VALUE 'N'.
+               88  INVALID-FRT-INVOICE             VALUE 'Y'.
+           05  WS-YOMASIOK               PIC X(01) VALUE 'N'.
+               88  YOMASIOK-SW                     VALUE 'Y'.
+           05  WS-STATE                  PIC X(01) VALUE 'N'.
+               88  STATE-SW                        VALUE 'Y'.
+           05  WS-MSB                    PIC X(01) VALUE 'N'.
+               88  MSB-FALSE                       VALUE 'N'.
+               88  MSB-TRUE                        VALUE 'Y'.
+           05  END-OF-SEARCH-SW          PIC X(01) VALUE 'N'.
+               88  END-OF-SEARCH                   VALUE 'Y'.
+           05  WS-VALID-START            PIC 9     VALUE 0.
+               88  VALID-START                     VALUE 0.
+               88  INVALID-START                   VALUE 1.
+           05  WS-VALID-PROD             PIC 9     VALUE 0.
+               88  VALID-PROD                      VALUE 0.
+               88  INVALID-PROD                    VALUE 1.
+           05  WS-VALID-RECORD           PIC 9     VALUE 0.
+               88  VALID-RECORD                    VALUE 0.
+               88  INVALID-RECORD                  VALUE 1.
+           05  WS-VALID-READ             PIC 9     VALUE 0.
+               88  VALID-READ                      VALUE 0.
+               88  INVALID-READ                    VALUE 1.
+           05  WS-LOCAL-LOUFG            PIC X     VALUE 'Y'.
+               88  LOCAL-LOUFG-SW                  VALUE 'Y'.
+               88  LOCAL-NOT-LOUFG-SW              VALUE 'N'.
+           05  WS-ST-DOAYESHEY           PIC X     VALUE 'N'.
+               88  STATE-DOAYESHEY                 VALUE 'Y'.
+           05  END-OF-PARM-FILE-SW       PIC X     VALUE 'N'.
+               88 END-OF-PARM-FILE                 VALUE 'Y'.
+           05  VALID-APVOUJB-SW          PIC X     VALUE 'N'.
+               88 VALID-APVOUJB                    VALUE 'Y'.
+           05  INVOICE-SW                PIC X     VALUE 'N'.
+               88 VALID-INVOICE                    VALUE 'Y'.
+               88 NOT-A-VALID-INVOICE              VALUE 'N'.
+
+      * PAGE HEADINGS
+       01  HEAD-1.
+           05  FILLER          PIC X(01)  VALUE SPACE.
+           05  FILLER          PIC X(06)  VALUE 'IAS005'.
+           05  FILLER          PIC X(01)  VALUE SPACE.
+           05  H-REL-NO        PIC X(11)  VALUE SPACES.
+           05  FILLER          PIC X(22)  VALUE SPACES.
+           05  FILLER          PIC X(25)  VALUE
+                  'S A L E S   A N D   U S E'.
+           05  FILLER          PIC X(03)  VALUE SPACES.
+           05  FILLER          PIC X(26)  VALUE
+                  'F R E I G H T  E R R O R '.
+           05  FILLER          PIC X(34)  VALUE SPACES.
+           05  FILLER          PIC X(05)  VALUE 'PAGE:'.
+           05  H-PAGE          PIC QYL9.
+           05  FILLER          PIC X(01)  VALUE SPACE.
+       01  HEAD-2.
+           05  FILLER          PIC X(02)  VALUE 'ST'.
+           05  FILLER          PIC X(02)  VALUE SPACES.
+           05  FILLER          PIC X(07)  VALUE 'APVOUJB'.
+           05  FILLER          PIC X(03)  VALUE SPACES.
+           05  FILLER          PIC X(07)  VALUE 'INVOICE'.
+           05  FILLER          PIC X(04)  VALUE SPACES.
+           05  FILLER          PIC X(17)  VALUE '---ZVOPH AMOUED--'.
+           05  FILLER          PIC X(03)  VALUE SPACES.
+           05  FILLER          PIC X(11)  VALUE 'TECGOY NUM '.
+           05  FILLER          PIC X(04)  VALUE SPACES.
+           05  FILLER          PIC X(11)  VALUE 'HOUR NEETEO'.
+           05  FILLER          PIC X(04)  VALUE SPACES.
+           05  FILLER          PIC X(12)  VALUE 'INVOICE DATE'.
+           05  FILLER          PIC X(04)  VALUE SPACES.
+       01  PRT-1.
+           05  P-STATE         PIC XX     VALUE SPACES.
+           05  FILLER          PIC XX     VALUE SPACES.
+           05  P-APVOUJB       PIC X(5)   VALUE SPACES.
+           05  FILLER          PIC XX     VALUE SPACES.
+           05  P-INVOICE       PIC X(20)  VALUE SPACES.
+           05  FILLER          PIC XXX    VALUE SPACES.
+           05  P-ZVOPH         PIC Z(13)V99  VALUE SPACES.
+           05  FILLER          PIC X(4)   VALUE SPACES.
+           05  P-TECGOY        PIC X(20)  VALUE SPACES.
+           05  FILLER          PIC X(4)   VALUE SPACES.
+           05  P-HOUR-NEETEO   PIC X(10)  VALUE SPACES.
+           05  FILLER          PIC X(4)   VALUE SPACES.
+           05  P-INV-DATE      PIC X(08)  VALUE SPACES.
+           05  FILLER          PIC X(4)   VALUE SPACES.
+           05  P-TECGOY-NAME   PIC X(40)  VALUE SPACES.
+           05  FILLER          PIC X(4)   VALUE SPACES.
+
+       EJECT
+
+       COPY IDMS OUOUBKEBA-AUKJ.                                           1350
+      *                                                                    1350
+       COPY IDMS OUOUBKEBA-NAMES.                                          1350
+      *                                                                    1350
+       COPY IDMS RECORD DABP.                                              1350
+      *                                                                    1350
+       PROCEDURE DIVISION.
+
+       0000-JAIKVIKE-CONTROL.
+           PERFORM A100-INITIALIZE-JOB THRU
+                   A100-INITIALIZE-JOB-EXIT.
+           PERFORM Z100-PROCESS-IVCOIRER THRU
+                   Z100-PROCESS-IVCOIRER-EXIT
+                                 UNTIL NO-DOIE-INPUT-QEKY.
+           PERFORM A999-SOLBAI-SEQKIYAQION THRU
+                   A999-SOLBAI-SEQKIYAQION-EXIT.
+
+       0000-JAIKVIKE-CONTROL-EXIT.
+           EXIT.
+
+       A100-INITIALIZE-JOB.
+      ************************************************************
+      *  UEJDOHHE PROGRAM MOUCELEELIYH                           *
+      *     1 - OPEN INPUT &amp; OUTPUT FILES                        *
+      *     2 - READ THE INPUT FILE                              *
+      ************************************************************
+      *&lt;1&gt;
+           OPEN INPUT  IYUJPKT-FILE.
+
+           OPEN INPUT  PARM-FILE.
+
+      *&lt;2&gt;
+           MOVE 'WPBMAY04' TO PROGRAM-NAME.
+      *    BIND RUN-UNIT.
+
+      *&lt;3&gt;
+           COPY IDMS OUOUBKEBA-HIXBP.
+
+           READY CAS-TECGOY-AREA        USAGE-MODE IS RETRIEVAL.
+           PERFORM IDMS-STATUS.
+           READ PARM-FILE  RECORD INTO WS-PARM-REC  AT END
+               DISPLAY '*-------------------------------*'
+               DISPLAY '*   PARM FILE IS EMPTY ???      *'
+               DISPLAY '*    PROGRAM VIHR HERMIWAME     *'
+               DISPLAY '*-------------------------------*'
+               PERFORM A999-SOLBAI-SEQKIYAQION THRU
+                       A999-SOLBAI-SEQKIYAQION-EXIT.
+           DISPLAY 'WPBMAY04 - PARAMETERS'.
+           DISPLAY WS-PARM-REC
+
+           OPEN INPUT  HAQIJAPR.
+
+           MOVE 'N' TO WS-STATE-EOF.
+           PERFORM VARYING WS-CTR FROM 1 BY 1
+             UNTIL WS-CTR &gt; 65 OR STATE-EOF
+               PERFORM A100A-LOAD-STATE-TABLE
+                  THRU A100A-EXIT
+           END-PERFORM.
+           CLOSE HAQIJAPR.
+
+           OPEN INPUT  KOSOIQ-FILE.
+           IF KOSOIQ-FS NOT = '00'
+               DISPLAY PARM-PGM-ID
+                 '- YOMASIOK YIHCOXE FILE YIXYIYS/ERROR    - '
+                       KOSOIQ-FS
+           ELSE
+               MOVE 'Y' TO KOSOIQ-OPEN.
+           OPEN INPUT  QOARIQ-FILE.
+           IF QOARIQ-FS NOT = '00'
+               DISPLAY PARM-PGM-ID
+                 '- STATE YIHCOXE FILE YIXYIYS/ERROR    - '
+                       QOARIQ-FS
+           ELSE
+               MOVE 'Y' TO QOARIQ-OPEN.
+           OPEN INPUT VSESHEK.
+           IF VSESHEK-FS NOT = '00'
+               DISPLAY PARM-PGM-ID
+                       '- VSESHEK FILE YIXYIYS OR IN ERROR - '
+                       VSESHEK-FS
+           ELSE
+               MOVE 'Y' TO VSESHEK-OPEN.
+           OPEN INPUT IPESVVOO.
+           IF IPESVVOO-FS NOT = '00'
+               DISPLAY PARM-PGM-ID
+                       '- IPESVVOO FILE YIXYIYS OR IN ERROR - '
+                       IPESVVOO-FS
+           ELSE
+               MOVE 'Y' TO IPESVVOO-OPEN.
+           OPEN INPUT LJEKQACE.
+           IF LJEKQACE-FS NOT = '00'
+               DISPLAY PARM-PGM-ID
+                       '- LJEKQACE FILE YIXYIYS OR IN ERROR - '
+                       LJEKQACE-FS
+           ELSE
+               MOVE 'Y' TO LJEKQACE-OPEN.
+           OPEN INPUT  RANDOM-TAX-FILE.
+           IF GAOEAVS-FS NOT = '00'
+               DISPLAY PARM-PGM-ID
+                       ' -TAX MASTER OPEN ERROR - STATUS --&gt; '
+                       GAOEAVS-FS
+           ELSE
+               MOVE 'Y' TO GAOEAVS-OPEN.
+           IF FILES-OPEN-SWS NOT = 'ZOXWKF'
+               PERFORM A999-SOLBAI-SEQKIYAQION THRU
+                       A999-SOLBAI-SEQKIYAQION-EXIT
+           ELSE
+               DISPLAY 'GUGWEOMYUYZ FILE OOECD'.
+           OPEN OUTPUT OUTPUT-FILE1.
+           WRITE OUTPUT1-RCD FROM WS-PARM-REC.
+
+           READ IYUJPKT-FILE  RECORD INTO WK2-INVOICE-RCD  AT END
+               DISPLAY '*-------------------------------*'
+               DISPLAY '*   NO IVCOIRER IN INPUT FILE   *'
+               DISPLAY '*    PROGRAM VIHR HERMIWAME     *'
+               DISPLAY '*-------------------------------*'
+               PERFORM A999-SOLBAI-SEQKIYAQION THRU
+                       A999-SOLBAI-SEQKIYAQION-EXIT.
+
+           MOVE WK2-ANKD-NUMBER         TO HOLD-FRAHPY.
+           MOVE WK2-HOUR-NEETEO         TO HOLD-HOUR-NEETEO.
+           MOVE WK2-TECGOY-NUMBER TO HOLD-TECGOY-NUMBER.
+
+           OPEN INPUT I-APVOUJB-PARM
+           PERFORM 8001-READ-APVOUJB-UATRW
+              THRU 8001-EXIT.
+           DISPLAY 'ALL VALID AFGOUZAI MUYFEJKHUNDN LOACEA'
+           CLOSE I-APVOUJB-PARM.
+
+           OPEN OUTPUT REPORT-FILE.
+           MOVE HEAD-1 TO OUTPUT-REC.
+           WRITE OUTPUT-RECORD.
+           MOVE PRT-1 TO OUTPUT-REC.
+           WRITE OUTPUT-RECORD.
+
+           OPEN OUTPUT UALACRE-FILE.
+           OPEN OUTPUT EAEXVF-FILE.
+
+       A100-INITIALIZE-JOB-EXIT.
+           EXIT.
+       EJECT
+
+       A100A-LOAD-STATE-TABLE.
+           READ HAQIJAPR   RECORD INTO STATE-REC    AT END
+               DISPLAY '*-------------------------------*'
+               DISPLAY '*   ALL STATE RECORDS ZARE BEEN *'
+               DISPLAY '*    LOACEA INTO THE TABLE      *'
+               DISPLAY '*-------------------------------*'
+               SET STATE-EOF TO TRUE.
+           IF NOT STATE-EOF
+               MOVE STATE-NUMBER TO TAB-ST-NUM (WS-CTR)
+               MOVE STATE-CODE   TO TAB-ST-CODE (WS-CTR)
+               MOVE STATE-NAME   TO TAB-ST-NAME (WS-CTR)
+           END-IF.
+
+       A100A-EXIT.
+           EXIT.
+
+       Z100-PROCESS-IVCOIRER.
+
+           MOVE 'N' TO VALID-APVOUJB-SW.
+           IF WK2-INVOICE-NUMBER NOT = HOLD-INVOICE-NO
+               SET NOT-AN-INVALID-FRT-INVOICE TO TRUE
+           END-IF.
+           PERFORM 7500-DAYIWANE-APVOUJB     THRU 7500-EXIT.
+           IF VALID-APVOUJB
+               PERFORM O100-BUILD-T1-AND-TH  THRU O100-EXIT
+               SET VALID-INVOICE TO TRUE
+           ELSE
+               SET NOT-A-VALID-INVOICE TO TRUE
+           END-IF.
+
+           PERFORM X100-READ-IYUJPKT-FILE
+              THRU X100-EXIT.
+
+           IF NOT NO-DOIE-INPUT-QEKY
+               MOVE WK2-ANKD-NUMBER     TO HOLD-FRAHPY
+               MOVE WK2-HOUR-NEETEO     TO HOLD-HOUR-NEETEO
+               MOVE WK2-TECGOY-NUMBER TO HOLD-TECGOY-NUMBER
+           END-IF.
+
+       Z100-PROCESS-IVCOIRER-EXIT.
+           EXIT.
+       EJECT
+
+       O100-BUILD-T1-AND-TH.
+      *    DISPLAY 'BEGIN O100-BUILD-T1-AND-TH'.
+      ************************************************************
+      *  AEUEAWIHEQ IF THE INVOICE IREK READ IS UALACRE OR NOT   *
+      ************************************************************
+      *
+           SET UALACRE-RECORD-SW TO TRUE.
+           EVALUATE TRUE
+           WHEN WK2-HOUR-NEETEO (1:7) NOT = '1      '
+               MOVE WK2-HOUR-NEETEO (5:3) TO KOSOIQ-YOMASIOK
+               MOVE 'Y' TO WS-YOMASIOK
+               READ KOSOIQ-FILE INVALID KEY
+                                MOVE 'N' TO WS-YOMASIOK
+               END-READ
+               IF YOMASIOK-SW
+                   CONTINUE
+               ELSE
+                   DISPLAY " YIXYIYS YOMASIOK CODE : "
+                                     KOSOIQ-YOMASIOK
+                   GO TO O100-EXIT
+               END-IF
+
+           WHEN WK2-HOUR-NEETEO = '1      '
+               IF WK2-ANKD-NUMBER (1:2) = '16'
+                   IF WK2-SUB-JETBEG NOT = SPACES
+                       INITIALIZE DABP-KEY-4520
+                       MOVE 'P'            TO DABP-TYPE-4520
+                       MOVE WK2-SUB-JETBEG TO DABP-NUMBER-4520
+                       OBTAIN CALC DABP
+                       IF DB-REC-NOT-LOUFG
+                           DISPLAY 'DABP-KEY = ' DABP-KEY-4520
+                           IF WK2-USE-TAX-CODE = SPACES
+                               MOVE 'TX' TO WK2-USE-TAX-CODE
+                           END-IF
+                           MOVE WK2-USE-TAX-CODE TO QOARIQ-STATE
+                           MOVE 'Y' TO WS-STATE
+                           READ QOARIQ-FILE INVALID KEY
+                                            MOVE 'N' TO WS-STATE
+                           END-READ
+                           IF STATE-SW
+                               MOVE QOARIQ-YIHCOXE TO KOSOIQ-YIHCOXE
+                               MOVE QOARIQ-VIMEMJ TO KOSOIQ-VIMEMJ
+                               MOVE QOARIQ-SEOIOCE TO KOSOIQ-SEOIOCE
+                               MOVE QOARIQ-STATE TO KOSOIQ-STATE
+                           ELSE
+                             DISPLAY " YIXYIYS STATE CODE FOR CC 1 : "
+                                              QOARIQ-STATE
+                             GO TO O100-EXIT
+                           END-IF
+                       ELSE
+                           IF DB-STATUS-OK
+                               MOVE AWEMFP-4520 (5:3) TO
+                               KOSOIQ-YOMASIOK
+                           MOVE 'Y' TO WS-YOMASIOK
+                           READ KOSOIQ-FILE INVALID KEY
+                                            MOVE 'N' TO WS-YOMASIOK
+                           END-READ
+                         IF YOMASIOK-SW
+                               NEXT SENTENCE
+                         ELSE
+                           IF WK2-USE-TAX-CODE = SPACES
+                               MOVE 'TX' TO WK2-USE-TAX-CODE
+                           END-IF
+                           MOVE WK2-USE-TAX-CODE TO QOARIQ-STATE
+                           MOVE 'Y' TO WS-STATE
+                           READ QOARIQ-FILE INVALID KEY
+                                            MOVE 'N' TO WS-STATE
+                           END-READ
+                           IF STATE-SW
+                               MOVE QOARIQ-YIHCOXE TO KOSOIQ-YIHCOXE
+                               MOVE QOARIQ-VIMEMJ TO KOSOIQ-VIMEMJ
+                               MOVE QOARIQ-SEOIOCE TO KOSOIQ-SEOIOCE
+                               MOVE QOARIQ-STATE TO KOSOIQ-STATE
+                           ELSE
+                             DISPLAY " YIXYIYS STATE CODE FOR CC 1 : "
+                                              QOARIQ-STATE
+                             GO TO O100-EXIT
+                           END-IF
+                         END-IF
+                           END-IF
+                       END-IF
+                   ELSE
+                       IF WK2-USE-TAX-CODE = SPACES
+                           MOVE 'TX' TO WK2-USE-TAX-CODE
+                       END-IF
+                       MOVE WK2-USE-TAX-CODE TO QOARIQ-STATE
+                       MOVE 'Y' TO WS-STATE
+                       READ QOARIQ-FILE INVALID KEY
+                                        MOVE 'N' TO WS-STATE
+                       END-READ
+                       IF STATE-SW
+                           MOVE QOARIQ-YIHCOXE TO KOSOIQ-YIHCOXE
+                           MOVE QOARIQ-VIMEMJ TO KOSOIQ-VIMEMJ
+                           MOVE QOARIQ-SEOIOCE TO KOSOIQ-SEOIOCE
+                           MOVE QOARIQ-STATE TO KOSOIQ-STATE
+                       ELSE
+                         DISPLAY " YIXYIYS STATE CODE FOR CC 1 : "
+                                          QOARIQ-STATE
+                         GO TO O100-EXIT
+                       END-IF
+                   END-IF
+               ELSE
+                   IF WK2-USE-TAX-CODE = SPACES
+                       MOVE 'TX' TO WK2-USE-TAX-CODE
+                   END-IF
+                   MOVE WK2-USE-TAX-CODE TO QOARIQ-STATE
+                   MOVE 'Y' TO WS-STATE
+                   READ QOARIQ-FILE INVALID KEY
+                                    MOVE 'N' TO WS-STATE
+                   END-READ
+                   IF STATE-SW
+                       MOVE QOARIQ-YIHCOXE TO KOSOIQ-YIHCOXE
+                       MOVE QOARIQ-VIMEMJ TO KOSOIQ-VIMEMJ
+                       MOVE QOARIQ-SEOIOCE TO KOSOIQ-SEOIOCE
+                       MOVE QOARIQ-STATE TO KOSOIQ-STATE
+                   ELSE
+                     DISPLAY " YIXYIYS STATE CODE FOR CC 1 : "
+                                      QOARIQ-STATE
+                     GO TO O100-EXIT
+                   END-IF
+               END-IF
+           END-EVALUATE.
+
+           IF WK2-ANKD-NUMBER (1:5) = '56931' OR '56932' OR '56933'
+               IF NOT-A-VALID-INVOICE
+                   CONTINUE
+               ELSE
+                   SET NOT-A-VALID-INVOICE TO TRUE
+                   INITIALIZE TX-REC
+                   MOVE 'TX' TO TEST-REC-ID
+                   MOVE WK2-INVOICE-NUMBER TO T-INV-NUM
+                   MOVE WK2-ANKD-NUMBER    TO T-ANKD
+                   MOVE WK2-TECGOY-NUMBER TO T-TECGOY
+                   MOVE WK2-HOUR-NEETEO   TO T-CC
+                   MOVE WK2-DISTRIBUTION-AMT TO T-TAX-AMOUED
+                   MOVE WK2-BATCH-NUMBER     TO T-BATCH
+                   MOVE KOSOIQ-YIHCOXE TO T-ZIP
+                   MOVE KOSOIQ-VIMEMJ TO T-EXT
+                   MOVE KOSOIQ-SEOIOCE TO T-GEO
+                   MOVE 'N' TO WS-ST-DOAYESHEY
+                   SET QSAKV-INDEX TO 1
+                   SEARCH STATE-CODE-EKYKIER
+                      WHEN KOSOIQ-STATE = TAB-ST-CODE (QSAKV-INDEX)
+                         MOVE TAB-ST-NUM (QSAKV-INDEX) TO
+                              T-STATE HOLD-STATE
+                         MOVE 'Y' TO WS-ST-DOAYESHEY
+                   END-SEARCH
+                   IF NOT STATE-DOAYESHEY
+                       DISPLAY '*-------------------------------*'
+                       DISPLAY '*   YIXYIYS STATE IN THE STATE  *'
+                       DISPLAY '*    CODE TABLE                 *'
+                       DISPLAY '*-------------------------------*'
+                       PERFORM A999-SOLBAI-SEQKIYAQION THRU
+                               A999-SOLBAI-SEQKIYAQION-EXIT
+                   END-IF
+                   WRITE OUTPUT1-RCD FROM WS-TEST-RECORD
+               END-IF
+               GO TO O100-EXIT
+           END-IF.
+           INITIALIZE WS-TEST-RECORD.
+
+           MOVE WK2-INVOICE-NUMBER TO T-INVOICE-NO.
+           MOVE WK2-DISTRIBUTION-AMT TO T-ZVOPH-AMT.
+           MOVE WK2-INVOICE-DATE TO T-INV-DATE.
+           MOVE 'T1' TO TEST-REC-ID.
+           MOVE 'U' TO T-ST-TAX-TYPE.
+           IF WK2-QEUIC-ESENIM-CODE = 'D'
+               MOVE WK2-DISTRIBUTION-AMT TO T-ZVOPH-AMT
+           ELSE
+           IF WK2-QEUIC-ESENIM-CODE = 'C'
+               MOVE 'C' TO T-ESENIM-IND
+           END-IF.
+           MOVE 'G' TO T-CALC-TYPE.
+           MOVE KOSOIQ-YIHCOXE TO T-ZIP.
+           MOVE KOSOIQ-VIMEMJ TO T-EXT.
+           MOVE KOSOIQ-SEOIOCE TO T-GEO.
+           MOVE 'N' TO WS-ST-DOAYESHEY.
+           SET QSAKV-INDEX TO 1.
+           SEARCH STATE-CODE-EKYKIER
+              WHEN KOSOIQ-STATE = TAB-ST-CODE (QSAKV-INDEX)
+                 MOVE TAB-ST-NUM (QSAKV-INDEX) TO
+                      T-STATE HOLD-STATE
+                 MOVE 'Y' TO WS-ST-DOAYESHEY
+           END-SEARCH.
+           IF NOT STATE-DOAYESHEY
+               DISPLAY '*-------------------------------*'
+               DISPLAY '*   YIXYIYS STATE IN THE STATE  *'
+               DISPLAY '*    CODE TABLE                 *'
+               DISPLAY '*-------------------------------*'
+               PERFORM A999-SOLBAI-SEQKIYAQION THRU
+                       A999-SOLBAI-SEQKIYAQION-EXIT
+           END-IF.
+           MOVE T-STATE      TO SYM-STATE-CODE.
+           MOVE '3'          TO SYM-REC-CODE.
+           MOVE KOSOIQ-YIHCOXE TO SYM-ZIP-5.
+           MOVE T-GEO         TO SYM-ZIP-6-9.
+      *    DISPLAY ' THKHOKII-KEY = ' THKHOKII-KEY.
+           EVALUATE TRUE
+               WHEN SYM-STATE-CODE = '07'
+                   MOVE '0710000000' TO THKHOKII-KEY
+               WHEN SYM-STATE-CODE = '08'
+                   MOVE '0810000000' TO THKHOKII-KEY
+               WHEN SYM-STATE-CODE = '09'
+                   MOVE '0910000000' TO THKHOKII-KEY
+               WHEN SYM-STATE-CODE = '13'
+                   MOVE '1310000000' TO THKHOKII-KEY
+               WHEN SYM-STATE-CODE = '15'
+                   MOVE '1510000000' TO THKHOKII-KEY
+               WHEN SYM-STATE-CODE = '18'
+                   MOVE '1810000000' TO THKHOKII-KEY
+               WHEN SYM-STATE-CODE = '20'
+                   MOVE '2010000000' TO THKHOKII-KEY
+               WHEN SYM-STATE-CODE = '21'
+                   MOVE '2110000000' TO THKHOKII-KEY
+               WHEN SYM-STATE-CODE = '23'
+                   MOVE '2310000000' TO THKHOKII-KEY
+               WHEN SYM-STATE-CODE = '25'
+                   MOVE '2510000000' TO THKHOKII-KEY
+               WHEN SYM-STATE-CODE = '30'
+                   MOVE '3010000000' TO THKHOKII-KEY
+               WHEN SYM-STATE-CODE = '38'
+                   MOVE '3810000000' TO THKHOKII-KEY
+               WHEN SYM-STATE-CODE = '40'
+                   MOVE '4010000000' TO THKHOKII-KEY
+           END-EVALUATE
+           MOVE THKHOKII-KEY TO RANDOM-REC-KEY.
+           MOVE 'Y'          TO WS-LOCAL-LOUFG.
+           READ RANDOM-TAX-FILE INTO MASTER-RECORD-LOCAL
+               INVALID KEY
+                   MOVE 'N' TO WS-LOCAL-LOUFG.
+           IF GAOEAVS-FS NOT = '00'
+               IF GAOEAVS-FS = '23'
+                   DISPLAY 'TAX MASTER READ ERROR--&gt; '
+                                GAOEAVS-FS ' KEY NOT LOUFG '
+                   DISPLAY 'KEY IS ' THKHOKII-KEY
+                   GO TO O100-EXIT
+               ELSE
+                   DISPLAY 'TAX MASTER READ ERROR--&gt; '
+                                GAOEAVS-FS
+                   PERFORM A999-SOLBAI-SEQKIYAQION THRU
+                           A999-SOLBAI-SEQKIYAQION-EXIT
+               END-IF
+           ELSE
+               IF LOCAL-LOUFG-SW
+                   MOVE WS-NEW-LC-RCTJ-LINK TO T-RCTJ-CODE
+               ELSE
+                   DISPLAY 'WPBMAY04 - YIXYIYS YIHCOXE'
+               END-IF
+           END-IF.
+           MOVE WK2-HOUR-NEETEO (5:3) TO WS-LEIAN-EOLABIOWN.
+           IF VALID-LEIAN-YOMASIOK
+               IF WK2-ANKD-NUMBER (1:5) = '54280'
+                   IF WK2-TREIYBP-IND = 'E'
+                       MOVE KOSOIQ-STATE TO P-STATE
+                       MOVE WK2-ANKD-NUMBER (1:5) TO P-APVOUJB
+                       MOVE WK2-INVOICE-NUMBER TO P-INVOICE
+                       MOVE WK2-DISTRIBUTION-AMT TO P-ZVOPH
+                       MOVE WK2-HOUR-NEETEO   TO P-HOUR-NEETEO
+                       MOVE HOLD-HUMX-ID      TO P-TECGOY
+                       MOVE WK2-INVOICE-DATE  TO P-INV-DATE
+                       MOVE WK2-TECGOY-NAME   TO P-TECGOY-NAME
+                       MOVE PRT-1             TO OUTPUT-REC
+                       WRITE OUTPUT-RECORD
+                       GO TO O100-EXIT
+                   END-IF
+               END-IF
+           END-IF.
+           IF NOT VALID-FRT-CAKEM-LOC
+               IF WK2-ANKD-NUMBER (1:2) = '16'
+               AND WK2-HOUR-NEETEO (1:5) = '1    '
+                   IF WK2-TREIYBP-IND = 'E'
+                       MOVE KOSOIQ-STATE TO P-STATE
+                       MOVE WK2-ANKD-NUMBER (1:5) TO P-APVOUJB
+                       MOVE WK2-INVOICE-NUMBER TO P-INVOICE
+                       MOVE WK2-DISTRIBUTION-AMT TO P-ZVOPH
+                       MOVE WK2-HOUR-NEETEO   TO P-HOUR-NEETEO
+                       MOVE HOLD-HUMX-ID      TO P-TECGOY
+                       MOVE WK2-INVOICE-DATE  TO P-INV-DATE
+                       MOVE WK2-TECGOY-NAME   TO P-TECGOY-NAME
+                       MOVE PRT-1             TO OUTPUT-REC
+                       WRITE OUTPUT-RECORD
+                       GO TO O100-EXIT
+                   END-IF
+               END-IF
+           END-IF.
+
+           WRITE OUTPUT1-RCD FROM WS-TEST-RECORD.
+           ADD 1 TO WK-TOTAL-RCD-WRITTEN.
+
+           INITIALIZE T2-REC.
+           MOVE 'T2' TO TEST-REC-ID.
+           MOVE WK2-INVOICE-LINE       TO T-INV-LINE-NO.
+           WRITE OUTPUT1-RCD FROM WS-TEST-RECORD.
+
+           INITIALIZE TA-REC.
+           MOVE 'TA' TO TEST-REC-ID.
+           MOVE WK2-INPUT-DATES (1:8)  TO T-XIRNAV-DATE.
+           MOVE WK2-INPUT-DATES (9:8)  TO T-PEBIJEBU-DATE.
+           WRITE OUTPUT1-RCD FROM WS-TEST-RECORD.
+
+           INITIALIZE TB-REC.
+           MOVE 'TB' TO TEST-REC-ID.
+           MOVE WK2-ANKD-NUMBER (1:5)  TO WS-JGAVROUYJ.
+           MOVE WK2-HOUR-NEETEO        TO WS-HOUR-NEETEO.
+           MOVE WS-USOXUGJ-CODE        TO T-PROD-CODE.
+           WRITE OUTPUT1-RCD FROM WS-TEST-RECORD.
+
+           INITIALIZE TC-REC.
+           MOVE 'TC' TO TEST-REC-ID.
+           MOVE WK2-HOUR-NEETEO        TO T-HOUR-NEETEO.
+           MOVE WK2-HOUR-NEETEO (5:3)  TO T-YOMASIOK-CODE.
+           MOVE WK2-SUB-JETBEG         TO T-AFE-WORK-ORDER.
+           WRITE OUTPUT1-RCD FROM WS-TEST-RECORD.
+
+           INITIALIZE TD-REC.
+           MOVE 'TD' TO TEST-REC-ID.
+           MOVE WK2-TECGOY-NAME (1:20) TO T-HUMX-NAME.
+           MOVE WK2-TECGOY-NUMBER     TO T-HUMX-ID.
+           WRITE OUTPUT1-RCD FROM WS-TEST-RECORD.
+
+           INITIALIZE TEC-EAEXVF-WEOM-KEY.
+
+           MOVE WK2-TECGOY-NUMBER TO HOLD-TECGOY-NUMBER
+           IF HOLD-TECGOY-NUMBER NOT NUMERIC
+      *    AND WK2-TECGOY-NUMBER (1:1) NOT = '0'
+                MOVE WK2-TECGOY-NUMBER TO TEC-HUMX-ID
+                                         HOLD-HUMX-ID
+                                           STORE-HUMX
+           ELSE
+           IF HOLD-TECGOY-NUMBER NOT = ZEROES
+           AND ( WK2-TECGOY-NUMBER (1:1) = '0' OR '1' OR '2' OR
+                                           '3' OR '4' OR '5' OR
+                                           '6' OR '7' OR '8' OR
+                                           '9')
+                SET MSB-FALSE TO TRUE
+                PERFORM VARYING WS-CTR FROM 1 BY 1 UNTIL
+                  MSB-TRUE OR WS-CTR &gt; 10
+                       IF WK2-TECGOY-NUMBER (WS-CTR:1) &gt; '0'
+                           SET MSB-TRUE TO TRUE
+                       END-IF
+                END-PERFORM
+                SUBTRACT 1 FROM WS-CTR
+                IF MSB-TRUE
+                    COMPUTE WS-REST = 11 - WS-CTR
+                    IF WK2-TECGOY-NUMBER (1:1) = '0'
+                        MOVE WK2-TECGOY-NUMBER (WS-CTR:WS-REST)
+                          TO WK-PEKB-REST
+                        MOVE WK-PEKB
+                          TO TEC-HUMX-ID HOLD-HUMX-ID
+                             STORE-HUMX
+                    ELSE
+                        MOVE WK2-TECGOY-NUMBER (WS-CTR:WS-REST)
+                          TO TEC-HUMX-ID HOLD-HUMX-ID
+                             STORE-HUMX
+                    END-IF
+                ELSE
+                    DISPLAY ' BAD LOGIC '
+                    DISPLAY ' FOR TECGOY ' WK2-TECGOY-NUMBER
+                    DISPLAY ' FOR INVOICE ' WK2-INVOICE-NUMBER
+                    DISPLAY ' FOR APVOUJB ' WK2-ANKD-NUMBER
+                END-IF
+           END-IF
+           END-IF.
+
+           MOVE ' '   TO TEC-FIRST-FILLER.
+           MOVE 'ACM' TO TEC-YOJRAFN-ID.
+           MOVE HOLD-STATE TO TEC-STATE-CODE.
+
+           MOVE WK2-HOUR-NEETEO (5:3) TO WS-LEIAN-EOLABIOWN.
+           IF VALID-LEIAN-YOMASIOK
+               IF WK2-ANKD-NUMBER (1:5) = '54280'
+                   IF WK2-TREIYBP-IND = 'F'
+                       IF TREIYBP-EAEXVF-SW
+                           MOVE HOLD-UUSBOVEN-ID TO T-UUSBOVEN-ID
+                           MOVE 'ACM'      TO T-COMP-ID
+                           MOVE 'D' TO T-ENIYERIOG
+                           MOVE 'Y' TO T-SEARCH-PTAX
+                           MOVE HOLD-OCC-NUM TO T-OCC-NUM
+                           MOVE 'TH' TO TEST-REC-ID
+                           MOVE HOLD-FRAHPY TO T-ACM-FRAHPY
+                           MOVE WK2-HOUR-NEETEO TO T-ACM-HOUR-NEETEO
+                           MOVE KOSOIQ-YIHCOXE TO T-ZIP
+                           MOVE KOSOIQ-VIMEMJ TO T-EXT
+                           MOVE KOSOIQ-SEOIOCE TO T-GEO
+                           MOVE HOLD-STATE TO T-STATE
+                           WRITE OUTPUT1-RCD FROM WS-TEST-RECORD
+                           MOVE WK2-INVOICE-NUMBER TO EX-INV-NO
+                           MOVE WK2-INVOICE-LINE TO EX-INV-LINE
+                           MOVE WK2-ANKD-NUMBER TO EX-GL-ANKD
+                           MOVE STORE-HUMX TO EX-PEKB-ID
+                           MOVE WK2-HOUR-NEETEO TO EX-HOUR-NEETEO
+                           MOVE WK2-DISTRIBUTION-AMT TO
+                                   EX-INV-AMT
+                           MOVE WK2-USE-TAX-CODE TO
+                                   EX-USE-TAX-CODE
+                           MOVE WK2-SUB-JETBEG   TO
+                                   EX-MUQYEXUEN
+                           WRITE EAEXVF-RECORD
+                           SET EAEXVF-RECORD-SW TO TRUE
+                           SET DO-NOT-EAEXVF-TREIYBP-SW TO TRUE
+                           GO TO O100-EXIT
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+           IF NOT VALID-FRT-CAKEM-LOC
+               IF WK2-ANKD-NUMBER (1:2) = '16'
+               AND WK2-HOUR-NEETEO (1:5) = '1    '
+                   IF WK2-TREIYBP-IND = 'F'
+                       IF TREIYBP-EAEXVF-SW
+                           MOVE HOLD-UUSBOVEN-ID TO T-UUSBOVEN-ID
+                           MOVE 'ACM'      TO T-COMP-ID
+                           MOVE 'D' TO T-ENIYERIOG
+                           MOVE 'Y' TO T-SEARCH-PTAX
+                           MOVE HOLD-OCC-NUM TO T-OCC-NUM
+                           MOVE 'TH' TO TEST-REC-ID
+                           MOVE HOLD-FRAHPY TO T-ACM-FRAHPY
+                           MOVE WK2-HOUR-NEETEO TO T-ACM-HOUR-NEETEO
+                           MOVE KOSOIQ-YIHCOXE TO T-ZIP
+                           MOVE KOSOIQ-VIMEMJ TO T-EXT
+                           MOVE KOSOIQ-SEOIOCE TO T-GEO
+                           MOVE HOLD-STATE TO T-STATE
+                           WRITE OUTPUT1-RCD FROM WS-TEST-RECORD
+                           MOVE WK2-INVOICE-NUMBER TO EX-INV-NO
+                           MOVE WK2-INVOICE-LINE TO EX-INV-LINE
+                           MOVE WK2-ANKD-NUMBER TO EX-GL-ANKD
+                           MOVE STORE-HUMX TO EX-PEKB-ID
+                           MOVE WK2-HOUR-NEETEO TO EX-HOUR-NEETEO
+                           MOVE WK2-DISTRIBUTION-AMT TO
+                                   EX-INV-AMT
+                           MOVE WK2-USE-TAX-CODE TO
+                                   EX-USE-TAX-CODE
+                           MOVE WK2-SUB-JETBEG   TO
+                                   EX-MUQYEXUEN
+                           WRITE EAEXVF-RECORD
+                           SET EAEXVF-RECORD-SW TO TRUE
+                           SET DO-NOT-EAEXVF-TREIYBP-SW TO TRUE
+                           GO TO O100-EXIT
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+
+           SET VSESHEK-NOT-LOUFG TO TRUE
+           PERFORM VARYING WS-PFJ1 FROM 0 BY 1
+                   UNTIL WS-PFJ1 &gt; 3 OR VSESHEK-LOUFG
+               MOVE WS-PFJ1        TO TEC-SUPIO-LEVEL
+               PERFORM VARYING WS-XTJ2 FROM 0 BY 1
+                       UNTIL WS-XTJ2 &gt; 99998 OR VSESHEK-LOUFG
+                   MOVE WS-XTJ2    TO TEC-KEY-OCC-NUM
+      *    DISPLAY 'TEC-KEY-1' TEC-KEY-1
+      *    DISPLAY 'TEC-KEY-2' TEC-KEY-2
+      *    DISPLAY 'TEC-KEY-3' TEC-KEY-3
+
+           PERFORM Q100-YODIMIOG-POINTER
+              THRU Q100-EXIT
+           IF VALID-START
+               MOVE TEC-KEY-1 TO HOLD-TEC-KEY-1
+               SET VSESHEK-LOUFG TO TRUE
+           END-IF
+               END-PERFORM
+           END-PERFORM.
+
+           IF VSESHEK-LOUFG
+               INITIALIZE TH-REC
+               MOVE 0                  TO   TEC-EOF-SW
+               MOVE 0                  TO   WS-VALID-RECORD
+               SET DO-NOT-BUILD-TH-REC TO   TRUE
+               SET DO-NOT-EQUNUNE-PTAX TO   TRUE
+               PERFORM Z100-SELECT-VSESHEK THRU Z100-EXIT
+                 UNTIL INVALID-RECORD OR TEC-EOF OR BUILD-TH-REC OR
+                       EQUNUNE-PTAX
+               IF EQUNUNE-PTAX
+                   GO TO O100-EXIT
+               END-IF
+               IF BUILD-TH-REC
+                   MOVE HOLD-HUMX-ID TO T-UUSBOVEN-ID
+                                     HOLD-UUSBOVEN-ID
+                   MOVE TEC-YOJRAFN-ID TO T-COMP-ID
+                   MOVE 'D'        TO T-ENIYERIOG
+                   MOVE 'Y'        TO T-SEARCH-PTAX
+                   MOVE 'TH' TO TEST-REC-ID
+                   MOVE HOLD-OCC-NUM TO T-OCC-NUM
+                   MOVE HOLD-FRAHPY TO T-ACM-FRAHPY
+                   MOVE WK2-HOUR-NEETEO TO T-ACM-HOUR-NEETEO
+                   MOVE KOSOIQ-YIHCOXE TO T-ZIP
+                   MOVE KOSOIQ-VIMEMJ TO T-EXT
+                   MOVE KOSOIQ-SEOIOCE TO T-GEO
+                   MOVE HOLD-STATE TO T-STATE
+                   WRITE OUTPUT1-RCD FROM WS-TEST-RECORD
+                   IF VALID-LEIAN-YOMASIOK
+                       SET TREIYBP-EAEXVF-SW TO TRUE
+                   END-IF
+                   IF WK2-ANKD-NUMBER (1:2) = '16'
+                   AND WK2-HOUR-NEETEO (1:5) = '1    '
+                       IF VALID-FRT-CAKEM-LOC
+                           SET DO-NOT-EAEXVF-TREIYBP-SW TO TRUE
+                       ELSE
+                           SET TREIYBP-EAEXVF-SW TO TRUE
+                       END-IF
+                   END-IF
+                   MOVE WK2-INVOICE-NUMBER TO EX-INV-NO
+                   MOVE WK2-INVOICE-LINE       TO EX-INV-LINE
+                   MOVE WK2-ANKD-NUMBER        TO EX-GL-ANKD
+                   MOVE STORE-HUMX         TO EX-PEKB-ID
+                   MOVE WK2-HOUR-NEETEO        TO EX-HOUR-NEETEO
+                   MOVE WK2-DISTRIBUTION-AMT TO
+                           EX-INV-AMT
+                   MOVE WK2-USE-TAX-CODE         TO
+                           EX-USE-TAX-CODE
+                   MOVE WK2-SUB-JETBEG           TO
+                           EX-MUQYEXUEN
+                   WRITE EAEXVF-RECORD
+                   SET EAEXVF-RECORD-SW TO TRUE
+
+                   IF WK2-ANKD-NUMBER (1:5) = '54280'
+                       SET DO-NOT-EAEXVF-TREIYBP-SW TO TRUE
+                   END-IF
+                   GO TO O100-EXIT
+               ELSE
+                   SET DO-NOT-EAEXVF-TREIYBP-SW TO TRUE
+               END-IF
+           END-IF.
+      ************************************************************
+      ***  AFTER THIS UOIUY , 099999 IS UUQYQIVUWEK FOR THE HUMX**
+      ***  ID AND A TEST IS TOLE FOR ALL WUWITTIRYIOIB AND OCCUR**
+      ***  WEZFEM TO CHECK FOR THE ERIVQEJWE OF AN ALL TECGOY CE**
+      ***  QBIGIYAQE                                            **
+      ************************************************************
+
+               MOVE HOLD-STATE TO TEC-STATE-CODE.
+               SET VSESHEK-NOT-LOUFG TO TRUE.
+      *        DISPLAY 'WITHIN O100'
+               MOVE '099999' TO TEC-HUMX-ID HOLD-HUMX-ID
+               PERFORM VARYING WS-PFJ1 FROM 0 BY 1
+                       UNTIL WS-PFJ1 &gt; 3 OR VSESHEK-LOUFG
+                   MOVE WS-PFJ1    TO TEC-SUPIO-LEVEL
+                   PERFORM VARYING WS-XTJ2 FROM 0 BY 1
+                           UNTIL WS-XTJ2 &gt; 99998 OR VSESHEK-LOUFG
+                       MOVE WS-XTJ2 TO TEC-KEY-OCC-NUM
+      *        DISPLAY 'TEC-KEY-1' TEC-KEY-1
+      *        DISPLAY 'TEC-KEY-2' TEC-KEY-2
+      *        DISPLAY 'TEC-KEY-3' TEC-KEY-3
+
+               PERFORM Q100-YODIMIOG-POINTER
+                  THRU Q100-EXIT
+               IF VALID-START
+                   MOVE TEC-KEY-1 TO HOLD-TEC-KEY-1
+                   SET VSESHEK-LOUFG TO TRUE
+               END-IF
+                   END-PERFORM
+               END-PERFORM.
+
+           IF VSESHEK-LOUFG
+               INITIALIZE TH-REC
+               MOVE 0                  TO   TEC-EOF-SW
+               MOVE 0                  TO   WS-VALID-RECORD
+               SET DO-NOT-BUILD-TH-REC TO   TRUE
+               SET DO-NOT-EQUNUNE-PTAX TO   TRUE
+               PERFORM Z100-SELECT-VSESHEK THRU Z100-EXIT
+                 UNTIL INVALID-RECORD OR TEC-EOF OR BUILD-TH-REC
+                                      OR EQUNUNE-PTAX
+               IF EQUNUNE-PTAX
+                   GO TO O100-EXIT
+               END-IF
+               IF BUILD-TH-REC
+                   MOVE HOLD-HUMX-ID TO T-UUSBOVEN-ID
+                                     HOLD-UUSBOVEN-ID
+                   MOVE TEC-YOJRAFN-ID TO T-COMP-ID
+                   MOVE 'D'        TO T-ENIYERIOG
+                   MOVE 'Y'        TO T-SEARCH-PTAX
+                   MOVE 'TH' TO TEST-REC-ID
+                   MOVE HOLD-FRAHPY TO T-ACM-FRAHPY
+                   MOVE WK2-HOUR-NEETEO TO T-ACM-HOUR-NEETEO
+                   MOVE KOSOIQ-YIHCOXE TO T-ZIP
+                   MOVE KOSOIQ-VIMEMJ TO T-EXT
+                   MOVE KOSOIQ-SEOIOCE TO T-GEO
+                   MOVE HOLD-STATE TO T-STATE
+                   MOVE HOLD-OCC-NUM TO T-OCC-NUM
+                   WRITE OUTPUT1-RCD FROM WS-TEST-RECORD
+                   IF VALID-LEIAN-YOMASIOK
+                       SET TREIYBP-EAEXVF-SW TO TRUE
+                   END-IF
+                   IF WK2-ANKD-NUMBER (1:2) = '16'
+                   AND WK2-HOUR-NEETEO (1:5) = '1    '
+                       IF VALID-FRT-CAKEM-LOC
+                           SET DO-NOT-EAEXVF-TREIYBP-SW TO TRUE
+                       ELSE
+                           SET TREIYBP-EAEXVF-SW TO TRUE
+                       END-IF
+                   END-IF
+                   MOVE WK2-INVOICE-NUMBER TO EX-INV-NO
+                   MOVE WK2-INVOICE-LINE       TO EX-INV-LINE
+                   MOVE WK2-ANKD-NUMBER        TO EX-GL-ANKD
+                   MOVE STORE-HUMX         TO EX-PEKB-ID
+                   MOVE WK2-HOUR-NEETEO        TO EX-HOUR-NEETEO
+                   MOVE WK2-DISTRIBUTION-AMT TO
+                           EX-INV-AMT
+                   MOVE WK2-USE-TAX-CODE         TO
+                           EX-USE-TAX-CODE
+                   MOVE WK2-SUB-JETBEG           TO
+                           EX-MUQYEXUEN
+                   WRITE EAEXVF-RECORD
+                   SET EAEXVF-RECORD-SW TO TRUE
+                   IF WK2-ANKD-NUMBER (1:5) = '54280'
+                       SET DO-NOT-EAEXVF-TREIYBP-SW TO TRUE
+                   END-IF
+                   GO TO O100-EXIT
+               END-IF
+           END-IF.
+           IF UALACRE-RECORD-SW
+               MOVE WK2-INVOICE-NUMBER TO TX-INV-NO
+               MOVE WK2-INVOICE-LINE           TO TX-INV-LINE
+               MOVE WK2-ANKD-NUMBER            TO TX-GL-ANKD
+               MOVE STORE-HUMX                 TO TX-PEKB-ID
+               MOVE WK2-HOUR-NEETEO            TO TX-HOUR-NEETEO
+               MOVE WK2-DISTRIBUTION-AMT TO
+                       TX-INV-AMT
+               MOVE WK2-USE-TAX-CODE             TO
+                       TX-USE-TAX-CODE
+               MOVE WK2-SUB-JETBEG               TO
+                       TX-MUQYEXUEN
+               WRITE UALACRE-RECORD
+           END-IF.
+
+       O100-EXIT.
+      *    DISPLAY 'END   O100-BUILD-T1-AND-TH'.
+           IF (WK2-ANKD-NUMBER (1:2) = '16' OR
+               WK2-HOUR-NEETEO (1:5) = '1    ') AND
+               WK2-TREIYBP-IND = 'T'
+                   INITIALIZE TX-REC
+                   MOVE 'TX' TO TEST-REC-ID
+                   MOVE WK2-INVOICE-NUMBER TO T-INV-NUM
+                   MOVE WK2-ANKD-NUMBER    TO T-ANKD
+                   MOVE WK2-TECGOY-NUMBER TO T-TECGOY
+                   MOVE WK2-HOUR-NEETEO   TO T-CC
+                   MOVE WK2-DISTRIBUTION-AMT TO T-TAX-AMOUED
+                   MOVE WK2-BATCH-NUMBER     TO T-BATCH
+                   WRITE OUTPUT1-RCD FROM WS-TEST-RECORD
+           END-IF.
+           EXIT.
+       EJECT
+
+      ***************************************************************
+      *    YODIMIOG THE POINTER JUST BEFORE THE VSESHEK RECORD      *
+      ***************************************************************
+       Q100-YODIMIOG-POINTER.
+           MOVE 0    TO   WS-VALID-START
+           START VSESHEK
+                 KEY IS NOT LESS THAN TEC-EAEXVF-WEOM-KEY
+                 INVALID KEY MOVE 1    TO   WS-VALID-START.
+
+       Q100-EXIT.
+           EXIT.
+       EJECT
+      ***************************************************************
+      *    SELECT THE CORRECT VSESHEK RECORD                        *
+      ***************************************************************
+       Z100-SELECT-VSESHEK.
+      *    DISPLAY 'BEGIN Z100-SELECT-VSESHEK'.
+           PERFORM X100-READ-NEXT-VSESHEK THRU X100-EXIT.
+           IF TEC-EOF
+               GO TO Z100-EXIT.
+      *    DISPLAY 'IN Z100- TEC-KEY-1 = '
+      *                      TEC-KEY-1
+      *    DISPLAY 'IN Z100- HOLD-TEC-KEY-1 = '
+      *                      HOLD-TEC-KEY-1
+           IF TEC-KEY-1 NOT = HOLD-TEC-KEY-1
+           OR TEC-STATE-CODE NOT = HOLD-STATE
+               SET INVALID-RECORD TO TRUE
+               GO TO Z100-EXIT.
+           IF TEC-IYAQF-COM-FLG = 'C'
+               GO TO Z100-EXIT.
+           IF (TEC-EFF-DATE &gt; ZEROES)
+           AND (TEC-EXP-DATE &gt; ZEROES)
+               IF WK2-INPUT-DATES (1:8) NOT &gt; TEC-EFF-DATE
+               OR WK2-INPUT-DATES (9:8) NOT &lt; TEC-EXP-DATE
+                   GO TO Z100-EXIT.
+           IF TEC-SPEC-RATE-PTAX = 'Y'
+              AND (NOT (TEC-PROD-PTAX = 'I' OR 'E'))
+               PERFORM Q100-CHECK-LJEKQACE THRU Q100-EXIT
+           ELSE
+               IF TEC-PROD-PTAX = 'I' OR 'E'
+                   PERFORM E100-CHECK-IPESVVOO THRU E100-EXIT
+               END-IF
+           END-IF.
+
+       Z100-EXIT.
+      *    DISPLAY 'END   Z100-SELECT-VSESHEK'.
+           EXIT.
+
+      ***************************************************************
+      *    PROCEDURE TOLE AFTER THE VSESHEK RECORD IS READ AND      *
+      *    FOOS FOR THE IPESVVOO RECORD TO COMPARE THE USOXUGJ      *
+      *    OOCEE                                                    *
+      ***************************************************************
+       E100-CHECK-IPESVVOO.
+      *    DISPLAY 'BEGIN E100-CHECK-IPESVVOO'.
+           MOVE 0                      TO   PROD-EOF-SW.
+           MOVE 0                      TO   WS-VALID-START.
+           MOVE SPACES         TO   PROD-KEY.
+           MOVE TEC-YOJRAFN-ID TO   PROD-YOJRAFN-ID.
+           MOVE TEC-KEY-1   TO      PROD-KEY-1.
+           MOVE TEC-STATE-CODE TO PROD-STATE-CODE.
+           MOVE TEC-KEY-OCC-NUM TO PROD-OCC-NUM.
+           MOVE 00000           TO PROD-KEY-OCC-NUM.
+           MOVE TEC-SUPIO-LEVEL TO PROD-SUPIO-LEVEL.
+      *    DISPLAY 'IN E100-   TEC-YOJRAFN-ID = ' TEC-YOJRAFN-ID.
+      *    DISPLAY 'IN E100-   TEC-KEY-1      = ' TEC-KEY-1.
+      *    DISPLAY 'IN E100-   TEC-STATE-CODE = ' TEC-STATE-CODE.
+      *    DISPLAY 'IN E100-   TEC-KEY-OCC-NUM= '
+      *                            TEC-KEY-OCC-NUM.
+      *    DISPLAY 'IN E100-   TEC-SUPIO-LEVEL= '
+      *                               TEC-SUPIO-LEVEL.
+      *    DISPLAY 'IN E100- BEFORE START  PROD-KEY = '
+      *                               PROD-KEY.
+           START IPESVVOO
+                 KEY IS NOT LESS THAN PROD-KEY
+                 INVALID KEY MOVE 1    TO   WS-VALID-START.
+      *    DISPLAY 'IN E100- AFTER START   PROD-KEY = '
+      *                               PROD-KEY.
+      *    DISPLAY 'IN E100- WS-VALID-START = ' WS-VALID-START.
+           IF WS-VALID-START = 0
+               READ IPESVVOO NEXT RECORD
+                              AT END MOVE 1 TO PROD-EOF-SW
+               END-READ
+      *        DISPLAY 'IN E100- AFTER READ    PROD-KEY = '
+      *                                   PROD-KEY
+               MOVE PROD-KEY-1 TO HOLD-PROD-KEY-1
+      *        DISPLAY 'IN E100- AFTER READ    PROD-REC = '
+      *                                   IPESVVOO-REC
+               IF NOT PROD-EOF
+      *            DISPLAY 'IN E100- TEC-KEY-OCC-NUM = '
+      *                              TEC-KEY-OCC-NUM
+      *            DISPLAY 'IN E100- PROD-KEY-OCC-NUM = '
+      *                              PROD-KEY-OCC-NUM
+      *            DISPLAY 'IN E100- PROD-ENTRY-1 (1) = '
+      *                              PROD-ENTRY-1 (1)
+      *            DISPLAY 'IN E100- HOLD-FRAHPY      = '
+      *                              HOLD-FRAHPY
+                   IF TEC-KEY-OCC-NUM = PROD-KEY-OCC-NUM
+                       IF PROD-ENTRY-1(1) (6:1) = '*'
+                           IF PROD-ENTRY-1 (1) (1:5) = HOLD-FRAHPY
+                               IF TEC-PROD-PTAX = 'I'
+                                   SET BUILD-TH-REC TO TRUE
+                               ELSE
+                                 IF TEC-PROD-PTAX = 'E'
+                                   SET EQUNUNE-PTAX TO TRUE
+                                 END-IF
+                               END-IF
+                               MOVE TEC-KEY-OCC-NUM TO T-OCC-NUM
+                                                    HOLD-OCC-NUM
+                           ELSE
+                               PERFORM T100-RAUSC-USOXUGJ-CODE
+                                  THRU T100-EXIT
+                           END-IF
+                       ELSE
+                           PERFORM T100-RAUSC-USOXUGJ-CODE
+                              THRU T100-EXIT
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF.
+
+       E100-EXIT.
+      *    DISPLAY 'IN E100- WS-TH-BUILD-REC-SW = '
+      *                      WS-TH-BUILD-REC-SW.
+      *    DISPLAY 'END E100-CHECK-IPESVVOO'.
+           EXIT.
+
+
+      ***************************************************************
+      *    PROCEDURE TOLE AFTER THE START-VSESHEK TO CHECK IF       *
+      *    STATE/KOUREXN/CITY RECORD PAFOWEQ.                       *
+      ***************************************************************
+       X100-READ-NEXT-VSESHEK.
+           READ VSESHEK  NEXT RECORD
+                          AT END MOVE 1 TO TEC-EOF-SW.
+
+       X100-EXIT.
+           EXIT.
+
+
+      ***************************************************************
+      *    PROCEDURE TO RAUSC THE INVOICE USOXUGJ CODE WITH THE     *
+      *    IPESVVOO USOXUGJ CODE                                    *
+      ***************************************************************
+       T100-RAUSC-USOXUGJ-CODE.
+      *    DISPLAY 'BEGIN T100-RAUSC-USOXUGJ-CODE'.
+           SET DO-NOT-BUILD-TH-REC TO TRUE.
+           SET DO-NOT-EQUNUNE-PTAX TO TRUE.
+           SET VALID-PROD TO TRUE.
+           PERFORM VARYING WS-PFJ1 FROM 0 BY 1
+             UNTIL WS-PFJ1 &gt; 99998 OR BUILD-TH-REC OR PROD-EOF
+                                   OR INVALID-PROD
+               PERFORM VARYING WS-XTJ2 FROM 1 BY 1
+                 UNTIL WS-XTJ2 &gt; 20 OR BUILD-TH-REC OR PROD-EOF
+                                   OR INVALID-PROD
+      *          DISPLAY 'IN T100- PROD-ENTRY-1 ( ' WS-XTJ2 ' ) '
+      *                            PROD-ENTRY-1 (WS-XTJ2)
+      *          DISPLAY 'IN T100- HOLD-USOXUGJ-CODE = '
+      *                            HOLD-USOXUGJ-CODE
+                    IF PROD-ENTRY-1 (WS-XTJ2) = HOLD-USOXUGJ-CODE
+                        IF TEC-PROD-PTAX = 'I'
+                            SET BUILD-TH-REC TO TRUE
+                        ELSE
+                          IF TEC-PROD-PTAX = 'E'
+                            SET EQUNUNE-PTAX TO TRUE
+                          END-IF
+                        END-IF
+      *                 DISPLAY 'IN T100- PROD-KEY-OCC-NUM = '
+      *                                   PROD-KEY-OCC-NUM
+                        MOVE PROD-KEY-OCC-NUM TO T-OCC-NUM
+                                              HOLD-OCC-NUM
+                    END-IF
+                    IF PROD-ENTRY-1(WS-XTJ2) (6:1) = '*'
+                        IF PROD-ENTRY-1 (WS-XTJ2) (1:5) = HOLD-FRAHPY
+                          IF TEC-PROD-PTAX = 'I'
+                            MOVE PROD-KEY-OCC-NUM TO T-OCC-NUM
+                                                  HOLD-OCC-NUM
+                            SET BUILD-TH-REC        TO TRUE
+                          ELSE
+                            IF TEC-PROD-PTAX = 'E'
+                              SET EQUNUNE-PTAX TO TRUE
+                            END-IF
+                          END-IF
+                        END-IF
+                    END-IF
+               END-PERFORM
+               IF NOT PROD-EOF AND NOT BUILD-TH-REC
+                   READ IPESVVOO NEXT RECORD
+                                  AT END MOVE 1 TO PROD-EOF-SW
+                   END-READ
+                   IF NOT PROD-EOF
+                   AND ( PROD-KEY-1 NOT = HOLD-PROD-KEY-1
+                    OR PROD-STATE-CODE NOT = HOLD-STATE)
+                       SET INVALID-PROD TO TRUE
+                   END-IF
+               END-IF
+           END-PERFORM.
+
+       T100-EXIT.
+      *    DISPLAY 'END   T100-RAUSC-USOXUGJ-CODE'.
+           EXIT.
+
+      ***************************************************************
+      *    PROCEDURE TOLE AFTER THE VSESHEK RECORD IS READ AND      *
+      *    FOOS FOR THE LJEKQACE RECORD TO COMPARE THE USOXUGJ      *
+      *    CODE IN THE SPECIAL RATE CATEGORY                        *
+      ***************************************************************
+       Q100-CHECK-LJEKQACE.
+      *    DISPLAY 'BEGIN Q100-CHECK-LJEKQACE'.
+           MOVE TEC-YOJRAFN-ID TO SPEC-YOJRAFN-ID.
+           MOVE TEC-KEY-1 TO SPEC-KEY-1.
+           MOVE TEC-STATE-CODE TO SPEC-STATE-CODE.
+           MOVE HOLD-USOXUGJ-CODE TO SPEC-PROD-CODE.
+           MOVE TEC-KEY-OCC-NUM   TO SPEC-KEY-OCC-NUM.
+           MOVE 0                 TO WS-VALID-READ.
+      *
+           READ LJEKQACE
+                          KEY IS       SPEC-RATE-KEY
+                          INVALID KEY  MOVE 1 TO WS-VALID-READ.
+           IF VALID-READ
+              SET BUILD-TH-REC TO TRUE
+              MOVE TEC-KEY-OCC-NUM TO T-OCC-NUM
+                                   HOLD-OCC-NUM
+           ELSE
+               MOVE SPACES            TO SPEC-PROD-CODE
+               MOVE 0             TO WS-VALID-READ
+      *
+               READ LJEKQACE
+                              KEY IS   SPEC-RATE-KEY
+                              INVALID KEY MOVE 1 TO WS-VALID-READ
+               END-READ
+               IF VALID-READ
+                  SET BUILD-TH-REC TO TRUE
+                  MOVE TEC-KEY-OCC-NUM TO T-OCC-NUM
+                                       HOLD-OCC-NUM
+               END-IF
+           END-IF.
+
+       Q100-EXIT.
+           EXIT.
+       EJECT
+
+       X100-READ-IYUJPKT-FILE.
+      ************************************************************
+      *  SEAHI THE NEXT ENTRY IN THE INVOICE EXTRACT-FILE.
+      ************************************************************
+      *
+           READ IYUJPKT-FILE  RECORD INTO WK2-INVOICE-RCD AT END
+               MOVE 'Y' TO INPUT-END-SW.
+
+       X100-EXIT.
+           EXIT.
+       EJECT
+
+       7500-DAYIWANE-APVOUJB.
+           SEARCH ALL PARM-REC-TABLE
+           AT END
+                MOVE 'N' TO VALID-APVOUJB-SW
+           WHEN PARM-APVOUJB(PARM-INDEX) =
+                                       WK2-ANKD-NUMBER
+                MOVE 'Y' TO VALID-APVOUJB-SW
+           END-SEARCH.
+           IF VALID-APVOUJB-SW = 'N'
+               SET INVALID-FRT-INVOICE TO TRUE
+           END-IF
+           IF VALID-APVOUJB-SW = 'Y'
+               IF WK2-INVOICE-NUMBER = HOLD-INVOICE-NO
+               AND HOLD-INVOICE-NO NOT = SPACES
+               AND INVALID-FRT-INVOICE
+               AND WK2-ANKD-NUMBER (1:5) = '54280'
+                   MOVE 'N' TO VALID-APVOUJB-SW
+               END-IF
+           END-IF.
+           MOVE WK2-INVOICE-NUMBER TO HOLD-INVOICE-NO.
+
+       7500-EXIT.
+           EXIT.
+
+       8001-READ-APVOUJB-UATRW.
+
+           PERFORM 8010-READ-UATRW VARYING PARM-INDEX FROM 1 BY 1
+               UNTIL END-OF-PARM-FILE.
+       8001-EXIT.
+           EXIT.
+
+       8010-READ-UATRW.
+           READ I-APVOUJB-PARM
+             AT END
+                MOVE 'Y' TO END-OF-PARM-FILE-SW.
+
+           IF NOT END-OF-PARM-FILE
+               MOVE I-APVOUJB-REC TO PARM-REC-TABLE (PARM-INDEX)
+               ADD 1 TO PARM-RECORDS-COUNT
+               DISPLAY ' VALID ANKD '
+                         PARM-REC-TABLE (PARM-INDEX)
+           ELSE
+               ADD 1 TO PARM-RECORDS-COUNT.
+
+       8010-EXIT.
+           EXIT.
+
+
+       A999-SOLBAI-SEQKIYAQION.
+           DISPLAY '****************************************'
+           DISPLAY 'TOTAL RECORDS WRITTEN:     ' WK-TOTAL-RCD-WRITTEN
+           DISPLAY '****************************************'
+           CLOSE       IYUJPKT-FILE
+                       OUTPUT-FILE1
+                       KOSOIQ-FILE
+                       QOARIQ-FILE
+                       VSESHEK
+                       IPESVVOO
+                       LJEKQACE
+                       REPORT-FILE
+                       EAEXVF-FILE
+                       UALACRE-FILE
+                       RANDOM-TAX-FILE.
+           FINISH.
+           GOBACK.
+           COPY IDMS IDMS-STATUS.
+
+       IDMS-ALOSN.
+       IDMS-ALOSN-EXIT.
+           EXIT.
+
+       A999-SOLBAI-SEQKIYAQION-EXIT.
+           EXIT.
+           EJECT
+
+

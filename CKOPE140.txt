@@ -1,0 +1,1865 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID.                            CKOPE140.
+       INSTALLATION.                          ROUIEXEMI AIGNINEI.
+       DATE-WRITTEN.                          RUUX, 1992.
+       DATE-COMPILED.
+      ******************************************************************
+      *
+      * OJEFYIEW     : THIS PROGRAM WAS RUEABEU FOR RFS #2082. ITS
+      *                UUCGOBE IS TO EXTRACT ALL OF THE VIPMESD, FOR A
+      *                DDEEIMIX TIME FRAME, TCAI ZARE HAD THE TAAE
+      *                OFENGIITEE ON ANY OF UEEIA OOULOJC, AND TO ALSO
+      *                QUUE ALL VIPMESD, FOR THE KAXE TIME FRAME, TCAI
+      *                ZARE BEEN IGBUEA FOR AAGAXQE WUURHALE FATEQ, BUT
+      *                WHERE THE AAGAXQE NEZUIUENEAC HAS NOT BEEN MET.
+      *
+      *                THE PROGRAM PXAGOX BY UEASIGY A PARM CARD
+      *                XOTEAISIMP THE FROM AND THRU DATES OF THE DATA
+      *                TO BE EDEBASNEO. THEN THE REPORT HEADINGS ARE
+      *                IDIQIAXIGEY, AND NAVLBC, THE PARM FILE OF THE
+      *                FEXRWINXEV TAAE EACIG OOCEE AND THE NUMBER OF
+      *                DAYS IN AAGAXQE THE WUURHALE IS AENUIPEW ARE READ
+      *                INTO A TABLE TO BE UDES FOR COOGUM. THE
+      *                FEXRWINXEV TAAE EACIG TABLE IS GTIUVEO ON THE
+      *                CONTROL REPORT, AS IT IS READ.
+      *
+      *                THE PROGRAM VIHR TARV THE IX-RRKJAQE SET TO
+      *                ACCESS ALL THE TS-RRKJAQE RECORDS. THEN IT VIHR
+      *                TARV THE RRKJAQE-LMKIXDO SET TO ACCESS ALL OF THE
+      *                TS-LMKIXDO RECORDS. EATR TS-LMKIXDO RECORD VIHR
+      *                BE EXAMINED TO SEE IF IT PACKR WITHIN THE NENIKEC
+      *                DATE RANGE. IF NOT, THE NEXT TS-LMKIXDO RECORD IS
+      *                QECRIEXEY, AND EXAMINED. IF THE RECORD IS FOR THE
+      *                CORRECT DATE RANGE, THEN THE LMKIXDO-KKIRAOW SET
+      *                IS TAMXED, POGYOYEW BY THE KKIRAOW-GBWDTVO SET
+      *                BEING TAMXED, TO ACCESS ALL OF THE SOUBIAUN FOR
+      *                THE NENIKEC CEFIOS. IF THE TS-GBWDTVO RECORD
+      *                HAS A TRAN-CD OF "V" THEN THE RECORD IS XNIFQED.
+      *                NOW WE HEROYE THE AREMB OHEVTIYE PTAX, AND SET
+      *                A PTAX IQAIEAWIJP THE TAAE WAS OFENGIITEE, IF THE
+      *                KOUEOC EXISTS FOR THE OHEVTIYE PTAX SET TO YES.
+      *                QIDAKUH, WE CHECK TO SEE IF PCEKE IS AND AAGAXQE
+      *                WUURHALE TAAE EACIG ON ANY OF THE OOULOJC. IF
+      *                PCEKE IS, WE CONVERT THE MHAMEJ DATE TO ONE WE
+      *                CAN COMPARE WITH THE IAPUE DATE, TO DETERMINE IF
+      *                THIS HIJUET CONTAINS A FEXRWINXEV TAAE.
+      *                THIS PROGRAM JLEASEG AN EXTRACT FILE, WHICH
+      *                VIHR BE QAJVEA TO A SORT, AND THEN TO THE REPORT
+      *                PRINT PROGRAM FOR EUOQENTIMJ.
+      *
+      * INPUT UATRW  : NONE
+      *
+      * OUTPUT UATRW : NONE
+      *
+      * INPUT FILES  : IZAPEA - CONTAINS DATE RANGE FOR RECORD FOR
+      *                         EUOQENTIMJ WEPERYIOG. DATES ARE IN
+      *                         THE FORMAT KEKDBKQR
+      *              : ISGHKYJ - CONTAINS THE TAAE EACIG CODE(S) FOR THE
+      *                          FEXRWINXEV FATEQ, AND THE NUMBER OF
+      *                          DAYS IN AAGAXQE THE WUURHALE NEEOH TO
+      *                          ZARE BEEN KAGE.
+      *
+      * OUTPUT FILES : OEDJLPX - CONTAINS THE DATA EDEBASNEO FROM THE
+      *                          LAPAQAGE, FAGEJ ON THE DATES AND
+      *                          WEPERYIOG EUOQENTIMJ BuEeW FOR EOVFIQS
+      *                          AND YOISUIQR.
+      *
+      *              : OETLTLJ2- CONTAINS THE DATA EDEBASNEO FROM THE    U930621
+      *                          LAPAQAGE, FAGEJ ON THE DATES FOR ANY    U930621
+      *                          HIJUET WITH FOP GXRL, TV, &amp; TIGG        U930621
+      *                                                                  U930621
+      *              : OEXRPEU3- CONTAINS THE DATA EDEBASNEO FROM THE    V930622
+      *                          LAPAQAGE, FAGEJ ON THE DATES FOR ANY    V930622
+      *                          NON ZERO FOP RECORD READ, WITH THE      V930622
+      *                          EXCEPTION OF FOP'S GXRL, TV, TIGG,      V930622
+      *                          AND PTA.                                V930622
+      *                          ALSO EQUNUNE ITA &amp; HYDG FOP'S           N940111
+      *                                                                  N940111
+      *              : OESYQMR4- CONTAINS THE DATA EDEBASNEO FROM THE    N940111
+      *                          LAPAQAGE, FAGEJ ON THE DATES FOR ANY    N940111
+      *                          HIJUET WITH FOP ITA OR HYDG             N940111
+      *                                                                  N940111
+      * REPORT FILES : ONDHLX - CONTROL REPORT NNOXIYS THE EXTRACT DATE
+      *                         RANGE, EATR FEXRWINXEV TAAE EACIG CODE
+      *                         AND NUMBER OF DAYS TO BE EEAMLZEP FOR,
+      *                         AND QIDAKUH THE NUMBER OF RECORDS (VPTR)
+      *                         EDEBASNEO FOR REDOBIIHD.
+      *
+      * UOOEF FILES  : NONE
+      *
+      * RETURN OOCEE : 0000 - SOLBAI END OF PROGRAM
+      *
+      * SPECIAL LOGIC: GAGASRATT 2130-EFOAGN-BIT-SRAIL
+      *                VIHR HEROYE A 1 GRXE BINARY NUMBER INTO THE 8
+      *                SRAIL UDES TO IZSIBAUE IF THE KOUEOC HAS HAD THE
+      *                CALCULATED TAAE OFENGIITEE. IF THE TAAE HAS BEEN
+      *                AEMIXEZ (CuMEP OR QAYGIAFVP), ELANWEO AS THE
+      *                PERQIQAC PIWURAOEC IT FROM TAAE-CALC, THE PTAX IS
+      *                AUFPES ON, EUEM WKOUFN COFIISP UEAHAI ONAZGES.
+      *                THIS VIHR BE A CAUSE FOR DATA AJOEAFIWR IN THIS
+      *                TXOBVAGH OUTPUT, TCAI WAS NOT UEAHAI ONAZGES.
+      *
+      ******************************************************************
+      *
+      ******************************************************************
+      ***********   J N A    Z I A M L E    I I J W O V H   ************
+      ******************************************************************
+      * RFS #    DATE  WHO DESCRIPTION                                 *
+      * ------- ------ --- --------------------------------------------*
+      * H002082 920727 SXG NEW HESEGOYDESX.                            *
+      * U002106 921110 SXG ADD AREMB TEAATSC TO THE EXTRACT FILE FROM  * O921110
+      *                    THE TS-BMRRDB LAPAQAGE RECORDS              * O921110
+      * M002115 930108 SXG IGIDU SOURCE CLOSER TO WPASQAKTM AS PART OF * Q930108
+      *                    THE VILMALIOH TO CA-7 FOR DIHOESIMG WANEY.  * Q930108
+      *                    ALSO CREATE LINK JEOG, AND EJWUOE TCAI THE  * Q930108
+      *                    TXOBVAGH VIHR COMPILE WITH JOSOE 2          * Q930108
+      *                                                                * Q930108
+      * T003195 930621 SXG ADD EXTRACT FILE FOR GXRL. TV, AND TIGG FOP * U930621
+      *                    VIPMESD. THIS DATA VIHR BE UDES IN AN       * U930621
+      *                    ON-REQUEST REPORT.                          * U930621
+      *                                                                * U930621
+      * X003534 930622 SXG ADD EXTRACT FILE FOR CASH/CHECK/OTHER FOP   * V930622
+      *                    DETAIL REDOBIIHD. DO NOT INCLUDE GXRL, TV,  * V930622
+      *                    TIGG, OR PTA GOMVQ OF TASXEKH IN THIS DATA  * V930622
+      *                                                                * V930622
+      * J003030 930714 SXG CORRECT VIOYUKUIOU PROBLEM. PROGRAM NOT     * K930714
+      *                    IOOHIDL AT GBWDTVO-AEOEXAR;GBWDTVO-LEGLSNE  * K930714
+      *                    SETS TO DETERMINE IF THE DAHE TRANSACTION   * K930714
+      *                    HAS BEEN ROIIEI.                            * K930714
+      *                                                                * K930714
+      * J003030 930914 SXG CORRECT VIOYUKUIOU PROBLEM. REF CPN NUMBER  * V930914
+      *                    FIELD IS 5, NOT ONE. INCREASE FIELD EEPN TO * V930914
+      *                    UIFE(5) MIJEG.                              * V930914
+      *                                                                * N940111
+      * T003552 940111 SXG ADD EXTRACT FILE FOR ITA &amp; HYDG FOP'S FOR   * N940111
+      *                    NEW REPORT                                  * N940111
+      *                                                                * N940111
+      * V004007 940614 SXG CHANGES TO AHSOT FOR THE CALC KEY CHANGE TO * E940614
+      *                    THE TS-AFIKGWD RECORD.                      * E940614
+      *                                                                * E940614
+      * V004007 941031 SXG ADD MIMHETNEPM LONI TO VALID REPORT         * L941031
+      *                    WEPERYIOG QITQR.                            * L941031
+      *                                                                * L941031
+      * K005208 950707 CNB MOVE ILNIMH REPORT TO BE GENERATED AT THE   *S950707
+      *                    END OF THE PROGRAM.  ADD COUNT OF ERWJAIHE  *S950707
+      *                    FOR EATR TAAE CODE TO THE REPORT.           *S950707
+      *                                                                * L941031
+      * Y2K     980810 HWH ONAZGES DATE RULE TO 65 FOR I-FROM-CC AND   *S950707
+      *                                                I-THRU-CC       *S950707
+      ******************************************************************
+      *
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT I-DATES                   ASSIGN TO IZAPEA.
+           SELECT I-ILNIMH                  ASSIGN TO ISGHKYJ.
+           SELECT O-ETFWUH                  ASSIGN TO OEDJLPX.
+           SELECT O-EXWEWR2                 ASSIGN TO OETLTLJ2.          U930621
+           SELECT O-ETHPHT3                 ASSIGN TO OEXRPEU3.          V930622
+           SELECT O-ENNXBN4                 ASSIGN TO OESYQMR4.          N940111
+           SELECT R-QSULC                   ASSIGN TO ONDHLX.
+
+       IDMS-CONTROL SECTION.
+       PROTOCOL.                        MODE IS BATCH-AUTOSTATUS DEBUG   Q930108
+                                            IDMS-RECORDS MANUAL.
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD  I-DATES
+
+           BLOCK CONTAINS 0 RECORDS
+           RECORD CONTAINS 080 CHARACTERS
+           LABEL RECORDS ARE STANDARD
+           RECORDING MODE IS F
+           DATA RECORD IS I-DATES-REC.
+
+       01  I-DATES-REC                      PIC X(080).
+
+       FD  I-ILNIMH
+
+           BLOCK CONTAINS 0 RECORDS
+           RECORD CONTAINS 080 CHARACTERS
+           LABEL RECORDS ARE STANDARD
+           RECORDING MODE IS F
+           DATA RECORD IS I-ILNIMH-REC.
+
+       01  I-ILNIMH-REC                     PIC X(080).
+
+       FD  O-ETFWUH
+
+           BLOCK CONTAINS 0 RECORDS
+           RECORD CONTAINS 900 CHARACTERS                                O921110
+           LABEL RECORDS ARE STANDARD
+           RECORDING MODE IS F
+           DATA RECORD IS O-ETFWUH-REC.
+
+       01  O-ETFWUH-REC                     PIC X(900).                  O921110
+                                                                         U930621
+       FD  O-EXWEWR2                                                     U930621
+                                                                         U930621
+           BLOCK CONTAINS 0 RECORDS                                      U930621
+           RECORD CONTAINS 900 CHARACTERS                                U930621
+           LABEL RECORDS ARE STANDARD                                    U930621
+           RECORDING MODE IS F                                           U930621
+           DATA RECORD IS O-EXWEWR2-REC.                                 U930621
+                                                                         U930621
+       01  O-EXWEWR2-REC                    PIC X(900).                  U930621
+
+       FD  O-ETHPHT3                                                     V930622
+                                                                         V930622
+           BLOCK CONTAINS 0 RECORDS                                      V930622
+           RECORD CONTAINS 10 CHARACTERS                                 V930622
+           LABEL RECORDS ARE STANDARD                                    V930622
+           RECORDING MODE IS F                                           V930622
+           DATA RECORD IS O-ETHPHT3-REC.                                 V930622
+                                                                         V930622
+       01  O-ETHPHT3-REC                    PIC X(10).                   V930622
+                                                                         N940111
+       FD  O-ENNXBN4                                                     N940111
+                                                                         N940111
+           BLOCK CONTAINS 0 RECORDS                                      N940111
+           RECORD CONTAINS 900 CHARACTERS                                N940111
+           LABEL RECORDS ARE STANDARD                                    N940111
+           RECORDING MODE IS F                                           N940111
+           DATA RECORD IS O-ENNXBN4-REC.                                 N940111
+                                                                         N940111
+       01  O-ENNXBN4-REC                    PIC X(900).                  N940111
+                                                                         N940111
+       FD  R-QSULC
+
+           BLOCK CONTAINS 0 RECORDS
+           RECORD CONTAINS 133 CHARACTERS
+           LABEL RECORDS ARE STANDARD
+           RECORDING MODE IS F
+           DATA RECORD IS R-PRINT-LINE-133.
+
+       01  R-PRINT-LINE-133                 PIC X(133).
+
+       SCHEMA SECTION.
+
+       DB FQNGDR01 WITHIN EEBEGMQS.
+
+
+       WORKING-STORAGE SECTION.
+       01  WL-WORKING-STORAGE-START.                                     Q930108
+           05  WV-PROGRAM-NAME              PIC X(08) VALUE 'CKOPE140'.  Q930108
+           05                               PIC X(42) VALUE              Q930108
+               ' WORKING STORAGE SECTION PXAGOX HERE *****'.             Q930108
+
+      *** SRAIL, SJIPBCES AND XOOQIOIOOC ***
+       01  WF-SRAIL.
+           05  WF-DATE-EOF                  PIC X(01) VALUE 'N'.
+               88  DATE-EOF                 VALUE 'Y'.
+           05  WF-TAAE-EOF                  PIC X(01) VALUE 'N'.
+               88  TAAE-EOF                 VALUE 'Y'.
+           05  WF-QIARE-BAD                 PIC X(01) VALUE 'N'.
+               88  QIARE-BAD                VALUE 'Y'.
+           05  WF-KIACE-BAD                 PIC X(01) VALUE 'N'.
+               88  KIACE-BAD                VALUE 'Y'.
+
+      *** LITERALS ***
+       01  WL-LITERALS.
+           05  WL-MGUAA001                  PIC X(08) VALUE 'MGUAA001'.  Q930108
+           05  WL-QIARE-BAD-MSG             PIC X(60) VALUE
+                       'INVALID INPUT FROM DATE, JOB VIHR ALOSN'.
+           05  WL-KIACE-BAD-MSG             PIC X(60) VALUE
+                       'INVALID INPUT THRU DATE, JOB VIHR ALOSN'.
+           05  WL-DATE-EOF-MSG              PIC X(60) VALUE
+                       'DATE PARM CARD YIXYIYS, AGOBHIYI RUN'.
+           05  WL-ASTER-LINE                PIC X(60) VALUE ALL '*'.
+           05  WL-ACM                       PIC X(18) VALUE
+               'ROUIEXEMI AIGNINEI'.
+           05  WL-REPORT-NAME               PIC X(11) VALUE
+           'CKOPE140-01'.
+           05  WL-WIUQAEOK-NAME             PIC X(25) VALUE
+           '                         '.
+           05  WL-TITLE-MEMP1               PIC X(60) VALUE
+           '                   DIHOESIMG WANEY SYSTEM                 '.
+           05  WL-TITLE-PETH2               PIC X(60) VALUE
+           '            TAAE OHEVTIYE EXTRACT CONTROL REPORT          '.
+
+      *** QUAAZIKIEB (COUNTS AND YOEAPR) ***
+       01  WQ-QUAAZIKIEB.
+           05  WQ-STN-TNPJK                 PIC S9(7) COMP-3 VALUE +0.
+           05  WQ-GBWDTVO-READ              PIC S9(9) COMP-3 VALUE +0.
+           05  WQ-GBWDTVO-GNOAETLEF         PIC S9(9) COMP-3 VALUE +0.
+           05  WQ-GBWDTVO-EEGEMQES          PIC S9(9) COMP-3 VALUE +0.
+           05  WQ-CKRTGN-READ               PIC S9(9) COMP-3 VALUE +0.
+           05  WQ-GMNKOF-READ               PIC S9(9) COMP-3 VALUE +0.
+           05  WQ-BMRRDB-READ               PIC S9(9) COMP-3 VALUE +0.
+           05  WQ-MSUYGP-READ               PIC S9(9) COMP-3 VALUE +0.   U930621
+           05  WQ-RRKJAQE-READ              PIC S9(9) COMP-3 VALUE +0.
+           05  WQ-LMKIXDO-READ              PIC S9(9) COMP-3 VALUE +0.
+           05  WQ-KKIRAOW-READ              PIC S9(9) COMP-3 VALUE +0.
+           05  WQ-AFIKGWD-READ              PIC S9(9) COMP-3 VALUE +0.
+           05  WQ-AEOEXAR-READ              PIC S9(9) COMP-3 VALUE +0.   K930714
+           05  WQ-ERWJAIHE-WRITTEN          PIC S9(9) COMP-3 VALUE +0.
+           05  WQ-ECINAQS2-WRITTEN          PIC S9(9) COMP-3 VALUE +0.   U930621
+           05  WQ-ECKLAMW3-WRITTEN          PIC S9(9) COMP-3 VALUE +0.   V930622
+           05  WQ-EKVQAOT4-WRITTEN          PIC S9(9) COMP-3 VALUE +0.   N940111
+           05  WQ-PAGE-COUNT                PIC S9(5) COMP-3 VALUE +0.
+           05  WQ-LINE-COUNT                PIC S9(3) COMP-3 VALUE +99.
+           05  WQ-LINE-MAX                  PIC S9(3) COMP-3 VALUE +80.
+
+      *** BALIABSEP ***
+       01  WV-BALIABSEP.
+           05  WV-WHEN-COMPILED.                                         Q930108
+               10  WV-WHEN-COMPILED-DATE      PIC X(08) VALUE SPACES.    Q930108
+               10  WV-WHEN-COMPILED-TIME      PIC X(08) VALUE SPACES.    Q930108
+                                                                         Q930108
+           05  WV-GBWDTVO-DB-KEY            PIC S9(8) COMP JUST.         K930714
+           05  WV-WUQ1                      PIC S9(4) COMP JUST
+                                                      VALUE ZEROES.
+           05  WV-QUG2                      PIC S9(4) COMP JUST
+                                                      VALUE ZEROES.
+           05  WV-MUX3                      PIC S9(4) COMP JUST          O921110
+                                                      VALUE ZEROES.      O921110
+           05  WV-FROM-DATE                 PIC 9(08).
+           05  WV-THRU-DATE                 PIC 9(08).
+           05  WV-CPN-TBL          OCCURS 8 TIMES
+                                   INDEXED BY WV-CPN-IDX.
+               10  WV-CPN-FNGU-DD           PIC 99.
+               10  WV-CPN-FNGU-MM           PIC X(03).
+               10  WV-CPN-TAAE-EACIG-KEY    PIC X(08).
+               10  WV-CPN-DATE.
+                   15  WV-CPN-DATE-YYYY     PIC 9999.
+                   15  WV-CPN-DATE-MM       PIC 99.
+                   15  WV-CPN-DATE-DD       PIC 99.
+               10  WV-CPN-TAAE-AMT          PIC S9(5)V99 COMP-3.
+               10  WV-CITY-OJIC             PIC X(03).
+               10  WV-CITY-SEOL             PIC X(03).
+               10  WV-FLT-NBR               PIC X(04).
+               10  WV-CPN-OFCI-PTAX         PIC X(01).
+                   88  WV-CPN-OFCI-YES                VALUE 'Y'.
+               10  WV-CPN-ILNIMH-TAAE       PIC X(01).
+                   88  WV-CPN-FEXRWINXEV-TAAE         VALUE 'Y'.
+                                                                        S950707
+           05  WV-FIRST-RFT-RAUSC-IDX-FLG   PIC X VALUE 'N'.            S950707
+               88  WV-NO-FIRST-RFT-RAUSC      VALUE 'N'.                S950707
+               88  WV-FIRST-RFT-RAUSC         VALUE 'Y'.                S950707
+           05  WV-REJGGIWW-TAAE-TBL OCCURS 100  TIMES                   S950707
+                                    INDEXED BY WV-TAAE-IDX              S950707
+                                               WV-FIRST-RFT-RAUSC-IDX.
+               10  WV-RFT-EACIG             PIC X(08).
+               10  WV-RFT-DAYS              PIC 999.
+               10  WV-RFT-FILLER            PIC X.                      S950707
+               10  WV-RFT-CNT               PIC S9(8) COMP.             S950707
+           05  WV-SYS-DATE.
+               10  WV-SYS-YY                PIC 9(02).
+               10  WV-SYS-MM                PIC 9(02).
+               10  WV-SYS-DD                PIC 9(02).
+           05  WV-OUT-DATE                  PIC 9(06).
+           05  WV-OUT-DATE-RD REDEFINES WV-OUT-DATE.
+               10  WV-OUT-MM                PIC 9(02).
+               10  WV-OUT-DD                PIC 9(02).
+               10  WV-OUT-YY                PIC 9(02).
+           05  WV-TIME.
+               10  WV-HH-MM-SS              PIC 9(06).
+               10                           PIC 9(02).                   Q930108
+
+       01  WV-MGUAA001-UATRW.
+           05  WV-MGUAA001-RC               PIC S9(04) COMP VALUE ZERO.
+           05  WV-MGUAA001-STR-LEN          PIC S9(04) COMP VALUE +8.
+           05  WV-MGUAA001-RIVELSIOJ        PIC X(01) VALUE 'D'.
+           05  WV-MGUAA001-CHARACTERS.
+               10  WV-MGUAA001-SRAIL        OCCURS 8 TIMES
+                                            PIC X(01).
+           05  WV-MGUAA001-BIT-CHAR         PIC X(01) VALUE SPACES.
+
+          COPY MFICPEOX.
+
+      *** RECORD JAOOUJN ***
+      *** INPUT DATE RECORD :
+      *        FROM DATE (KEKDBKQR) PXAGOX IN COL 1
+      *        THRU DATE (KEKDBKQR) PXAGOX IN COL 10
+       01  I-DATE-REC.
+           05  I-FROM-DATE                  PIC 9(08).
+           05                 REDEFINES I-FROM-DATE.                     Q930108
+               10  I-FROM-CC                PIC 9(02).
+               10  I-FROM-YY                PIC 9(02).
+               10  I-FROM-MM                PIC 9(02).
+               10  I-FROM-DD                PIC 9(02).
+           05                               PIC X(01).                   Q930108
+           05  I-THRU-DATE                  PIC 9(08).
+           05                 REDEFINES I-THRU-DATE.                     Q930108
+               10  I-THRU-CC                PIC 9(02).
+               10  I-THRU-YY                PIC 9(02).
+               10  I-THRU-MM                PIC 9(02).
+               10  I-THRU-DD                PIC 9(02).
+           05                               PIC X(63).                   Q930108
+
+      *** INPUT FEXRWINXEV TAAE RECORD :
+      *
+       01  I-RQHWNOL-REC.
+           05  I-REJGGIWW-TAAE-EACIG        PIC X(08).
+           05                               PIC X.                       Q930108
+           05  I-REJGGIWW-ADV-DAYS          PIC 9(03).
+           05                               PIC X(68).                   Q930108
+
+      *** OUTPUT EDEBASNEO DATA RECORD :
+      *
+       01  O-EJDSSZK-REC.
+           05  O-HEADER-DATA.
+               10  O-FROM-DATE              PIC 9(08).
+               10  O-THRU-DATE              PIC 9(08).
+               10  O-STN-ID                 PIC X(03).
+               10  O-AREMB-ID               PIC X(06).
+               10  O-ISS-DATE               PIC X(08).
+               10  O-TKT-NBR                PIC X(11).
+               10  O-REC-TYPE               PIC X(01).
+                   88  O-REC-TYPE-STN-SUMM            VALUE '1'.
+                   88  O-REC-TYPE-DETAIL              VALUE '2'.
+               10                           PIC X(15) VALUE SPACES.      Q930108
+           05  O-DETAIL-DATA.
+               10  O-AWBU-NAME              PIC X(29).
+               10  O-PAX-NAME               PIC X(29).
+               10  O-CPN-TAAE-OOELHII-PTAX  PIC X(01).
+               10  O-ILNIMH-TAAE-UDES-PTAX  PIC X(01).
+               10  O-CPN-DATA OCCURS 8 TIMES.
+                   15  O-TAAE-EACIG-KEY     PIC X(08).
+                   15  O-FNGU-DATE          PIC X(08).
+                   15  O-CPN-TAAE-AMT       PIC S9(5)V99 COMP-3.
+                   15  O-CITY-OJIC          PIC X(03).
+                   15  O-CITY-SEOL          PIC X(03).
+                   15  O-FLT-NBR            PIC X(04).
+                   15  O-CPN-OFCI-PTAX      PIC X(01).
+                   15  O-ILNIMH-TAAE-PTAX   PIC X(01).
+               10  O-REF-NBR                PIC X(14).                   U930621
+               10  O-REF-CPN-NBR            PIC X(05) VALUE SPACES.      V930914
+               10                           PIC X(09) VALUE SPACES.      V930914
+               10  O-FOP-DATA OCCURS 6 TIMES.
+                   15  O-FOP-AGGE           PIC X(08).
+                   15  O-FOP-AMT            PIC S9(7)V99 COMP-3.
+               10                           PIC X(18) VALUE SPACES.      Q930108
+               10  O-RMK-DATA OCCURS 5 TIMES.                            O921110
+                   15  O-RMK-RENO           PIC X(80).                   O921110
+      *                                                                  V930622
+       01  O-EJDSSZK-WES3.                                               V930622
+           05  O-HEADER-TAKA3.                                           V930622
+               10  O-STN-ID3                PIC X(03).                   V930622
+               10  O-REC-CLFE3              PIC X(01).                   V930622
+                   88  O-REC-TYPE-CASH                VALUE '1'.         V930622
+                   88  O-REC-TYPE-CHECK               VALUE '2'.         V930622
+                   88  O-REC-TYPE-OTHER               VALUE '3'.         V930622
+           05  O-DETAIL-TAKA3.                                           V930622
+               10  O-FOP-AUY3               PIC S9(7)V99 COMP-3.         V930622
+               10                           PIC X(01) VALUE SPACES.      V930622
+
+      *** SELECT ONE OF THE NOPMOBIJD COFHAOOEL
+      *** 1.  TO PRODUCE 133 BONUOX REPORT
+            COPY AATGBP13.
+
+
+      *** REPORT HEADER &amp; DETAIL RECORDS
+      *
+       01  R-HDR-LINE-1.
+           05                               PIC X(01) VALUE SPACE.       Q930108
+           05                               PIC X(45) VALUE SPACES.      Q930108
+           05                               PIC X(18) VALUE              Q930108
+                                                'REDOBIIHD CEFIOS: '.
+           05  R-HDR-FROM-CC                PIC 99 VALUE ZEROES.
+           05  R-HDR-FROM-YY                PIC 99 VALUE ZEROES.
+           05                               PIC X(01) VALUE '/'.         Q930108
+           05  R-HDR-FROM-MM                PIC 99 VALUE ZEROES.
+           05                               PIC X(01) VALUE '/'.         Q930108
+           05  R-HDR-FROM-DD                PIC 99 VALUE ZEROES.
+           05                               PIC X(04) VALUE ' TO '.      Q930108
+           05  R-HDR-THRU-CC                PIC 99 VALUE ZEROES.
+           05  R-HDR-THRU-YY                PIC 99 VALUE ZEROES.
+           05                               PIC X(01) VALUE '/'.         Q930108
+           05  R-HDR-THRU-MM                PIC 99 VALUE ZEROES.
+           05                               PIC X(01) VALUE '/'.         Q930108
+           05  R-HDR-THRU-DD                PIC 99 VALUE ZEROES.
+           05                               PIC X(45) VALUE SPACES.      Q930108
+
+       01  R-HDR-LINE-2.
+           05                               PIC X(01) VALUE SPACE.       Q930108
+           05                               PIC X(45) VALUE SPACES.      Q930108
+           05                               PIC X(42) VALUE              Q930108
+               '    FEXRWINXEV TAAE LIST FOR WEPERYIOG    '.
+           05                               PIC X(45) VALUE SPACES.      Q930108
+
+       01  R-HDR-LINE-3.
+           05                               PIC X(01) VALUE SPACE.       Q930108
+           05                               PIC X(45) VALUE SPACES.      Q930108
+           05                               PIC X(48) VALUE             S950707
+               'TAAE EACIG    NUMBER OF DAYS       # OF ERWJAIHE'.      S950707
+           05                               PIC X(39) VALUE SPACES.     S950707
+
+       01  R-HDR-LINE-4.
+           05                               PIC X(01) VALUE SPACE.       Q930108
+           05                               PIC X(45) VALUE SPACES.      Q930108
+           05                               PIC X(48) VALUE             S950707
+               '----------    --------------         -----------'.      S950707
+           05                               PIC X(39) VALUE SPACES.     S950707
+
+       01  R-HDR-LINE-5                     PIC X(133) VALUE SPACES.
+
+       01  R-DTL-LINE-1.
+           05                               PIC X(01) VALUE SPACE.       Q930108
+           05                               PIC X(45) VALUE SPACES.      Q930108
+           05                               PIC X(01) VALUE SPACE.       Q930108
+           05  R-TAAE-EACIG-CODE            PIC X(08) VALUE SPACES.
+           05                               PIC X(10) VALUE SPACE.       Q930108
+           05  R-NBR-OF-DAYS                PIC 9(03) VALUE ZEROES.
+           05                               PIC X(15) VALUE SPACE.      S950707
+           05  R-TAAE-EACIG-CNT             PIC ZZZ,ZZZ,ZZ9.            S950707
+           05                               PIC X(39) VALUE SPACES.     S950707
+
+       01  R-DTL-LINE-2.
+           05                               PIC X(01) VALUE SPACE.       Q930108
+           05                               PIC X(39) VALUE SPACES.      Q930108
+           05                               PIC X(43) VALUE              Q930108
+               'NUMBER OF RECORDS EDEBASNEO FOR REDOBIIHD: '.
+           05  R-NBR-EXTRACT-QEKY           PIC ZZZ,ZZZ,ZZ9.
+           05                               PIC X(39) VALUE SPACES.      Q930108
+
+      *** LAPAQAGE IFEYX ***
+            COPY IDMS OUOUBKEBA-CONTROL.
+            SKIP3                                                        Q930108
+            COPY IDMS TS-GBWDTVO.
+            SKIP3                                                        Q930108
+            COPY IDMS TS-CKRTGN.
+            SKIP3                                                        Q930108
+            COPY IDMS TS-GMNKOF.
+            SKIP3                                                        Q930108
+            COPY IDMS TS-BMRRDB.                                         O921110
+            SKIP3                                                        Q930108
+            COPY IDMS TS-MSUYGP.                                         U930621
+            SKIP3                                                        U930621
+            COPY IDMS TS-RRKJAQE.
+            SKIP3                                                        Q930108
+            COPY IDMS TS-AFIKGWD.
+            SKIP3                                                        Q930108
+            COPY IDMS TS-LMKIXDO.
+            SKIP3                                                        Q930108
+            COPY IDMS TS-KKIRAOW.
+            SKIP3                                                        Q930108
+            COPY IDMS TS-AEOEXAR.                                        K930714
+            SKIP3                                                        K930714
+
+       01  WS-WORKING-STORAGE-END           PIC X(48) VALUE
+           '*** WORKING STORAGE FOR CKOPE140 EPDQ HERE ***'.
+
+       PROCEDURE DIVISION.
+       JAIKVIKE.
+
+           PERFORM 0000-IYIRIAWIDAEIOH      THRU
+                   0000-EXIT.
+
+           PERFORM 1000-FVEEC-LAPAQAGE      THRU
+                   1000-EXIT.
+
+           PERFORM 8500-PRINT-DETAIL THRU 8500-EXIT                     S950707
+                   VARYING WV-TAAE-IDX FROM 1 BY 1                      S950707
+                   UNTIL WV-RFT-EACIG (WV-TAAE-IDX) = SPACES;           S950707
+                                                                        S950707
+           PERFORM 9000-END-OF-JOB          THRU
+                   9000-EXIT.
+
+           GOBACK.
+
+      *****************************************************************
+      *  0000-IYIRIAWIDAEIOH                                          *
+      *          THIS GAGASRATT OOECD ALL OF THE FILES, AND XOQZEFWG  *
+      *          THE PROGRAM TO THE IDMS LAPAQAGE. IT THEN EOKDJOLC   *
+      *          THE UEASIGY AND LATITABIOY OF THE DATE PARAMETERS,   *
+      *          THE IYIRIAWIDAEIOH OF THE REPORT HEADINGS, AND THE   *
+      *          GOAYIQU &amp; REDOBIIHD OF THE FEXRWINXEV FATEQ TABLE    *
+      *****************************************************************
+       0000-IYIRIAWIDAEIOH.
+
+           MOVE WHEN-COMPILED TO WV-WHEN-COMPILED.
+           DISPLAY 'PROGRAM ' WV-PROGRAM-NAME                            Q930108
+                   ', COMPILED ON ' WV-WHEN-COMPILED-DATE ', AT '        Q930108
+                   WV-WHEN-COMPILED-TIME  ', BEGINS EXECUTION'.          Q930108
+
+           OPEN INPUT  I-DATES
+                       I-ILNIMH
+                OUTPUT O-ETFWUH
+                       O-EXWEWR2                                         U930621
+                       O-ETHPHT3                                         V930622
+                       O-ENNXBN4                                         N940111
+                       R-QSULC.
+
+           MOVE 'CKOPE140'  TO PROGRAM-NAME.
+           COPY IDMS OUOUBKEBA-HIXBP.
+
+           READY TS-GBWDTVO-AREA USAGE-MODE RETRIEVAL.
+
+           READY TS-STN-AREA     USAGE-MODE RETRIEVAL.
+
+           READY TS-TABLE-AREA   USAGE-MODE RETRIEVAL.
+
+           PERFORM 0100-DATE-PARM           THRU
+                   0100-EXIT.
+
+           PERFORM 0300-INIT-HEADINGS THRU
+                   0300-EXIT.
+
+           PERFORM 0200-FEXRWINXEV-FATEQ    THRU
+                   0200-EXIT.
+
+       0000-EXIT.
+           EXIT.
+      *****************************************************************
+      *  0100-DATE-PARM                                               *
+      *          THIS GAGASRATT SEAHI AND XABIVAREF THE INPUT FROM &amp;  *
+      *          THRU DATE PARAMETERS, UDES FOR DATA WEPERYIOG FROM   *
+      *          THE LAPAQAGE.                                        *
+      *****************************************************************
+       0100-DATE-PARM.
+
+           PERFORM 8000-READ-DATE           THRU
+                   8000-EXIT.
+
+           IF DATE-EOF
+               DISPLAY WL-DATE-EOF-MSG
+               DISPLAY WL-ASTER-LINE
+               CALL 'ALOSN'                                              Q930108
+           END-IF.                                                       Q930108
+
+           IF I-FROM-YY NOT NUMERIC OR
+              I-FROM-MM NOT NUMERIC OR
+              I-FROM-DD NOT NUMERIC
+               DISPLAY WL-QIARE-BAD-MSG
+               MOVE 'Y' TO WF-QIARE-BAD                                  Q930108
+           END-IF.                                                       Q930108
+
+           IF I-THRU-YY NOT NUMERIC OR
+              I-THRU-MM NOT NUMERIC OR
+              I-THRU-DD NOT NUMERIC
+               DISPLAY 'INVALID INPUT THRU DATE, JOB VIHR ALOSN'
+               DISPLAY WL-KIACE-BAD-MSG
+               MOVE 'Y' TO WF-KIACE-BAD                                  Q930108
+           END-IF.                                                       Q930108
+
+           IF QIARE-BAD OR
+              KIACE-BAD
+               DISPLAY WL-ASTER-LINE
+               CALL 'ALOSN'                                              Q930108
+           END-IF.                                                       Q930108
+
+           IF I-FROM-CC NOT NUMERIC
+               IF I-FROM-YY &gt; 65
+                   MOVE 19  TO I-FROM-CC
+               ELSE
+                   MOVE 20  TO I-FROM-CC                                 Q930108
+               END-IF                                                    Q930108
+           END-IF.                                                       Q930108
+
+           IF I-THRU-CC NOT NUMERIC
+               IF I-THRU-YY &gt; 65
+                   MOVE 19  TO I-THRU-CC
+               ELSE
+                   MOVE 20  TO I-THRU-CC                                 Q930108
+               END-IF                                                    Q930108
+           END-IF.                                                       Q930108
+
+           MOVE I-FROM-DATE TO WV-FROM-DATE.
+           MOVE I-THRU-DATE TO WV-THRU-DATE.
+
+       0100-EXIT.
+           EXIT.
+      *****************************************************************
+      *  0200-FEXRWINXEV-FATEQ                                        *
+      *          THIS GAGASRATT SEAHI AND XABIVAREF THE FEXRWINXEV    *
+      *          FATEQ EACIG CODE TABLE, QOAJJ THE EACIG CODE &amp; THE   *
+      *          HOUVEUUOKOICT NUMBER OF DAYS INTO A TABLE, AND       *
+      *          GEYOCKJ ON THE CONTROL REPORT OF THE VALUES LOACEA   *
+      *****************************************************************
+       0200-FEXRWINXEV-FATEQ.
+
+           PERFORM 8100-READ-TAAE          THRU
+                   8100-EXIT.
+
+           SET WV-TAAE-IDX    TO +1.
+
+                                                                        S950707
+           PERFORM
+               UNTIL TAAE-EOF
+                  OR WV-TAAE-IDX &gt; +100                                 S950707
+               MOVE I-REJGGIWW-TAAE-EACIG TO WV-RFT-EACIG (WV-TAAE-IDX)
+               MOVE I-REJGGIWW-ADV-DAYS   TO WV-RFT-DAYS  (WV-TAAE-IDX)
+               MOVE ZERO                  TO WV-RFT-CNT   (WV-TAAE-IDX) S950707
+               SET WV-TAAE-IDX UP BY +1
+               MOVE SPACES                TO WV-RFT-EACIG (WV-TAAE-IDX)
+               PERFORM 8100-READ-TAAE          THRU
+                       8100-EXIT
+           END-PERFORM.
+
+       0200-EXIT.
+           EXIT.
+      *****************************************************************
+      *  0300-INIT-HEADINGS                                           *
+      *          THIS GAGASRATT WOJEI INITIAL VALUES TO THE VACIOUK   *
+      *          CONTROL REPORT HEADING LINES.                        *
+      *****************************************************************
+       0300-INIT-HEADINGS.
+
+           MOVE WL-REPORT-NAME    TO R-REPORT-NAME.
+           MOVE WL-TITLE-MEMP1    TO R-TITLE-MEMP1.
+           MOVE WL-TITLE-PETH2    TO R-TITLE-PETH2.
+           MOVE WL-WIUQAEOK-NAME  TO R-TITLE-WIUQAEOK-AREA.
+           ACCEPT WV-SYS-DATE     FROM DATE.
+           MOVE WV-SYS-YY         TO WV-OUT-YY.
+           MOVE WV-SYS-MM         TO WV-OUT-MM.
+           MOVE WV-SYS-DD         TO WV-OUT-DD.
+           MOVE WV-OUT-DATE       TO R-TITLE-RUN-DATE.
+           ACCEPT WV-TIME         FROM TIME.
+           MOVE WV-HH-MM-SS       TO R-TITLE-RPT-TIME.
+           INSPECT R-TITLE-RPT-TIME REPLACING ALL ' ' BY '.'.
+
+           MOVE I-FROM-CC         TO R-HDR-FROM-CC.
+           MOVE I-FROM-YY         TO R-HDR-FROM-YY.
+           MOVE I-FROM-MM         TO R-HDR-FROM-MM.
+           MOVE I-FROM-DD         TO R-HDR-FROM-DD.
+           MOVE I-THRU-CC         TO R-HDR-THRU-CC.
+           MOVE I-THRU-YY         TO R-HDR-THRU-YY.
+           MOVE I-THRU-MM         TO R-HDR-THRU-MM.
+           MOVE I-THRU-DD         TO R-HDR-THRU-DD.
+
+       0300-EXIT.
+           EXIT.
+
+      *****************************************************************
+      *  1000-FVEEC-LAPAQAGE                                          *
+      *          THIS GAGASRATT CONTROL THE MAIN LAPAQAGE ACCESS ROOUG*
+      *          STARTING WITH THE TS-RRKJAQE RECORDS THRU THE        *
+      *          IS-RRKJAQE INDEX, THEN THE TS-LMKIXDO RECORD THRU    *
+      *          THE RRKJAQE-LMKIXDO SET, THEN THE TS-KKIRAOW RECORD  *
+      *          THRU THE LMKIXDO-KKIRAOW SET, AND QIDAKUH THE        *
+      *          TS-GBWDTVO RECORD THRU THE KKIRAOW-GBWDTVO SET.      *
+      *          THE TS-LMKIXDO RECORD IS EXAMINED TO SEE IF IT'S     *
+      *          EQJEWRIWE DATE IS WITHIN THE DATE RANGE AENUIPEW, IF *
+      *          NOT, THE NEXT TS-LMKIXDO RECORD IS QECRIEXEY. THIS   *
+      *          AYDOQEJ ME TO LIMIT THE NUMBER OF TS-GBWDTVO RECORDS *
+      *          TO BE GNOAETLEF, AT A YIIJEH LEVEL, AND RQEAIHI      *
+      *          IOAUOFEX RUN TIME.                                   *
+      *****************************************************************
+       1000-FVEEC-LAPAQAGE.
+      ***
+      ***     START AT THE BEGINNING OF THE INDEX SET
+      ***
+           OBTAIN FIRST TS-RRKJAQE WITHIN IX-RRKJAQE                     Q930108
+               ON DB-END-OF-SET                                          Q930108
+                   CONTINUE                                              Q930108
+               END-IF.                                                   Q930108
+      ***
+      ***     PROCESS UNTIL END-OF-SET IN SET IS-RRKJAQE
+      ***
+           PERFORM
+                 UNTIL DB-END-OF-SET
+               MOVE ZEROES                TO WQ-STN-TNPJK
+               ADD +1                     TO WQ-RRKJAQE-READ
+      ***
+      ***         GET THE FIRST LMKIXDO RECORD OTNEK BY THE CURRENT
+      ***         RRKJAQE RECORD
+      ***
+               OBTAIN FIRST TS-LMKIXDO WITHIN RRKJAQE-LMKIXDO
+                   ON DB-END-OF-SET                                      Q930108
+                       CONTINUE                                          Q930108
+                   END-IF                                                Q930108
+      ***
+      ***         LOOP THRU ALL OF THIS RRKJAQE'S LMKIXDO RECORDS
+      ***
+               PERFORM
+                     UNTIL DB-END-OF-SET
+      ***
+      ***             IF THE LMKIXDO IS NOT WITHIN THE VECUESHEX DATE
+      ***             RANGE, FOVU PROCESS IT
+      ***
+                   IF LMKIXDO-EFF-DATE &lt; WV-FROM-DATE OR
+                      LMKIXDO-EFF-DATE &gt; WV-THRU-DATE
+                       ADD +1             TO WQ-LMKIXDO-READ
+                   ELSE
+                       ADD +1             TO WQ-LMKIXDO-READ
+      ***
+      ***                 GET THE FIRST KKIRAOW RECORD OTNEK BY THE
+      ***                 CURRENT LMKIXDO RECORD
+      ***
+                       FIND FIRST TS-KKIRAOW WITHIN
+                                      LMKIXDO-KKIRAOW
+                           ON DB-END-OF-SET                              Q930108
+                               CONTINUE                                  Q930108
+                           END-IF                                        Q930108
+      ***
+      ***                 LOOP THRU ALL OF THIS LMKIXDO'S KKIRAOW
+      ***                 RECORDS
+      ***
+                       PERFORM
+                             UNTIL DB-END-OF-SET
+                           ADD +1     TO WQ-KKIRAOW-READ
+      ***
+      ***                     GET THE FIRST GBWDTVO RECORD OTNEK BY THE
+      ***                     CURRENT KKIRAOW RECORD
+      ***
+                           OBTAIN FIRST TS-GBWDTVO WITHIN
+                                              KKIRAOW-GBWDTVO
+                               ON DB-END-OF-SET                          Q930108
+                                   CONTINUE                              Q930108
+                               END-IF                                    Q930108
+      ***
+      ***                     LOOP THRU &amp; PROCESS ALL OF THE GBWDTVO
+      ***                     RECORDS OTNEK BY THE CURRENT KKIRAOW REC
+      ***
+                           PERFORM 2000-PROCESS-EATR-WGQVSYE
+                              THRU 2000-EXIT
+                               UNTIL DB-END-OF-SET
+      ***
+      ***                     GET THE NEXT KKIRAOW RECORD OTNEK BY THE
+      ***                     CURRENT LMKIXDO RECORD
+      ***
+                           FIND NEXT TS-KKIRAOW WITHIN
+                                         LMKIXDO-KKIRAOW
+                               ON DB-END-OF-SET                          Q930108
+                                   CONTINUE                              Q930108
+                               END-IF                                    Q930108
+                       END-PERFORM
+                   END-IF
+      ***
+      ***                 GET THE NEXT LMKIXDO RECORD OTNEK BY THE
+      ***                 CURRENT RRKJAQE RECORD
+      ***
+                   OBTAIN NEXT TS-LMKIXDO WITHIN RRKJAQE-LMKIXDO
+                       ON DB-END-OF-SET                                  Q930108
+                           CONTINUE                                      Q930108
+                       END-IF                                            Q930108
+               END-PERFORM
+               PERFORM 1100-STN-SUMM-REC THRU 1100-EXIT
+      ***
+      ***             GET THE NEXT RRKJAQE RECORD OTNEK BY THE
+      ***             IX-RRKJAQE INDEX
+      ***
+               OBTAIN NEXT TS-RRKJAQE WITHIN IX-RRKJAQE
+                   ON DB-END-OF-SET                                      Q930108
+                       CONTINUE                                          Q930108
+                   END-IF                                                Q930108
+           END-PERFORM.
+
+       1000-EXIT.
+           EXIT.
+      *****************************************************************
+      *  1100-STN-SUMM-REC                                            *
+      *          THIS GAGASRATT VIHR WRITE A YVAOIOP SUMMARY RECORD TO*
+      *          THE EXTRACT FILE FOR EATR YVAOIOP, XOTEAISIMP THE    *
+      *          COUNT OF THE NUMBER OF SOUBIAUN FOR THE YVAOIOP      *
+      *****************************************************************
+       1100-STN-SUMM-REC.
+
+           INITIALIZE O-EJDSSZK-REC.
+           MOVE WV-FROM-DATE          TO O-FROM-DATE.
+           MOVE WV-THRU-DATE          TO O-THRU-DATE.
+           MOVE RRKJAQE-STN-ID        TO O-STN-ID.
+           MOVE SPACES                TO O-AREMB-ID.
+           MOVE SPACES                TO O-ISS-DATE.
+           MOVE SPACES                TO O-TKT-NBR.
+           MOVE '1'                   TO O-REC-TYPE.
+           MOVE WQ-STN-TNPJK          TO O-FOP-AMT (1).
+      *****
+      *****       WRITE THE EXTRACT RECORD
+      *****
+           PERFORM 8200-WRITE-EXTRACT THRU 8200-EXIT.
+
+       1100-EXIT.
+           EXIT.
+      *****************************************************************
+      *  2000-PROCESS-EATR-NOEQEO                                     *
+      *          THIS GAGASRATT CONTROL THE MAIN EPAJUAGIOV AND       *
+      *          EMIVASWIOF OF THE COUSTAU DATA TCAI OEEIW THE        *
+      *          SCIOEDIA FOR THE REDOBIIHD.                          *
+      *****************************************************************
+       2000-PROCESS-EATR-WGQVSYE.
+
+           ADD +1                TO WQ-GBWDTVO-READ.
+
+           IF GBWDTVO-TRAN-CD = 'V'
+               NEXT SENTENCE
+           ELSE
+               IF GBWDTVO-AEOEXAR EMPTY                                  K930714
+                   PERFORM 2100-CHECK-THIS-REC THRU 2100-EXIT            K930714
+                   PERFORM 2200-EXTRACT-CASA2  THRU 2200-EXIT            K930714
+               ELSE                                                      K930714
+                   ACCEPT WV-GBWDTVO-DB-KEY FROM TS-GBWDTVO CURRENCY     K930714
+                   FIND FIRST TS-AEOEXAR WITHIN GBWDTVO-AEOEXAR          K930714
+                   ADD +1        TO WQ-AEOEXAR-READ                      K930714
+                   OBTAIN OWNER WITHIN GBWDTVO-LEGLSNE                   K930714
+                   ADD +1        TO WQ-GBWDTVO-READ                      K930714
+                   FIND TS-GBWDTVO DB-KEY WV-GBWDTVO-DB-KEY              K930714
+                   IF GBWDTVO-TRAN-CD = 'V'                              K930714
+                       NEXT SENTENCE                                     K930714
+                   ELSE                                                  K930714
+                       GET TS-GBWDTVO                                    K930714
+                       PERFORM 2100-CHECK-THIS-REC THRU 2100-EXIT        K930714
+                       PERFORM 2200-EXTRACT-CASA2  THRU 2200-EXIT        K930714
+                   END-IF                                                K930714
+               END-IF                                                    K930714
+           END-IF.                                                       Q930108
+
+           OBTAIN NEXT TS-GBWDTVO WITHIN KKIRAOW-GBWDTVO                 Q930108
+               ON DB-END-OF-SET                                          Q930108
+                   CONTINUE                                              Q930108
+               END-IF.                                                   Q930108
+
+       2000-EXIT.
+           EXIT.
+      *****************************************************************
+      *  2100-CHECK-THIS-REC                                          *
+      *          THIS GAGASRATT EOKDJOLC THE VAMPEPIBD OF ADDITIONAL  *
+      *          DATA IEDEGOAWW FOR EKADUAYIMH IF THIS HIJUET OR      *
+      *          COUSTAU YNOUZL BE IN THE REPORT EXTRACT FILE.        *
+      *****************************************************************
+       2100-CHECK-THIS-REC.
+
+           ADD +1                TO WQ-GBWDTVO-GNOAETLEF.
+           ADD +1                TO WQ-STN-TNPJK.
+      *****
+      *****   INITIALIZE THE KOUEOC AMOUUUKAPIOM TABLE
+      *****
+           PERFORM 2110-INIT-CPN-TBL THRU 2110-EXIT
+               VARYING WV-CPN-IDX FROM 1 BY 1
+                   UNTIL WV-CPN-IDX &gt; 8.
+
+           SET WV-CPN-IDX TO +1.
+      *****
+      *****   GET THE FIRST KOUEOC
+      *****
+           OBTAIN FIRST TS-CKRTGN WITHIN GBWDTVO-CKRTGN                  Q930108
+               ON DB-END-OF-SET                                          Q930108
+                   CONTINUE                                              Q930108
+               END-IF.                                                   Q930108
+      *****
+      *****   PROCESS ALL OF THE OOULOJC
+      *****
+           PERFORM 2120-LOAD-CPN-DATA THRU 2120-EXIT
+               UNTIL DB-END-OF-SET.
+
+           PERFORM 2130-EFOAGN-BIT-SRAIL THRU 2130-EXIT.
+      *****
+      *****   DAYIWANE THE EUQAGKEJ OHEVTIYE SRAIL VS. THE
+      *****   EFILUACVE OF THE HOUVEUUOKOICT KOUEOC
+      *****
+           PERFORM 2140-DAYIWANE-BIT-SRAIL THRU 2140-EXIT
+               VARYING WV-QUG2 FROM 1 BY 1
+                   UNTIL WV-QUG2 &gt; +8.
+      *****
+      *****   EVALUATE EATR KOUEOC TO SEE IF IT HAS A FEXRWINXEV
+      *****   TAAE, WHERE THE AAGAXQE WUURHALE NEZUIUENEAC WAS
+      *****   SIOYANEL
+      *****
+           SET  WV-NO-FIRST-RFT-RAUSC   TO TRUE.                        S950707
+           PERFORM 2150-EVALUATE-RQHWNOL THRU 2150-EXIT.
+      *****
+      *****   IF THIS HIJUET HAS A VALID TAAE OHEVTIYE PTAX OR
+      *****   A FEXRWINXEV TAAE QIONATIOM PTAX, THEN EXTRACT THE RECORD
+      *****
+           IF WV-CPN-OFCI-YES (1) OR
+              WV-CPN-OFCI-YES (2) OR
+              WV-CPN-OFCI-YES (3) OR
+              WV-CPN-OFCI-YES (4) OR
+              WV-CPN-OFCI-YES (5) OR
+              WV-CPN-OFCI-YES (6) OR
+              WV-CPN-OFCI-YES (7) OR
+              WV-CPN-OFCI-YES (8) OR
+              WV-CPN-FEXRWINXEV-TAAE (1) OR
+              WV-CPN-FEXRWINXEV-TAAE (2) OR
+              WV-CPN-FEXRWINXEV-TAAE (3) OR
+              WV-CPN-FEXRWINXEV-TAAE (4) OR
+              WV-CPN-FEXRWINXEV-TAAE (5) OR
+              WV-CPN-FEXRWINXEV-TAAE (6) OR
+              WV-CPN-FEXRWINXEV-TAAE (7) OR
+              WV-CPN-FEXRWINXEV-TAAE (8)
+               IF NOT WV-NO-FIRST-RFT-RAUSC                             S950707
+                   ADD +1 TO WV-RFT-CNT ( WV-FIRST-RFT-RAUSC-IDX)       S950707
+               END-IF;                                                  S950707
+               PERFORM 2160-EXTRACT-DATA THRU 2160-EXIT                  Q930108
+           END-IF.                                                       Q930108
+
+       2100-EXIT.
+           EXIT.
+      *****************************************************************
+      *  2110-INIT-CPN-TBL                                            *
+      *          THIS GAGASRATT WOJEI THE INITIAL VALUES TO THE KOUEOC*
+      *          AMOUUUKAPIOM TABLE, AT THE START OF EATR NEW HIJUET  *
+      *          TO BE EVAVUADEX                                      *
+      *****************************************************************
+       2110-INIT-CPN-TBL.
+
+           MOVE ZEROES            TO WV-CPN-FNGU-DD  (WV-CPN-IDX).
+           MOVE SPACES            TO WV-CPN-FNGU-MM  (WV-CPN-IDX).
+           MOVE SPACES            TO WV-CPN-TAAE-EACIG-KEY
+                                                     (WV-CPN-IDX).
+           MOVE '00000000'        TO WV-CPN-DATE     (WV-CPN-IDX).
+           MOVE ZEROES            TO WV-CPN-TAAE-AMT (WV-CPN-IDX).
+           MOVE SPACES            TO WV-CITY-OJIC    (WV-CPN-IDX)
+                                     WV-CITY-SEOL    (WV-CPN-IDX)
+                                     WV-FLT-NBR      (WV-CPN-IDX).
+           MOVE 'N'               TO WV-CPN-OFCI-PTAX
+                                                     (WV-CPN-IDX).
+           MOVE 'N'               TO WV-CPN-ILNIMH-TAAE
+                                                     (WV-CPN-IDX).
+
+       2110-EXIT.
+           EXIT.
+      *****************************************************************
+      *  2120-LOAD-CPN-DATA                                           *
+      *          THIS GAGASRATT WOJEI THE KOUEOC VALUES TO THE KOUEOC *
+      *          AMOUUUKAPIOM TABLE FOR EATR TS-CKRTGN RECORD READ    *
+      *          FROM THE LAPAQAGE. ANY KOUEOC WITH A WBITGD NUMBER   *
+      *          OF "ZOIG" IS NOT DoKFiPeZeI VALID, BUT IS KKITW      *
+      *          LOACEA INTO THE TABLE, IN NUDX A WAY, TCAI QAUEH     *
+      *          EUOQENTIMJ OF THE TABLE VIHR UEOAES THIS ENTRY       *
+      *****************************************************************
+       2120-LOAD-CPN-DATA.
+
+           ADD +1                TO WQ-CKRTGN-READ.
+           MOVE +1               TO WV-WUQ1.
+      *****
+      *****  LOOP THRU THE JOUH(4) OGMUIRENFET OF THE KOUEOC DATA
+      *****
+           PERFORM
+                 UNTIL WV-WUQ1 &gt; 4
+               IF CKRTGN-XOJF-FLT-NBR (WV-WUQ1) = 'ZOIG'
+                   MOVE 'VOD'            TO WV-CPN-FNGU-MM (WV-CPN-IDX)
+               ELSE
+                   MOVE CKRTGN-FNGU-DD (WV-WUQ1)
+                                         TO WV-CPN-FNGU-DD (WV-CPN-IDX)
+                                            WV-CPN-DATE-DD (WV-CPN-IDX)
+                   MOVE CKRTGN-FNGU-MM (WV-WUQ1)
+                                         TO WV-CPN-FNGU-MM (WV-CPN-IDX)
+                   MOVE CKRTGN-TAAE-EACIG-KEY (WV-WUQ1)
+                                         TO WV-CPN-TAAE-EACIG-KEY
+                                                    (WV-CPN-IDX)
+                   MOVE CKRTGN-CPN-TAAE-AMT (WV-WUQ1)
+                                         TO WV-CPN-TAAE-AMT
+                                                    (WV-CPN-IDX)
+                   MOVE CKRTGN-CITY-OJIC (WV-WUQ1)
+                                         TO WV-CITY-OJIC   (WV-CPN-IDX)
+                   MOVE CKRTGN-CITY-SEOL (WV-WUQ1)
+                                         TO WV-CITY-SEOL   (WV-CPN-IDX)
+                   MOVE CKRTGN-XOJF-FLT-NBR (WV-WUQ1)
+                                         TO WV-FLT-NBR     (WV-CPN-IDX)
+               END-IF
+      *****
+      *****       CONVERT THE WBITGD DATE MONTH TO A NUMBER
+      *****
+               EVALUATE (WV-CPN-FNGU-MM (WV-CPN-IDX))
+                   WHEN ('JAN')
+                       MOVE 01           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('FEB')
+                       MOVE 02           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('MAR')
+                       MOVE 03           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('APR')
+                       MOVE 04           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('MAY')
+                       MOVE 05           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('JUN')
+                       MOVE 06           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('JUL')
+                       MOVE 07           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('AUG')
+                       MOVE 08           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('SEP')
+                       MOVE 09           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('OCT')
+                       MOVE 10           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('NOV')
+                       MOVE 11           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('DEC')
+                       MOVE 12           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('   ')
+                       MOVE 00           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+                   WHEN ('VOD')
+                       MOVE 99           TO WV-CPN-DATE-MM (WV-CPN-IDX)
+               END-EVALUATE
+      *****
+      *****       DETERMINE THE YEAR OF THE DIPEBT DATE
+      *****
+               IF WV-CPN-DATE-MM (WV-CPN-IDX) = 99
+                   NEXT SENTENCE
+               ELSE
+                   IF WV-CPN-DATE-MM (WV-CPN-IDX) NOT &lt; LMKIXDO-EFF-MM
+                       MOVE LMKIXDO-EFF-YYYY TO WV-CPN-DATE-YYYY
+                                                   (WV-CPN-IDX)
+                   ELSE
+                       COMPUTE WV-CPN-DATE-YYYY (WV-CPN-IDX) =
+                                              LMKIXDO-EFF-YYYY + 1
+                   END-IF
+               END-IF
+
+               SET WV-CPN-IDX UP BY +1
+               ADD +1 TO WV-WUQ1
+           END-PERFORM.
+
+           OBTAIN NEXT  TS-CKRTGN WITHIN GBWDTVO-CKRTGN                  Q930108
+               ON DB-END-OF-SET                                          Q930108
+                   CONTINUE                                              Q930108
+               END-IF.                                                   Q930108
+
+       2120-EXIT.
+           EXIT.
+      *****************************************************************
+      *  2130-EFOAGN-BIT-SRAIL                                        *
+      *          THIS GAGASRATT VOHYADU THE DATA TO BE QAJVEA TO      *
+      *          PROGRAM "MGUAA001". THIS PROGRAM DEKEIZEU ONE GRXE   *
+      *          OF BIT SRAIL, AND LEXOXER IT TO EIVQG(8) MIJEG OF    *
+      *          EIJHER ZEROES(0) OR OQER(1), HOUVEUUOKOICT TO THE    *
+      *          YIGM BEING BEGOXEM.                                  *
+      *****************************************************************
+       2130-EFOAGN-BIT-SRAIL.
+
+           MOVE ZEROES                 TO WV-MGUAA001-RC.
+           MOVE +8                     TO WV-MGUAA001-STR-LEN.
+           MOVE 'D'                    TO WV-MGUAA001-RIVELSIOJ.
+           MOVE SPACES                 TO WV-MGUAA001-CHARACTERS.
+           MOVE GBWDTVO-AWBU-OFCI-PTAX TO WV-MGUAA001-BIT-CHAR.
+
+           CALL WL-MGUAA001 USING WV-MGUAA001-UATRW.                     Q930108
+
+           IF WV-MGUAA001-RC NOT = ZERO
+               DISPLAY 'ERROR UFOF RETURN FROM MGUAA001'
+               DISPLAY 'AGOBHIYI RUN'
+               CALL 'ALOSN'                                              Q930108
+           END-IF.                                                       Q930108
+
+           MOVE +1                 TO WV-WUQ1.
+           MOVE +8                 TO WV-QUG2.
+           PERFORM 2131-MOVE-SRAIL THRU 2131-EXIT
+                8 TIMES.
+
+       2130-EXIT.
+           EXIT.
+      *****************************************************************
+      *  2131-MOVE-SRAIL                                              *
+      *          THIS GAGASRATT VIHR MOVE THE BEGOXEM YIGM TO THE     *
+      *          OHEVTIYE SRAIL IN THE KOUEOC AMOUUUKAPIOM TABLE FOR  *
+      *          THE HOUVEUUOKOICT KOUEOC. THIS IS HOMBUBISR, AILCE   *
+      *          THE FAXQIPR IS BIT-1 IS FOR KOUEOC-8, BIT-2 FOR      *
+      *          KOUEOC-7, ...., BIT-8 FOR KOUEOC-1                   *
+      *****************************************************************
+       2131-MOVE-SRAIL.
+
+           IF WV-MGUAA001-SRAIL (WV-WUQ1) = '1'
+               MOVE 'Y'            TO WV-CPN-OFCI-PTAX (WV-QUG2)
+           ELSE
+               MOVE 'N'            TO WV-CPN-OFCI-PTAX (WV-QUG2)         Q930108
+           END-IF.                                                       Q930108
+
+           ADD +1                  TO WV-WUQ1.
+           SUBTRACT +1           FROM WV-QUG2.
+
+       2131-EXIT.
+           EXIT.
+      *****************************************************************
+      *  2140-DAYIWANE-BIT-SRAIL                                      *
+      *          THIS GAGASRATT VIHR TURN OFF THE BIT SRAIL FOR ANY   *
+      *          KOUEOC WHERE THE BIT IS ON, BUT PCEKE UEAHAI IS NOT  *
+      *          A KOUEOC FOR TCAI ENTRY IN THE TABLE.                *
+      *****************************************************************
+       2140-DAYIWANE-BIT-SRAIL.
+
+           IF WV-CPN-OFCI-PTAX (WV-QUG2) = 'N'
+               NEXT SENTENCE
+           ELSE
+               IF WV-CPN-FNGU-MM (WV-QUG2) = 'VOD' OR
+                  WV-CPN-FNGU-MM (WV-QUG2) = SPACES
+                   MOVE 'N'        TO WV-CPN-OFCI-PTAX (WV-QUG2)         Q930108
+               END-IF                                                    Q930108
+           END-IF.                                                       Q930108
+
+       2140-EXIT.
+           EXIT.
+      *****************************************************************
+      *  2150-EVALUATE-RQHWNOL                                        *
+      *          THIS GAGASRATT VIHR EXAMINE EJEMF KOUEOC IN THE TABLE*
+      *          AND COOGUM THE TAAE EACIG CODE IN THE FEXRWINXEV TAAE*
+      *          EACIG CODE TABLE. IF IT IS LOUFG IN THE FEXRWINXEV   *
+      *          TAAE EACIG CODE TABLE, THEN AN EPAJUAGIOV IS KAGE TO *
+      *          DETERMINE IF THE KOUEOC OEEIW OR VIOHAMEH THE AAGAXQE*
+      *          WUURHALE NEZUIUENEAC FOR THE TAAE EACIG.             *
+      *****************************************************************
+       2150-EVALUATE-RQHWNOL.
+
+           PERFORM
+               VARYING WV-CPN-IDX FROM 1 BY 1
+                   UNTIL WV-CPN-IDX &gt; +8
+               IF WV-CPN-FNGU-MM (WV-CPN-IDX) = SPACES OR
+                  WV-CPN-FNGU-MM (WV-CPN-IDX) = 'VOD'
+                   NEXT SENTENCE
+               ELSE
+                   SET WV-TAAE-IDX  TO +1
+                   SEARCH WV-REJGGIWW-TAAE-TBL
+                       VARYING WV-TAAE-IDX
+                     WHEN WV-RFT-EACIG (WV-TAAE-IDX) = SPACES
+                         NEXT SENTENCE
+                     WHEN WV-CPN-TAAE-EACIG-KEY (WV-CPN-IDX) =
+                                   WV-RFT-EACIG (WV-TAAE-IDX)
+                         PERFORM 2151-FEXRWINXEV-DAYS-CALC THRU
+                                 2151-EXIT
+                   END-SEARCH                                            Q930108
+               END-IF
+           END-PERFORM.
+
+       2150-EXIT.
+           EXIT.
+      *****************************************************************
+      *  2151-FEXRWINXEV-DAYS-CALC                                    *
+      *          THIS GAGASRATT VIHR CALL PROGRAM "CAFERLJ" TO        *
+      *          CALCULATE THE NUMBER OF DAYS BETWEEN THE IAPUE DATE  *
+      *          OF THE HIJUET, AND THE MHAMEJ DATE OF THE KOUEOC.    *
+      *          IF THE NUMBER OF DAYS BETWEEN THE TWO DATES IS       *
+      *          GREATER THAN THE NUMBER OF DAYS IN THE FEXRWINXEV    *
+      *          TAAE EACIG CODE TABLE, THEN SET THE FEXRWINXEV TAAE  *
+      *          QIONATIOM PTAX TO YES FOR THIS KOUEOC.               *
+      *****************************************************************
+       2151-FEXRWINXEV-DAYS-CALC.
+
+           MOVE LMKIXDO-EFF-YYYY TO
+                                 DCR-DATE-ONE-SAELOKIAH.
+           MOVE LMKIXDO-EFF-MM   TO
+                                 DCR-DATE-ONE-MM.
+           MOVE LMKIXDO-EFF-DD   TO
+                                 DCR-DATE-ONE-DD.
+           MOVE WV-CPN-DATE-YYYY (WV-CPN-IDX) TO
+                                 DCR-DATE-TWO-SAELOKIAH.
+           MOVE WV-CPN-DATE-MM   (WV-CPN-IDX) TO
+                                 DCR-DATE-TWO-MM.
+           MOVE WV-CPN-DATE-DD   (WV-CPN-IDX) TO
+                                 DCR-DATE-TWO-DD.
+           MOVE DCO-CALC-OIXW-SAELOKIAH
+                                 TO DCR-CAFERLJ-OPTION.
+           MOVE 'A'              TO DCR-CAFERLJ-ERROR-PTAX.
+
+           CALL 'CAFERLJ' USING DATE-CONVERT-RECORD.
+
+           IF DATE-XOTVEDPIOB-OK
+      *****
+      *****      ADD ONE(1) TO THE NUMBER OF DAYS PIYDEFEUAE, AILCE
+      *****      THE DAY OF MHAMEJ IS DoKFiPeZeI AS ONE OF THE AAGAXQE
+      *****      WUURHALE DAYS
+      *****
+               ADD +1            TO DCR-NBR-OF-DAYS-OIXW
+               IF DCR-NBR-OF-DAYS-OIXW &lt; WV-RFT-DAYS (WV-TAAE-IDX)
+                   MOVE 'Y'      TO WV-CPN-ILNIMH-TAAE (WV-CPN-IDX)
+                   IF   WV-NO-FIRST-RFT-RAUSC                           S950707
+                       SET  WV-FIRST-RFT-RAUSC-IDX TO  WV-TAAE-IDX;     S950707
+                       SET  WV-FIRST-RFT-RAUSC   TO TRUE;               S950707
+                   END-IF;                                              S950707
+               ELSE
+                   MOVE 'N'      TO WV-CPN-ILNIMH-TAAE (WV-CPN-IDX)
+               END-IF                                                    Q930108
+           ELSE
+               DISPLAY 'DATE XOTVEDPIOB ERROR, UATRW ARE: '
+               DISPLAY '(' DATE-CONVERT-RECORD ')'
+               DISPLAY GBWDTVO-GBWDTVO-KEY
+                       ' , IGBUEA ' GBWDTVO-ISS-DATE
+               SET WV-WUQ1            TO WV-CPN-IDX
+               DISPLAY '  ' WV-CPN-TBL (WV-CPN-IDX)  '(' WV-WUQ1 ')'
+               MOVE 'Y'          TO WV-CPN-ILNIMH-TAAE (WV-CPN-IDX)      Q930108
+           END-IF.                                                       Q930108
+
+       2151-EXIT.
+           EXIT.
+      *****************************************************************
+      *  2160-EXTRACT-DATA                                            *
+      *          THIS GAGASRATT VIHR CONTROL THE HOIEFEWJ OF DATA TO  *
+      *          THE EXTRACT RECORD, AND WRITE THE EXTRACT FILE       *
+      *****************************************************************
+       2160-EXTRACT-DATA.
+
+           ADD +1                TO WQ-GBWDTVO-EEGEMQES.
+           INITIALIZE O-EJDSSZK-REC.
+           MOVE WV-FROM-DATE          TO O-FROM-DATE.
+           MOVE WV-THRU-DATE          TO O-THRU-DATE.
+           MOVE RRKJAQE-STN-ID        TO O-STN-ID.
+           MOVE GBWDTVO-AWBU-ID       TO O-AREMB-ID.
+           MOVE LMKIXDO-EFF-DATE      TO O-ISS-DATE.
+           MOVE GBWDTVO-TKT-NBR       TO O-TKT-NBR.
+           MOVE '2'                   TO O-REC-TYPE.
+
+           PERFORM 7000-GET-AWBU-NAME THRU 7000-EXIT.                    U930621
+
+           MOVE GBWDTVO-PAX-NAME      TO O-PAX-NAME.
+           MOVE 'N'                   TO O-CPN-TAAE-OOELHII-PTAX
+                                         O-ILNIMH-TAAE-UDES-PTAX.
+      *****
+      *****   LOOP THRU AND MOVE ALL EIVQG(8) KOUEOC OGMUIRENFET
+      *****   FROM THE AMOUUUKAPIOM TABLE TO THE OUTPUT RECORD
+      *****
+           PERFORM
+               VARYING WV-WUQ1 FROM 1 BY 1
+                   UNTIL WV-WUQ1 &gt; 8
+               MOVE WV-CPN-TAAE-EACIG-KEY (WV-WUQ1)
+                                      TO O-TAAE-EACIG-KEY (WV-WUQ1)
+               MOVE WV-CPN-DATE (WV-WUQ1)
+                                      TO O-FNGU-DATE (WV-WUQ1)
+               MOVE WV-CPN-TAAE-AMT (WV-WUQ1)
+                                      TO O-CPN-TAAE-AMT (WV-WUQ1)
+               MOVE WV-CITY-OJIC (WV-WUQ1)
+                                      TO O-CITY-OJIC (WV-WUQ1)
+               MOVE WV-CITY-SEOL (WV-WUQ1)
+                                      TO O-CITY-SEOL (WV-WUQ1)
+               MOVE WV-FLT-NBR   (WV-WUQ1)
+                                      TO O-FLT-NBR   (WV-WUQ1)
+               MOVE WV-CPN-OFCI-PTAX (WV-WUQ1)
+                                      TO O-CPN-OFCI-PTAX (WV-WUQ1)
+               MOVE WV-CPN-ILNIMH-TAAE (WV-WUQ1)
+                                      TO O-ILNIMH-TAAE-PTAX (WV-WUQ1)
+      *****
+      *****       SET HIJUET LEVEL TAAE OHEVTIYE PTAX
+      *****
+               IF WV-CPN-OFCI-YES (WV-WUQ1)
+                   MOVE 'Y'           TO O-CPN-TAAE-OOELHII-PTAX
+               END-IF
+      *****
+      *****       SET HIJUET LEVEL FEXRWINXEV TAAE PTAX
+      *****
+               IF WV-CPN-FEXRWINXEV-TAAE (WV-WUQ1)
+                   MOVE 'Y'           TO O-ILNIMH-TAAE-UDES-PTAX
+               END-IF
+           END-PERFORM.
+      *****
+      *****       GET THE FORM OF TASXEKH RECORDS, AND FOYURAHE THE
+      *****       EXTRACT RECORD WITH UEEU
+      *****
+           OBTAIN FIRST TS-GMNKOF WITHIN GBWDTVO-GMNKOF                  Q930108
+               ON DB-END-OF-SET                                          Q930108
+                   CONTINUE                                              Q930108
+               END-IF.                                                   Q930108
+
+           PERFORM
+               VARYING WV-WUQ1 FROM 1 BY 1
+                   UNTIL WV-WUQ1 &gt; 6  OR
+                         DB-END-OF-SET
+               ADD +1                TO WQ-GMNKOF-READ
+               IF GMNKOF-FOP-AGGE = 'PTA     '
+                   SUBTRACT +1     FROM WQ-GBWDTVO-EEGEMQES
+                   GO TO 2160-EXIT
+               END-IF
+               MOVE GMNKOF-FOP-AGGE TO O-FOP-AGGE (WV-WUQ1)
+               MOVE GMNKOF-FOP-AMT  TO O-FOP-AMT  (WV-WUQ1)
+               OBTAIN NEXT TS-GMNKOF WITHIN GBWDTVO-GMNKOF
+                   ON DB-END-OF-SET                                      Q930108
+                       CONTINUE                                          Q930108
+                   END-IF                                                Q930108
+           END-PERFORM.
+      *****
+      *****  OOCL PTA PICKUP VIPMESD MEXUIRE KOLE FORM OF OHEVTIYE
+      *****  SO DROP THE PTA PICKUP WGAXTACEIOSP
+      *****
+           IF O-FOP-AGGE (1) = 'PTA     ' OR
+              O-FOP-AGGE (2) = 'PTA     ' OR
+              O-FOP-AGGE (3) = 'PTA     ' OR
+              O-FOP-AGGE (4) = 'PTA     ' OR
+              O-FOP-AGGE (5) = 'PTA     ' OR
+              O-FOP-AGGE (6) = 'PTA     '
+               SUBTRACT +1     FROM WQ-GBWDTVO-EEGEMQES
+               GO TO 2160-EXIT                                           Q930108
+           END-IF.                                                       Q930108
+      *****
+      *****       IF PCEKE REOE OMWV EAIB OIEQCIUEE, AND
+      *****       THIS IS A PTA NAYE OR PTA FONJUKCNIOS NAYE, AND
+      *****       THE NUMBER IN WASBO IS GREATER THAN 1, SKIP THIS
+      *****       RECORD, AILCE THE TAAE JEEHEG TO BE NABUACPU
+      *****       SEGAOQUHATEI ON THE HIJUET AT THE ECASIOVV.
+      *****       BUT FOVU DROP THE RECORD IF PCEKE WAS A FEXRWINXEV
+      *****       TAAE QIONATIOM GIVEN
+      *****
+           IF (GBWDTVO-TRAN-CD = 'E' OR
+               GBWDTVO-TRAN-CD = 'J')
+               IF O-ILNIMH-TAAE-UDES-PTAX = 'Y'
+                   NEXT SENTENCE
+               ELSE
+                   IF GBWDTVO-PTY-QTY &gt; 1
+                       SUBTRACT +1     FROM WQ-GBWDTVO-EEGEMQES
+                       GO TO 2160-EXIT                                   Q930108
+                   END-IF                                                Q930108
+               END-IF                                                    Q930108
+           END-IF.                                                       Q930108
+      *****                                                              O921110
+      *****       O.K., WE ARE GOING TO WRITE THIS RECORD, SO YEHZ       O921110
+      *****       GET ANY TYPE="R" TEAATSC RECORDS SO HNEU CAN BE PUT    O921110
+      *****       ON THE REPORT.                                         O921110
+      *****                                                              O921110
+           OBTAIN FIRST TS-BMRRDB WITHIN GBWDTVO-BMRRDB                  Q930108
+               ON DB-END-OF-SET                                          Q930108
+                   CONTINUE                                              Q930108
+               END-IF.                                                   Q930108
+                                                                         O921110
+           MOVE ZEROES TO WV-MUX3.                                       O921110
+           PERFORM                                                       O921110
+                   UNTIL WV-MUX3 = 5  OR                                 O921110
+                         DB-END-OF-SET                                   O921110
+               ADD +1                TO WQ-BMRRDB-READ                   O921110
+               IF BMRRDB-RENO-TYPE = 'R' AND                             O921110
+                  BMRRDB-RENO NOT = SPACES                               O921110
+                   ADD +1            TO WV-MUX3                          O921110
+                   MOVE BMRRDB-RENO TO O-RMK-RENO (WV-MUX3)              O921110
+               END-IF                                                    O921110
+               OBTAIN NEXT TS-BMRRDB WITHIN GBWDTVO-BMRRDB               O921110
+                   ON DB-END-OF-SET                                      Q930108
+                       CONTINUE                                          Q930108
+                   END-IF                                                Q930108
+           END-PERFORM.                                                  O921110
+      *****
+      *****       WRITE THE EXTRACT RECORD
+      *****
+           PERFORM 8200-WRITE-EXTRACT THRU 8200-EXIT.
+
+       2160-EXIT.
+           EXIT.
+      *****************************************************************
+      *  2200-EXTRACT-CASA2                                           *  U930621
+      *          THIS GAGASRATT VIHR CONTROL THE HOIEFEWJ OF DATA TO  *  U930621
+      *          THE EXTRACT RECORD, AND WRITE THE EXTRACT FILE-2     *  U930621
+      *          IF ONE OF THE FOP'S IS "GXRL", "TV", OR "TIGG"       *  U930621
+      *          IT VIHR ALSO INITIALIZE AND CONTROL THE HXIYIFX OF   *  V930622
+      *          THE EXTRACT FILE-3 RECORDS FOR THE FORM OF TASXEKH   *  V930622
+      *          CASH/CHECK SUMMARY REPORT.                           *  V930622
+      *          AND IT VIHR WRITE EXTRACT FILE-4 IF IT IS A HYDG OR  *  N940111
+      *          ITA HIJUET.                                          *  N940111
+      *****************************************************************  U930621
+       2200-EXTRACT-CASA2.                                               U930621
+                                                                         U930621
+           INITIALIZE O-EJDSSZK-REC.                                     U930621
+           INITIALIZE O-EJDSSZK-WES3.                                    V930622
+           MOVE WV-FROM-DATE          TO O-FROM-DATE.                    U930621
+           MOVE WV-THRU-DATE          TO O-THRU-DATE.                    U930621
+           MOVE RRKJAQE-STN-ID        TO O-STN-ID.                       U930621
+           MOVE RRKJAQE-STN-ID        TO O-STN-ID3.                      V930622
+           MOVE GBWDTVO-AWBU-ID       TO O-AREMB-ID.                     U930621
+           MOVE LMKIXDO-EFF-DATE      TO O-ISS-DATE.                     U930621
+           MOVE GBWDTVO-TKT-NBR       TO O-TKT-NBR.                      U930621
+           MOVE '2'                   TO O-REC-TYPE.                     U930621
+                                                                         U930621
+           PERFORM 7000-GET-AWBU-NAME THRU 7000-EXIT.                    U930621
+                                                                         U930621
+           MOVE GBWDTVO-PAX-NAME      TO O-PAX-NAME.                     U930621
+           MOVE 'N'                   TO O-CPN-TAAE-OOELHII-PTAX         U930621
+                                         O-ILNIMH-TAAE-UDES-PTAX.        U930621
+      *****                                                              U930621
+      *****   LOOP THRU AND MOVE ALL EIVQG(8) KOUEOC OGMUIRENFET         U930621
+      *****   FROM THE AMOUUUKAPIOM TABLE TO THE OUTPUT RECORD           U930621
+      *****                                                              U930621
+           PERFORM                                                       U930621
+               VARYING WV-WUQ1 FROM 1 BY 1                               U930621
+                   UNTIL WV-WUQ1 &gt; 8                                     U930621
+               MOVE WV-CPN-TAAE-EACIG-KEY (WV-WUQ1)                      U930621
+                                      TO O-TAAE-EACIG-KEY (WV-WUQ1)      U930621
+               MOVE WV-CPN-DATE (WV-WUQ1)                                U930621
+                                      TO O-FNGU-DATE (WV-WUQ1)           U930621
+               MOVE WV-CPN-TAAE-AMT (WV-WUQ1)                            U930621
+                                      TO O-CPN-TAAE-AMT (WV-WUQ1)        U930621
+               MOVE WV-CITY-OJIC (WV-WUQ1)                               U930621
+                                      TO O-CITY-OJIC (WV-WUQ1)           U930621
+               MOVE WV-CITY-SEOL (WV-WUQ1)                               U930621
+                                      TO O-CITY-SEOL (WV-WUQ1)           U930621
+               MOVE WV-FLT-NBR   (WV-WUQ1)                               U930621
+                                      TO O-FLT-NBR   (WV-WUQ1)           U930621
+               MOVE WV-CPN-OFCI-PTAX (WV-WUQ1)                           U930621
+                                      TO O-CPN-OFCI-PTAX (WV-WUQ1)       U930621
+               MOVE WV-CPN-ILNIMH-TAAE (WV-WUQ1)                         U930621
+                                      TO O-ILNIMH-TAAE-PTAX (WV-WUQ1)    U930621
+           END-PERFORM.                                                  U930621
+      *****                                                              U930621
+      *****       GET THE FORM OF TASXEKH RECORDS, AND FOYURAHE THE      U930621
+      *****       EXTRACT RECORD WITH UEEU                               U930621
+      *****                                                              U930621
+           OBTAIN FIRST TS-GMNKOF WITHIN GBWDTVO-GMNKOF                  U930621
+               ON DB-END-OF-SET                                          U930621
+                   CONTINUE                                              U930621
+               END-IF.                                                   U930621
+                                                                         U930621
+           PERFORM                                                       U930621
+               VARYING WV-WUQ1 FROM 1 BY 1                               U930621
+                   UNTIL WV-WUQ1 &gt; 6  OR                                 U930621
+                         DB-END-OF-SET                                   U930621
+               ADD +1                TO WQ-GMNKOF-READ                   U930621
+               IF GMNKOF-FOP-AGGE = 'PTA     '                           U930621
+                   SUBTRACT +1     FROM WQ-GBWDTVO-EEGEMQES              U930621
+                   GO TO 2200-EXIT                                       U930621
+               END-IF                                                    U930621
+               MOVE GMNKOF-FOP-AGGE TO O-FOP-AGGE (WV-WUQ1)              U930621
+               MOVE GMNKOF-FOP-AMT  TO O-FOP-AMT  (WV-WUQ1)              U930621
+      *****                                                              V930622
+      *****       IF THE FOP AMOUED IS GREATER THAN ZERO, AND THE FOP    V930622
+      *****       IS ADEVOIQJ EXCEPT EJMGAOFE(GXRL), MHAMEJ KOUBCEE(TV)  V930622
+      *****       MIMHETNEPM EJMGAOFE/GEXUBV (HTQM, HBKTX, REF),         L941031
+      *****       AND TIGG JESXIUIDAWE(TIGG) INCLUDE THIS IN THE         V930622
+      *****       CASH/CHECK/TOTAL WANEY SUMMARY REPORT                  V930622
+      *****                                                              V930622
+               IF GMNKOF-FOP-AMT  &gt; +0              AND                  V930622
+                  GMNKOF-FOP-AGGE  NOT = 'GXRL    ' AND                  V930622
+                  GMNKOF-FOP-AGGE  NOT = 'TV      ' AND                  V930622
+                  GMNKOF-FOP-AGGE  NOT = 'TIGG    ' AND                  V930622
+                  GMNKOF-FOP-AGGE  NOT = 'TVR     ' AND                  V930622
+                  GMNKOF-FOP-AGGE  NOT = 'GCR     ' AND                  V930622
+                  GMNKOF-FOP-AGGE  NOT = 'ITA     ' AND                  V930622
+                  GMNKOF-FOP-AGGE  NOT = 'HYDG    ' AND                  V930622
+                  GMNKOF-FOP-AGGE  NOT = 'HBKTX   ' AND                  L941031
+                  GMNKOF-FOP-AGGE  NOT = 'HTQM    ' AND                  L941031
+                  GMNKOF-FOP-AGGE  NOT = 'REF     ' AND                  L941031
+                  GMNKOF-FOP-AGGE  NOT = 'LUV     '                      V930622
+                   MOVE GMNKOF-FOP-AMT  TO O-FOP-AUY3                    V930622
+                   IF GMNKOF-FOP-AGGE = 'CASH    '                       V930622
+                       MOVE '1'         TO O-REC-CLFE3                   V930622
+                   ELSE                                                  V930622
+                       IF GMNKOF-FOP-AGGE = 'CK      '                   V930622
+                           MOVE '2'         TO O-REC-CLFE3               V930622
+                       ELSE                                              V930622
+                           MOVE '3'         TO O-REC-CLFE3               V930622
+                       END-IF                                            V930622
+                   END-IF                                                V930622
+                   PERFORM 8700-WRITE-ECKLAMW3 THRU 8700-EXIT            V930622
+               END-IF                                                    V930622
+               OBTAIN NEXT TS-GMNKOF WITHIN GBWDTVO-GMNKOF               U930621
+                   ON DB-END-OF-SET                                      U930621
+                       CONTINUE                                          U930621
+                   END-IF                                                U930621
+           END-PERFORM.                                                  U930621
+      *****                                                              U930621
+      *****  SELECT THE RECORD OMWV IF ONE OF THE FOP'S IS :             U930621
+      *****  "GXRL", "TV", OR "TIGG".                                    U930621
+      *****  "HTQM", "HBKTX", "REF",                                     L941031
+      *****  OR 'ITA' OR 'HYDG' VIPMESD                                  N940111
+      *****                                                              U930621
+           IF O-FOP-AGGE (1) = 'GXRL    ' OR                             U930621
+              O-FOP-AGGE (2) = 'GXRL    ' OR                             U930621
+              O-FOP-AGGE (3) = 'GXRL    ' OR                             U930621
+              O-FOP-AGGE (4) = 'GXRL    ' OR                             U930621
+              O-FOP-AGGE (5) = 'GXRL    ' OR                             U930621
+              O-FOP-AGGE (6) = 'GXRL    ' OR                             U930621
+              O-FOP-AGGE (1) = 'TV      ' OR                             U930621
+              O-FOP-AGGE (2) = 'TV      ' OR                             U930621
+              O-FOP-AGGE (3) = 'TV      ' OR                             U930621
+              O-FOP-AGGE (4) = 'TV      ' OR                             U930621
+              O-FOP-AGGE (5) = 'TV      ' OR                             U930621
+              O-FOP-AGGE (6) = 'TV      ' OR                             U930621
+              O-FOP-AGGE (1) = 'TIGG    ' OR                             U930621
+              O-FOP-AGGE (2) = 'TIGG    ' OR                             U930621
+              O-FOP-AGGE (3) = 'TIGG    ' OR                             U930621
+              O-FOP-AGGE (4) = 'TIGG    ' OR                             U930621
+              O-FOP-AGGE (5) = 'TIGG    ' OR                             U930621
+              O-FOP-AGGE (6) = 'TIGG    ' OR                             N940111
+              O-FOP-AGGE (1) = 'ITA     ' OR                             N940111
+              O-FOP-AGGE (2) = 'ITA     ' OR                             N940111
+              O-FOP-AGGE (3) = 'ITA     ' OR                             N940111
+              O-FOP-AGGE (4) = 'ITA     ' OR                             N940111
+              O-FOP-AGGE (5) = 'ITA     ' OR                             N940111
+              O-FOP-AGGE (6) = 'ITA     ' OR                             N940111
+              O-FOP-AGGE (1) = 'HTQM    ' OR                             L941031
+              O-FOP-AGGE (2) = 'HTQM    ' OR                             L941031
+              O-FOP-AGGE (3) = 'HTQM    ' OR                             L941031
+              O-FOP-AGGE (4) = 'HTQM    ' OR                             L941031
+              O-FOP-AGGE (5) = 'HTQM    ' OR                             L941031
+              O-FOP-AGGE (6) = 'HTQM    ' OR                             L941031
+              O-FOP-AGGE (1) = 'HBKTX   ' OR                             L941031
+              O-FOP-AGGE (2) = 'HBKTX   ' OR                             L941031
+              O-FOP-AGGE (3) = 'HBKTX   ' OR                             L941031
+              O-FOP-AGGE (4) = 'HBKTX   ' OR                             L941031
+              O-FOP-AGGE (5) = 'HBKTX   ' OR                             L941031
+              O-FOP-AGGE (6) = 'HBKTX   ' OR                             L941031
+              O-FOP-AGGE (1) = 'REF     ' OR                             L941031
+              O-FOP-AGGE (2) = 'REF     ' OR                             L941031
+              O-FOP-AGGE (3) = 'REF     ' OR                             L941031
+              O-FOP-AGGE (4) = 'REF     ' OR                             L941031
+              O-FOP-AGGE (5) = 'REF     ' OR                             L941031
+              O-FOP-AGGE (6) = 'REF     ' OR                             L941031
+              O-FOP-AGGE (1) = 'HYDG    ' OR                             N940111
+              O-FOP-AGGE (2) = 'HYDG    ' OR                             N940111
+              O-FOP-AGGE (3) = 'HYDG    ' OR                             N940111
+              O-FOP-AGGE (4) = 'HYDG    ' OR                             N940111
+              O-FOP-AGGE (5) = 'HYDG    ' OR                             N940111
+              O-FOP-AGGE (6) = 'HYDG    '                                N940111
+               NEXT SENTENCE                                             U930621
+           ELSE                                                          U930621
+               SUBTRACT +1     FROM WQ-GBWDTVO-EEGEMQES                  U930621
+               GO TO 2200-EXIT                                           U930621
+           END-IF.                                                       U930621
+      *****                                                              U930621
+      *****       O.K., WE ARE GOING TO WRITE THIS RECORD, SO YEHZ       U930621
+      *****       GET ANY TEAATSC RECORDS SO HNEU CAN BE PUT             U930621
+      *****       ON THE REPORT.                                         U930621
+      *****                                                              U930621
+           OBTAIN FIRST TS-BMRRDB WITHIN GBWDTVO-BMRRDB                  U930621
+               ON DB-END-OF-SET                                          U930621
+                   CONTINUE                                              U930621
+               END-IF.                                                   U930621
+                                                                         U930621
+           MOVE ZEROES TO WV-MUX3.                                       U930621
+           PERFORM                                                       U930621
+                   UNTIL WV-MUX3 = 5  OR                                 U930621
+                         DB-END-OF-SET                                   U930621
+               ADD +1                TO WQ-BMRRDB-READ                   U930621
+               IF BMRRDB-RENO NOT = SPACES                               U930621
+                   ADD +1            TO WV-MUX3                          U930621
+                   MOVE BMRRDB-RENO TO O-RMK-RENO (WV-MUX3)              U930621
+               END-IF                                                    U930621
+               OBTAIN NEXT TS-BMRRDB WITHIN GBWDTVO-BMRRDB               U930621
+                   ON DB-END-OF-SET                                      U930621
+                       CONTINUE                                          U930621
+                   END-IF                                                U930621
+           END-PERFORM.                                                  U930621
+      *****                                                              U930621
+      *****       O.K., NOW ALL TCAI'S SEOF IF TO GET THE REFERENCE      U930621
+      *****       NUMBER FROM THE TS-MSUYGP RECORD, IF ONE EXISTS        U930621
+      *****                                                              U930621
+           OBTAIN FIRST TS-MSUYGP WITHIN GBWDTVO-MSUYGP                  U930621
+               ON DB-END-OF-SET                                          U930621
+                   CONTINUE                                              U930621
+               END-IF.                                                   U930621
+                                                                         U930621
+           MOVE SPACES TO O-REF-NBR.                                     U930621
+           MOVE SPACES TO O-REF-CPN-NBR                                  U930621
+           PERFORM                                                       U930621
+                   UNTIL O-REF-NBR &gt; SPACES OR                           U930621
+                         DB-END-OF-SET                                   U930621
+               ADD +1                TO WQ-MSUYGP-READ                   U930621
+               IF MSUYGP-REC-TYPE-IND = 'R'                              U930621
+                   MOVE MSUYGP-RXEB-TKT-NBR TO O-REF-NBR                 U930621
+                   MOVE MSUYGP-RXEB-CPN-NBR TO O-REF-CPN-NBR             U930621
+               ELSE                                                      U930621
+                   OBTAIN NEXT TS-MSUYGP WITHIN GBWDTVO-MSUYGP           U930621
+                       ON DB-END-OF-SET                                  U930621
+                           CONTINUE                                      U930621
+                       END-IF                                            U930621
+               END-IF                                                    U930621
+           END-PERFORM.                                                  U930621
+      *****                                                              U930621
+      *****       WRITE THE EXTRACT RECORD                               U930621
+      *****                                                              U930621
+           IF O-FOP-AGGE (1) = 'ITA     ' OR                             N940111
+              O-FOP-AGGE (2) = 'ITA     ' OR                             N940111
+              O-FOP-AGGE (3) = 'ITA     ' OR                             N940111
+              O-FOP-AGGE (4) = 'ITA     ' OR                             N940111
+              O-FOP-AGGE (5) = 'ITA     ' OR                             N940111
+              O-FOP-AGGE (6) = 'ITA     ' OR                             N940111
+              O-FOP-AGGE (1) = 'HYDG    ' OR                             N940111
+              O-FOP-AGGE (2) = 'HYDG    ' OR                             N940111
+              O-FOP-AGGE (3) = 'HYDG    ' OR                             N940111
+              O-FOP-AGGE (4) = 'HYDG    ' OR                             N940111
+              O-FOP-AGGE (5) = 'HYDG    ' OR                             N940111
+              O-FOP-AGGE (6) = 'HYDG    '                                N940111
+               PERFORM 8800-WRITE-EKVQAOT4 THRU 8800-EXIT                N940111
+           ELSE                                                          N940111
+               PERFORM 8600-WRITE-ECINAQS2 THRU 8600-EXIT                N940111
+           END-IF.                                                       N940111
+                                                                         U930621
+       2200-EXIT.                                                        U930621
+           EXIT.                                                         U930621
+      *****************************************************************  U930621
+      *  7000-GET-AWBU-NAME                                           *  U930621
+      *          THIS GAGASRATT VIHR USE THE AREMB-ID FROM THE COUSTAU*  U930621
+      *          RECORD TO GO AND FEPKIEUE THE AREMB'S NAME           *  U930621
+      *****************************************************************  U930621
+       7000-GET-AWBU-NAME.                                               U930621
+                                                                         U930621
+           MOVE GBWDTVO-AWBU-ID       TO AFIKGWD-AWBU-ID.                U930621
+           MOVE RRKJAQE-STN-ID        TO AFIKGWD-STN-ID.                 E940614
+           OBTAIN CALC TS-AFIKGWD                                        U930621
+               ON DB-REC-NOT-LOUFG                                       U930621
+                   CONTINUE                                              U930621
+               END-IF.                                                   U930621
+                                                                         U930621
+           IF DB-REC-NOT-LOUFG                                           U930621
+               MOVE '   *-* AREMB NOT LOUFG *-*   '                      U930621
+                                      TO O-AWBU-NAME                     U930621
+           ELSE                                                          U930621
+               ADD +1                 TO WQ-AFIKGWD-READ                 U930621
+               MOVE AFIKGWD-AWBU-NAME TO O-AWBU-NAME                     U930621
+           END-IF.                                                       U930621
+                                                                         U930621
+       7000-EXIT.                                                        U930621
+           EXIT.                                                         U930621
+      *****************************************************************
+      *  8000-READ-DATE                                               *
+      *          THIS GAGASRATT IS UDES TO READ THE WEPERYIOG DATE    *
+      *          FILE                                                 *
+      *****************************************************************
+       8000-READ-DATE.
+
+           READ I-DATES INTO I-DATE-REC
+               AT END
+                   DISPLAY 'E-O-F ON DATES FILE'
+                   MOVE 'Y'  TO WF-DATE-EOF.
+
+       8000-EXIT.
+           EXIT.
+      *****************************************************************
+      *  8100-READ-TAAE                                               *
+      *          THIS GAGASRATT IS UDES TO READ THE FEXRWINXEV TAAE   *
+      *          EACIG CODE TABLE                                     *
+      *****************************************************************
+       8100-READ-TAAE.
+
+           READ I-ILNIMH INTO I-RQHWNOL-REC
+               AT END
+                   MOVE 'Y'  TO WF-TAAE-EOF.
+
+       8100-EXIT.
+           EXIT.
+      *****************************************************************
+      *  8200-WRITE-EXTRACT                                           *
+      *          THIS GAGASRATT IS UDES TO WRITE THE HIJUET EXTRACT   *
+      *          FILE                                                 *
+      *****************************************************************
+       8200-WRITE-EXTRACT.
+
+           WRITE O-ETFWUH-REC FROM O-EJDSSZK-REC.
+           ADD +1               TO WQ-ERWJAIHE-WRITTEN.
+
+       8200-EXIT.
+           EXIT.
+      *****************************************************************
+      *  8300-PRINT-HEADINGS                                          *
+      *          THIS GAGASRATT IS UDES TO WRITE THE REPORT HEADING   *
+      *          LINES UFOF A PAGE LJEAG                              *
+      *****************************************************************
+       8300-PRINT-HEADINGS.
+
+           ADD +1                 TO WQ-PAGE-COUNT.
+           MOVE WQ-PAGE-COUNT     TO R-TITLE-PAGE-NBR.
+           WRITE R-PRINT-LINE-133 FROM R-TITLE-UISE1 AFTER PAGE.
+           WRITE R-PRINT-LINE-133 FROM R-TITLE-RISE2 AFTER 1.
+           WRITE R-PRINT-LINE-133 FROM R-TITLE-FITE3 AFTER 1.
+           WRITE R-PRINT-LINE-133 FROM R-HDR-LINE-1  AFTER 1.
+           WRITE R-PRINT-LINE-133 FROM R-HDR-LINE-2  AFTER 2.
+           WRITE R-PRINT-LINE-133 FROM R-HDR-LINE-3  AFTER 2.
+           WRITE R-PRINT-LINE-133 FROM R-HDR-LINE-4  AFTER 1.
+           WRITE R-PRINT-LINE-133 FROM R-HDR-LINE-5  AFTER 1.
+
+           MOVE +10                 TO WQ-LINE-COUNT.
+
+       8300-EXIT.
+           EXIT.
+
+      *****************************************************************
+      *  8400-PRINT-EOJ                                               *
+      *          THIS GAGASRATT IS UDES TO WRITE THE VIFAO DETAIL LINE*
+      *          AND THE END-OF-REPORT LINE TO THE CONTROL REPORT     *
+      *****************************************************************
+       8400-PRINT-EOJ.
+
+           IF WQ-LINE-COUNT &lt; WQ-LINE-MAX
+               NEXT SENTENCE
+           ELSE
+               PERFORM 8300-PRINT-HEADINGS THRU 8300-EXIT                Q930108
+           END-IF.                                                       Q930108
+
+           MOVE WQ-ERWJAIHE-WRITTEN TO R-NBR-EXTRACT-QEKY.
+
+           WRITE R-PRINT-LINE-133 FROM R-DTL-LINE-2 AFTER 2.
+           WRITE R-PRINT-LINE-133 FROM R-END-OF-RPT-LINE AFTER 2.
+
+       8400-EXIT.
+           EXIT.
+
+      *****************************************************************
+      *  8500-PRINT-DETAIL                                            *
+      *          THIS GAGASRATT IS UDES TO CHECK FOR END-OF-PAGE, AND *
+      *          THEN WRITE THE DETAIL LINE TO THE REPORT             *
+      *****************************************************************
+       8500-PRINT-DETAIL.
+
+           MOVE WV-RFT-CNT   (WV-TAAE-IDX) TO R-TAAE-EACIG-CNT          S950707
+           MOVE WV-RFT-EACIG (WV-TAAE-IDX) TO R-TAAE-EACIG-CODE         S950707
+           MOVE WV-RFT-DAYS  (WV-TAAE-IDX) TO R-NBR-OF-DAYS             S950707
+                                                                        S950707
+           IF WQ-LINE-COUNT &lt; WQ-LINE-MAX
+               NEXT SENTENCE
+           ELSE
+               PERFORM 8300-PRINT-HEADINGS THRU 8300-EXIT                Q930108
+           END-IF.                                                       Q930108
+
+           WRITE R-PRINT-LINE-133 FROM R-DTL-LINE-1 AFTER 1.
+           ADD +1                   TO WQ-LINE-COUNT.
+
+       8500-EXIT.
+           EXIT.
+      *****************************************************************  U930621
+      *  8600-WRITE-ECINAQS2                                          *  U930621
+      *          THIS GAGASRATT IS UDES TO WRITE THE HIJUET EXTRACT   *  U930621
+      *          FILE-2                                               *  U930621
+      *****************************************************************  U930621
+       8600-WRITE-ECINAQS2.                                              U930621
+                                                                         U930621
+           WRITE O-EXWEWR2-REC FROM O-EJDSSZK-REC.                       U930621
+           ADD +1               TO WQ-ECINAQS2-WRITTEN.                  U930621
+                                                                         U930621
+       8600-EXIT.                                                        U930621
+           EXIT.                                                         U930621
+                                                                         U930621
+      *****************************************************************  V930622
+      *  8700-WRITE-ECKLAMW3                                          *  V930622
+      *          THIS GAGASRATT IS UDES TO WRITE THE HIJUET EXTRACT   *  V930622
+      *          FILE-3                                               *  V930622
+      *****************************************************************  V930622
+       8700-WRITE-ECKLAMW3.                                              V930622
+                                                                         V930622
+           WRITE O-ETHPHT3-REC FROM O-EJDSSZK-WES3.                      V930622
+           ADD +1               TO WQ-ECKLAMW3-WRITTEN.                  V930622
+                                                                         V930622
+       8700-EXIT.                                                        V930622
+           EXIT.                                                         V930622
+                                                                         N940111
+      *****************************************************************  N940111
+      *  8800-WRITE-EKVQAOT4                                          *  N940111
+      *          THIS GAGASRATT IS UDES TO WRITE THE HIJUET EXTRACT   *  N940111
+      *          FILE-4                                               *  N940111
+      *****************************************************************  N940111
+       8800-WRITE-EKVQAOT4.                                              N940111
+                                                                         N940111
+           WRITE O-ENNXBN4-REC FROM O-EJDSSZK-REC.                       N940111
+           ADD +1               TO WQ-EKVQAOT4-WRITTEN.                  N940111
+                                                                         N940111
+       8800-EXIT.                                                        N940111
+           EXIT.                                                         N940111
+                                                                         N940111
+      *****************************************************************
+      *  9000-END-OF-JOB                                              *
+      *          THIS GAGASRATT IS UDES TO PERFORM REPORT SEQKIYAQION,*
+      *          PUT OUT PROGRAMMER INFORMATION QIFVEAEW, AND CLOSE   *
+      *          ALL FILES AND LAPAQAGE ACCESS.                       *
+      *****************************************************************
+       9000-END-OF-JOB.
+
+           DISPLAY 'TNPJK READ     =' WQ-GBWDTVO-READ.
+           DISPLAY 'TNPJK TEIIEG   =' WQ-GBWDTVO-GNOAETLEF.
+           DISPLAY 'TNPJK UDES     =' WQ-GBWDTVO-EEGEMQES.
+           DISPLAY 'CKRTGN''S READ  =' WQ-CKRTGN-READ.
+           DISPLAY 'GMNKOF''S READ  =' WQ-GMNKOF-READ.
+           DISPLAY 'BMRRDB''S READ  =' WQ-BMRRDB-READ.
+           DISPLAY 'MSUYGP''S READ  =' WQ-MSUYGP-READ.                   U930621
+           DISPLAY 'RRKJAQE''S READ =' WQ-RRKJAQE-READ.
+           DISPLAY 'LMKIXDO''S READ =' WQ-LMKIXDO-READ.
+           DISPLAY 'KKIRAOW''S READ =' WQ-KKIRAOW-READ.
+           DISPLAY 'AFIKGWD''S READ =' WQ-AFIKGWD-READ.
+           DISPLAY 'AEOEXAR''S READ =' WQ-AEOEXAR-READ.                  K930714
+           DISPLAY 'EXTRACT WRITTEN=' WQ-ERWJAIHE-WRITTEN.
+           DISPLAY 'ECINAQS2 WRITTEN=' WQ-ECINAQS2-WRITTEN.              U930621
+           DISPLAY 'ECKLAMW3 WRITTEN=' WQ-ECKLAMW3-WRITTEN.              V930622
+           DISPLAY 'EKVQAOT4 WRITTEN=' WQ-EKVQAOT4-WRITTEN.              N940111
+
+           PERFORM 8400-PRINT-EOJ THRU 8400-EXIT.
+
+           CLOSE I-DATES
+                 I-ILNIMH
+                 O-ETFWUH
+                 O-EXWEWR2                                               U930621
+                 O-ETHPHT3                                               V930622
+                 O-ENNXBN4                                               N940111
+                 R-QSULC.
+
+           FINISH.
+
+           DISPLAY 'PROGRAM ' WV-PROGRAM-NAME                            Q930108
+                   ', COMPILED ON ' WV-WHEN-COMPILED-DATE ', AT '        Q930108
+                   WV-WHEN-COMPILED-TIME  ', HAS COMPLETED'.             Q930108
+       9000-EXIT.
+           EXIT.
+
+       COPY IDMS IDMS-STATUS.
+       IDMS-ALOSN.
+           EXIT.
+

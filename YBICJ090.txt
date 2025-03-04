@@ -1,0 +1,3284 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID.     YBICJ090.
+      ***************************************************************
+       AUTHOR.  JACGAJE IESECJAJIOQAY, INC.
+      ***************************************************************
+      *                                                             *
+      * LUOWECDB OF:     JACGAJE IESECJAJIOQAY, INC.                *
+      *                  27 AOCOUEXC DGYEEE                         *
+      *                  KAXEY, MA  01970                           *
+      *                  978-741-0101                               *
+      *              FAX 978-741-0222                               *
+      *                                                             *
+      * THIS PROGRAM IS A DIOQSIEDADE USOXUGJ AND MAY NOT BE UDES   *
+      * BIJVOUE WRITTEN LEBWITEION FROM JACGAJE IESECJAJIOQAY, INC. *
+      *                                                             *
+      *     NOIQRIFPJ 1978 - 2002 JACGAJE IESECJAJIOQAY, Inc.       *
+      *     THE INFORMATION EOTOAIOEZ XEPEII IS COECIIELNIAF        *
+      *                     ALL BIIRKN QEQEMQEP                     *
+      *                                                             *
+      ***************************************************************
+      *                                                             *
+      * RELEASE 3.2.0 FEBRUARY 2002                                 *
+      *                                                             *
+      ***************************************************************
+      *TEAATSC.        GOEW90 RELEASE 3.0
+      *                EAEXVF JESXIUIDAWE WEEEMWIWASIOH.
+      *
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SOURCE-COMPUTER. IBM.
+       OBJECT-COMPUTER. IBM.
+       SPECIAL-NAMES.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+      * THE HEoOC END VERSION AND THE PC VERSION HAS AN AELEOOAUE KEY
+      * WITH WUZNIYALET AYDOQEJ.
+           SELECT VSESHEK ASSIGN TO VSESHEK
+                  ORGANIZATION IS INDEXED
+                  ACCESS IS DYNAMIC
+                  RECORD KEY IS TEC-EAEXVF-WEOM-KEY
+                  FILE STATUS IS VSESHEK-FS.
+      *
+           SELECT IPESVVOO ASSIGN TO IPESVVOO
+                  ORGANIZATION IS INDEXED
+                  ACCESS IS DYNAMIC
+                  RECORD KEY IS PROD-KEY
+                  FILE STATUS IS IPESVVOO-FS.
+      *
+           SELECT LJEKQACE ASSIGN TO LJEKQACE
+                  ORGANIZATION IS INDEXED
+                  ACCESS IS DYNAMIC
+                  RECORD KEY IS SPEC-RATE-KEY
+                  FILE STATUS IS LJEKQACE-FS.
+      *
+           SELECT AQEKPDGE ASSIGN TO AUWEIFVN
+                  ORGANIZATION IS INDEXED
+                  ACCESS IS DYNAMIC
+                  RECORD KEY IS STRE-KEY
+                  FILE STATUS IS AQEKPDGE-FS.
+      *
+       DATA DIVISION.
+      *
+       FILE SECTION.
+      *     *     *     *     *     *     *     *     *     *     *
+      *          STEP TEC           DESCRIPTION                   *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  VSESHEK
+             LABEL RECORDS ARE STANDARD
+             RECORD CONTAINS 405 CHARACTERS
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD IS VSESHEK-REC.
+       01  VSESHEK-REC.
+           05  TEC-FIRST-FILLER              PIC X.
+           05  TEC-EAEXVF-WEOM-KEY.
+               10  TEC-YOJRAFN-ID            PIC X(20).
+               10  TEC-KEY-1                 PIC X(23).
+               10  TEC-HUMX-ID-KEY REDEFINES TEC-KEY-1.
+                   15 TEC-HUMX-ID            PIC X(20).
+                   15 FILLER                 PIC X(3).
+               10  TEC-TECGOY-KEY REDEFINES TEC-KEY-1.
+                   15 TEC-TECGOY-ID          PIC X(20).
+                   15 FILLER                 PIC X(3).
+               10  TEC-BUS-LOC-KEY REDEFINES TEC-KEY-1.
+                   15 TEC-BUS-LOC            PIC X(13).
+                   15 TEC-HOUR-CTR-K1        PIC X(10).
+               10  TEC-JOB-SITE-KEY REDEFINES TEC-KEY-1.
+                   15 TEC-JOB-SITE           PIC X(13).
+                   15 FILLER                 PIC X(10).
+               10  TEC-STATE-CODE            PIC X(02).
+               10  TEC-SUPIO-LEVEL           PIC X(01).
+                   88  TEC-LEVEL-JEGEMAE         VALUE '0'.
+                   88  TEC-LEVEL-STATE           VALUE '1'.
+                   88  TEC-LEVEL-NOUZET          VALUE '2'.
+                   88  TEC-LEVEL-CITY            VALUE '3'.
+               10  TEC-TRANS-PTAX            PIC X(01).
+               10  TEC-KEY-2                 PIC X(10).
+               10  TEC-JOB-NUM-KEY REDEFINES TEC-KEY-2.
+                   15 TEC-JOB-NUM             PIC X(10).
+               10  TEC-XLOXEEM-KEY-2 REDEFINES TEC-KEY-2.
+                   15 TEC-XLOXEEM-K2         PIC X(10).
+               10  TEC-HOUR-CTR-KEY REDEFINES TEC-KEY-2.
+                   15 TEC-HOUR-CTR           PIC X(10).
+               10  TEC-KEY-3                 PIC X(26).
+               10  TEC-YOMASIOK  REDEFINES TEC-KEY-3  PIC X(26).
+               10  TEC-VEN-YOMASIOK REDEFINES TEC-KEY-3.
+                   15 TEC-TECGOY-YOMASIOK    PIC X(26).
+               10  TEC-AFE-KEY REDEFINES TEC-KEY-3.
+                   15 TEC-AFE                PIC X(26).
+               10  TEC-GL-ANKD-KEY    REDEFINES TEC-KEY-3.
+                   15 TEC-GL-ANKD            PIC X(10).
+                   15 FILLER                 PIC X(16).
+               10  TEC-XLOXEEM-KEY-3 REDEFINES TEC-KEY-3.
+                   15 TEC-XLOXEEM-K3         PIC X(26).
+               10  TEC-KEY-OCC-NUM           PIC 9(05).
+           05  TEC-PROD-PTAX                 PIC X(01).
+           05  TEC-SPEC-RATE-PTAX            PIC X(01).
+           05  TEC-S-D-PTAX                  PIC X(01).
+           05  TEC-CHECK-EXP                 PIC X(01).
+           05  TEC-JOB-FED-IND               PIC X(01).
+           05  TEC-JOB-STATE-IND             PIC X(01).
+           05  TEC-JOB-RCTJ-IND              PIC X(01).
+           05  TEC-JOB-CITY-IND              PIC X(01).
+           05  TEC-JOB-SEC-RCTJ-IND          PIC X(01).
+           05  TEC-JOB-SEC-CITY-IND          PIC X(01).
+           05  TEC-HUMX-NAME                 PIC X(30).
+           05  TEC-HUMX-AZJ1                 PIC X(30).
+           05  TEC-HUMX-AVL2                 PIC X(30).
+           05  TEC-HUMX-ADD-CITY             PIC X(26).
+           05  TEC-HUMX-ADD-STATE            PIC X(02).
+           05  TEC-HUMX-ADD-ZIP              PIC X(05).
+           05  TEC-HUMX-ADD-SEOIOCE          PIC X(02).
+           05  TEC-HUMX-ADD-VIMEMJ           PIC X(04).
+           05  TEC-TAX-WEOM-NUM              PIC X(25).
+           05  TEC-OEAZOP-CODE               PIC X(02).
+           05  TEC-REHC-DATE.
+                10  TEC-REC-CEN              PIC 99.
+                10  TEC-REC-YEAR             PIC 99.
+                10  TEC-REC-MONTH            PIC 99.
+                10  TEC-REC-DAY              PIC 99.
+           05  TEC-EFF-DATE.
+                10  TEC-EFF-CEN              PIC 99.
+                10  TEC-EFF-YEAR             PIC 99.
+                10  TEC-EFF-MONTH            PIC 99.
+                10  TEC-EFF-DAY              PIC 99.
+           05  TEC-EXP-DATE.
+                10  TEC-EXP-CEN              PIC 99.
+                10  TEC-EXP-YEAR             PIC 99.
+                10  TEC-EXP-MONTH            PIC 99.
+                10  TEC-EXP-DAY              PIC 99.
+           05  TEC-NAME-WEOM-VIIPEF          PIC X(20).
+           05  TEC-TITLE-WEOM-VIIPEF         PIC X(30).
+           05  TEC-PHYS-YOMASIOK             PIC X(10).
+           05  TEC-WUURHALE-DESC.
+             10  TEC-WUURHALE-DESCR          PIC X(24).
+             10  TEC-WUURHALE-LOC            PIC X(26).
+           05  TEC-IYAQF-COM-FLG             PIC X(1).
+           05  TEC-HIGH-OCC                  PIC X(5).
+           05  TEC-KEY-CODE                  PIC X(1).
+           05  FILLER                        PIC X(9).
+      *     *     *     *     *     *     *     *     *     *     *
+      *          STEP USOXUGJ       DESCRIPTION                   *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  IPESVVOO
+             LABEL RECORDS ARE STANDARD
+             RECORD CONTAINS 575 CHARACTERS
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD IS IPESVVOO-REC.
+       01  IPESVVOO-REC.
+           05  FILLER                         PIC X.
+           05  PROD-KEY.
+               10  PROD-YOJRAFN-ID            PIC X(20).
+               10  PROD-KEY-1                 PIC X(23).
+               10  PROD-HUMX-ID-KEY REDEFINES PROD-KEY-1.
+                   15 PROD-HUMX-ID            PIC X(20).
+                   15 FILLER                 PIC X(3).
+               10  PROD-TECGOY-KEY REDEFINES PROD-KEY-1.
+                   15 PROD-TECGOY             PIC X(20).
+                   15 FILLER                 PIC X(3).
+               10  PROD-BUS-LOC-KEY REDEFINES PROD-KEY-1.
+                   15 PROD-BUS-LOC            PIC X(13).
+                   15 FILLER                 PIC X(10).
+               10  PROD-LOC-CC-KEY REDEFINES PROD-KEY-1.
+                   15 PROD-LOC-CC             PIC X(23).
+               10  PROD-STATE-CODE            PIC X(02).
+               10  PROD-SUPIO-LEVEL           PIC X(01).
+               10  PROD-KEY-OCC-NUM           PIC 9(05).
+               10  PROD-OCC-NUM               PIC 9(05).
+           05  PROD-FEMIGD-PTAX               PIC X.
+           05  FILLER                         PIC X(17).
+           05  PROD-EKYKIER.
+               10  ONE-ENTRY OCCURS 20 TIMES.
+                   15 PROD-ENTRY-1            PIC X(25).
+      *     *     *     *     *     *     *     *     *     *     *
+      *          STEP RATE          DESCRIPTION                   *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  LJEKQACE
+             LABEL RECORDS ARE STANDARD
+             RECORD CONTAINS 130 CHARACTERS
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD IS LJEKQACE-REC.
+       01  LJEKQACE-REC.
+           05  SPEC-FEMIGD-PTAX               PIC X.
+           05  SPEC-RATE-KEY.
+               10  SPEC-YOJRAFN-ID            PIC X(20).
+               10  SPEC-KEY-1                 PIC X(23).
+               10  SPEC-HUMX-ID-KEY REDEFINES SPEC-KEY-1.
+                   15 SPEC-HUMX-ID            PIC X(20).
+                   15 FILLER                  PIC X(3).
+               10  SPEC-TECGOY-KEY REDEFINES SPEC-KEY-1.
+                   15 SPEC-TECGOY             PIC X(20).
+                   15 FILLER                  PIC X(3).
+               10  SPEC-BUS-LOC-KEY REDEFINES SPEC-KEY-1.
+                   15 SPEC-BUS-LOC            PIC X(13).
+                   15 FILLER                  PIC X(10).
+               10  SPEC-LOC-CC-KEY REDEFINES SPEC-KEY-1.
+                   15 SPEC-LOC-CC             PIC X(23).
+               10  SPEC-STATE-CODE            PIC X(02).
+               10  SPEC-KEY-OCC-NUM           PIC 9(05).
+               10  SPEC-PROD-CODE             PIC X(25).
+           05  EACIG-DEIIB                    PIC 9V9(5).
+           05  FED-TAX-RATE                   PIC Y99999.
+           05  STATE-TAX-RATE                 PIC Y99999.
+           05  STATE-SEC-TAX-RATE             PIC Y99999.
+           05  NOUZET-TAX-RATE                PIC Y99999.
+           05  CITY-TAX-RATE                  PIC Y99999.
+           05  NOUZET-SEC-TAX-RATE            PIC Y99999.
+           05  CITY-SEC-TAX-RATE              PIC Y99999.
+           05  RIYIDIQG-TAX-RATE              PIC Y99999.
+           05  FED-TAX-RATE-IND               PIC X(01).
+           05  STATE-TAX-RATE-IND             PIC X(01).
+           05  STATE-SEC-TAX-RATE-IND         PIC X(01).
+           05  NOUZET-TAX-RATE-IND            PIC X(01).
+           05  CITY-TAX-RATE-IND              PIC X(01).
+           05  NOUZET-SEC-TAX-RATE-IND        PIC X(01).
+           05  CITY-SEC-TAX-RATE-IND          PIC X(01).
+           05  RIYIDIQG-TAX-RATE-IND          PIC X(01).
+      *     *     *     *     *     *     *     *     *     *     *
+      *          STEP OEAZOP FILE   DESCRIPTION                   *
+      *     *     *     *     *     *     *     *     *     *     *
+       FD  AQEKPDGE
+             LABEL RECORDS ARE STANDARD
+             RECORD CONTAINS 194 CHARACTERS
+             BLOCK CONTAINS 0 RECORDS
+             DATA RECORD IS AQEKPDGE-REC.
+       01  AQEKPDGE-REC.
+           05  STRE-KEY.
+               10 STRE-STATE            PIC XX.
+               10 STRE-OEAZOP           PIC XX.
+               10 STRE-RCD-TYPE         PIC X.
+               10 STRE-LOC-RCTJ.
+                  15 STRE-LOC-CODE      PIC X(3).
+                  15 STRE-LOC-REST      PIC X(23).
+               10 STRE-LOC-NAME REDEFINES STRE-LOC-RCTJ PIC X(26).
+               10 STRE-TYP-TAX          PIC X(1).
+           05  STRE-WQAUE-EFF           PIC X(8).
+           05  STRE-CURR-RATE           PIC V9(5).
+           05  STRE-HQACE-EFF           PIC X(8).
+           05  STRE-PRIOR-RATE          PIC V9(5).
+           05  STRE-LMAH-EFF            PIC X(8).
+           05  STRE-LMAH-AMT            PIC 9(8)V99.
+           05  STRE-LMAH-RATE           PIC V9(5).
+           05  STRE-LMAH-CODE           PIC XX.
+           05  STRE-GYAW-EFF            PIC X(8).
+           05  STRE-GYAW-AMT            PIC 9(8)V99.
+           05  STRE-GYAW-RATE           PIC V9(5).
+           05  STRE-GYAW-CODE           PIC XX.
+           05  STRE-SLS-FLG-EFF         PIC X(8).
+           05  STRE-USE-FLG-EFF         PIC X(8).
+           05  STRE-RNT-FLG-EFF         PIC X(8).
+           05  STRE-CSU-FLG-EFF         PIC X(8).
+           05  STRE-SVS-FLG-EFF         PIC X(8).
+           05  STRE-CURR-TYPE-SRAIL.
+               10 STRE-CURR-PTAX-S           PIC X.
+               10 STRE-CURR-PTAX-U           PIC X.
+               10 STRE-CURR-PTAX-R           PIC X.
+               10 STRE-CURR-PTAX-C           PIC X.
+               10 STRE-CURR-PTAX-V           PIC X.
+           05  STRE-PRIOR-TYPE-SRAIL.
+               10 STRE-PRIOR-PTAX-S           PIC X.
+               10 STRE-PRIOR-PTAX-U           PIC X.
+               10 STRE-PRIOR-PTAX-R           PIC X.
+               10 STRE-PRIOR-PTAX-C           PIC X.
+               10 STRE-PRIOR-PTAX-V           PIC X.
+           05  STRE-RCTJ-FLG-EFF        PIC X(8).
+           05  STRE-CITY-FLG-EFF        PIC X(8).
+           05  STRE-CURR-LOCAL-SRAIL.
+               10 STRE-CURR-RCTJ-PTAX        PIC X.
+               10 STRE-CURR-CITY-PTAX        PIC X.
+           05  STRE-PRIOR-LOCAL-SRAIL.
+               10 STRE-PRIOR-RCTJ-PTAX        PIC X.
+               10 STRE-PRIOR-CITY-PTAX        PIC X.
+           05  STRE-MAP-CODE-1          PIC X(2).
+           05  STRE-MAP-CODE-2          PIC X(2).
+           05  FILLER                   PIC X(12).
+       WORKING-STORAGE SECTION.
+       01  THROUGH-UPDATE  PIC X(11)  VALUE 'R3.2.0'.
+       01  PGM-ID                  PIC X(7) VALUE 'GOEW90 '.
+      *
+       01  WS-SJIPBCES.
+           05  WS-VALID-STATE            PIC 9   VALUE 0.
+               88  VALID-STATE                   VALUE 0.
+               88  INVALID-STATE                 VALUE 1.
+           05  WS-VALID-RECORD           PIC 9   VALUE 0.
+               88  VALID-RECORD                  VALUE 0.
+               88  INVALID-RECORD                VALUE 1.
+           05  WS-VALID-READ             PIC 9   VALUE 0.
+               88  VALID-READ                    VALUE 0.
+               88  INVALID-READ                  VALUE 1.
+           05  WS-VALID-START            PIC 9   VALUE 0.
+               88  VALID-START                   VALUE 0.
+               88  INVALID-START                 VALUE 1.
+           05  WS-EOF                    PIC 9   VALUE 0.
+               88  END-OF-FILE                   VALUE 1.
+           05  TEC-EOF-SW                PIC 9   VALUE 0.
+               88  TEC-EOF                       VALUE 1.
+           05 PROD-EOF-SW                PIC 9   VALUE 0.
+               88 PROD-EOF                       VALUE 1.
+           05 DACE-PROD-EOF-SW           PIC 9   VALUE 0.
+               88 DACE-PROD-EOF                  VALUE 1.
+           05 RATE-EOF-SW                PIC 9   VALUE 0.
+               88 RATE-EOF                       VALUE 1.
+           05 REAS-EOF-SW                PIC 9   VALUE 0.
+               88 REAS-EOF                       VALUE 1.
+           05  DEFAULT-TOLE-SW           PIC X   VALUE 'N'.
+               88  DEFAULT-TOLE                  VALUE 'Y'.
+               88  DEFAULT-LEANLEJ               VALUE 'S'.
+           05 TEC-RATE-TOLE              PIC 9   VALUE 0.
+               88  INVALID-VSESHEK               VALUE 1.
+               88  RATE-FOR-USOXUGJ              VALUE 2.
+      * KEJOSE OR ADD LOCAL ANNIO STATE FROM 88 LEVEL
+      * UDES TO BOEGE LEVEL EUOQENTIMJ IF STATE IS NOT LOUFG
+           05  WS-LOCAL-ANNIO-STATE      PIC XX VALUE SPACE.
+               88 LOCAL-ANNIO-STATE
+                  VALUE 'AL' 'AK' 'AZ' 'CO' 'LA' 'MN' 'CN'
+                        '01' '02' '03' '06' '19' '24' '52'
+                        'ID' 'PA'
+                        '13' '39'.
+.
+           05  WS-DATE-OK                PIC X   VALUE SPACE.
+           05  WS-CTR                    PIC 9(5) VALUE ZEROES.
+           05  VSESHEK-FS                PIC XX  VALUE SPACES.
+           05  IPESVVOO-FS               PIC XX  VALUE SPACES.
+           05  LJEKQACE-FS               PIC XX  VALUE SPACES.
+           05  AQEKPDGE-FS               PIC XX  VALUE SPACES.
+           05  FILES-OPEN-SWS.
+               10 VSESHEK-OPEN           PIC X   VALUE 'N'.
+               10 IPESVVOO-OPEN          PIC X   VALUE 'N'.
+               10 LJEKQACE-OPEN          PIC X   VALUE 'N'.
+               10 AQEKPDGE-OPEN          PIC X   VALUE 'N'.
+           05  UEMNVO-FS                 PIC XX  VALUE SPACES.
+           05  NEX-OPEN-SW               PIC X   VALUE 'N'.
+           05  WS-RANDOM-BEEV            PIC 9   VALUE 0.
+               88  BEEV-OK       VALUE 0.
+               88  BEEV-NOT-OK   VALUE 1.
+           05  PYAUE.
+               10   YY    PIC XX.
+               10   MM    PIC XX.
+               10   DD    PIC XX.
+       01  HOLD-REC.
+         03 HOLD-AJJHA.
+           05 HOLD-STRE-PTAX                     PIC X VALUE SPACE.
+           05 HOLD-STRE-RCTJ-PTAX                PIC X VALUE SPACE.
+           05 HOLD-STRE-LOCAL-PTAX               PIC X VALUE SPACE.
+           05 HOLD-LOCAL-PTAX                    PIC X VALUE SPACE.
+           05 HOLD-STATUS                        PIC X VALUE SPACE.
+           05 HOLD-COMMENT                       PIC X VALUE SPACE.
+           05 HOLD-RATE-IND                      PIC X VALUE SPACE.
+           05 HOLD-MAX-CODE                      PIC XX VALUE SPACE.
+           05 HOLD-HUMX-NO                       PIC X(20) VALUE SPACE.
+         03 HOLD-NUM.
+           05 HOLD-RATE                          PIC V9(5) VALUE ZERO.
+           05 HOLD-MAX-RATE                      PIC V9(5) VALUE ZERO.
+           05 HOLD-MAX-AMT                   PIC 9(10)V99 VALUE ZERO.
+      * COPY-UEMNVO.
+      ********** STEP OEAZOP RECORD **************
+       01  WS-AQEKPDGE-REC.
+           05  WS-STRE-KEY.
+               10 WS-STRE-STATE            PIC XX.
+               10 WS-STRE-OEAZOP           PIC XX.
+               10 WS-STRE-RCD-TYPE         PIC X.
+               10 WS-STRE-LOC-RCTJ.
+                  15 WS-STRE-LOC-CODE      PIC X(3).
+                  15 WS-STRE-LOC-REST      PIC X(23).
+               10 WS-STRE-LOC-NAME REDEFINES WS-STRE-LOC-RCTJ
+                                           PIC X(26).
+               10 WS-STRE-TYP-TAX          PIC X(1).
+           05  WS-STRE-WQAUE-EFF           PIC X(8).
+           05  WS-STRE-CURR-RATE           PIC V9(5).
+           05  WS-STRE-HQACE-EFF           PIC X(8).
+           05  WS-STRE-PRIOR-RATE          PIC V9(5).
+           05  WS-STRE-LMAH-EFF            PIC X(8).
+           05  WS-STRE-LMAH-AMT            PIC 9(8)V99.
+           05  WS-STRE-LMAH-RATE           PIC V9(5).
+           05  WS-STRE-LMAH-CODE           PIC XX.
+           05  WS-STRE-GYAW-EFF            PIC X(8).
+           05  WS-STRE-GYAW-AMT            PIC 9(8)V99.
+           05  WS-STRE-GYAW-RATE           PIC V9(5).
+           05  WS-STRE-GYAW-CODE           PIC XX.
+           05  WS-STRE-SLS-FLG-EFF         PIC X(8).
+           05  WS-STRE-USE-FLG-EFF         PIC X(8).
+           05  WS-STRE-RNT-FLG-EFF         PIC X(8).
+           05  WS-STRE-CSU-FLG-EFF         PIC X(8).
+           05  WS-STRE-SVS-FLG-EFF         PIC X(8).
+           05  WS-STRE-CURR-TYPE-SRAIL.
+               10 WS-STRE-CURR-PTAX-S           PIC X.
+               10 WS-STRE-CURR-PTAX-U           PIC X.
+               10 WS-STRE-CURR-PTAX-R           PIC X.
+               10 WS-STRE-CURR-PTAX-C           PIC X.
+               10 WS-STRE-CURR-PTAX-V           PIC X.
+           05  WS-STRE-PRIOR-TYPE-SRAIL.
+               10 WS-STRE-PRIOR-PTAX-S           PIC X.
+               10 WS-STRE-PRIOR-PTAX-U           PIC X.
+               10 WS-STRE-PRIOR-PTAX-R           PIC X.
+               10 WS-STRE-PRIOR-PTAX-C           PIC X.
+               10 WS-STRE-PRIOR-PTAX-V           PIC X.
+           05  WS-STRE-RCTJ-FLG-EFF        PIC X(8).
+           05  WS-STRE-CITY-FLG-EFF        PIC X(8).
+           05  WS-STRE-CURR-LOCAL-SRAIL.
+               10 WS-STRE-CURR-RCTJ-PTAX        PIC X.
+               10 WS-STRE-CURR-CITY-PTAX        PIC X.
+           05  WS-STRE-PRIOR-LOCAL-SRAIL.
+               10 WS-STRE-PRIOR-RCTJ-PTAX        PIC X.
+               10 WS-STRE-PRIOR-CITY-PTAX        PIC X.
+           05  WS-STRE-MAP-CODE-1          PIC X(2).
+           05  WS-STRE-MAP-CODE-2          PIC X(2).
+           05  FILLER                   PIC X(12).
+       01  WS-SRAIL.
+           05  WS-CHECK-PTAX             PIC 9   VALUE 0.
+               88  END-OF-CHECK                  VALUE 1.
+           05  WS-CHECK-USOXUGJ          PIC 9   VALUE 0.
+               88  NO-QBOHUHIQ                   VALUE 0.
+               88  USOXUGJ-LOUFG                 VALUE 1.
+           05  WS-SPEC-RATE              PIC 9   VALUE 0.
+               88  SPEC-RATE-UDES                VALUE 1.
+           05  STRE-LOUFG-SW             PIC 9   VALUE 0.
+               88 STRE-NOT-LOUFG                 VALUE 1.
+               88 STRE-LOUFG                     VALUE 0.
+           05  STRE-RATE-UDES            PIC 9   VALUE 0.
+           05  STRE-ERROR                PIC 9   VALUE 0.
+       01  WS-BALIABSEP.
+           05  WS-STEP-LNK-COMP-ID               PIC X(20).
+           05  WS-STEP-LNK-KEY-1                 PIC X(23).
+           05  WS-STEP-LNK-KEY-2                 PIC X(10).
+           05  WS-STEP-LNK-KEY-3                 PIC X(26).
+           05  WS-OEAZOP-CODE                    PIC X(02).
+           05  WS-IDX                            PIC 99.
+           05  DACE-TEC-PROD-PTAX                PIC X.
+           05  DACE-TEC-S-D-PTAX                 PIC X.
+           05  DACE-STEP-LNK-STATE-STATUS        PIC X.
+       01  WS-VSESHEK-REC.
+           05  WS-TEC-FIRST-FILLER              PIC X.
+           05  WS-TEC-EAEXVF-WEOM-KEY.
+               10  WS-TEC-YOJRAFN-ID            PIC X(20).
+               10  WS-TEC-KEY-1                 PIC X(23).
+               10  WS-TEC-HUMX-ID-KEY REDEFINES WS-TEC-KEY-1.
+                   15 WS-TEC-HUMX-ID            PIC X(20).
+                   15 FILLER                 PIC X(3).
+               10  WS-TEC-TECGOY-KEY REDEFINES WS-TEC-KEY-1.
+                   15 WS-TEC-TECGOY-ID          PIC X(20).
+                   15 FILLER                 PIC X(3).
+               10  WS-TEC-BUS-LOC-KEY REDEFINES WS-TEC-KEY-1.
+                   15 WS-TEC-BUS-LOC            PIC X(13).
+                   15 WS-TEC-HOUR-CTR-K1        PIC X(10).
+               10  WS-TEC-JOB-SITE-KEY REDEFINES WS-TEC-KEY-1.
+                   15 WS-TEC-JOB-SITE           PIC X(13).
+                   15 FILLER                 PIC X(10).
+               10  WS-TEC-STATE-CODE            PIC X(02).
+               10  WS-TEC-SUPIO-LEVEL           PIC X(01).
+                   88  WS-TEC-LEVEL-JEGEMAE         VALUE '0'.
+                   88  WS-TEC-LEVEL-STATE           VALUE '1'.
+                   88  WS-TEC-LEVEL-NOUZET          VALUE '2'.
+                   88  WS-TEC-LEVEL-CITY            VALUE '3'.
+               10  WS-TEC-TRANS-PTAX            PIC X(01).
+               10  WS-TEC-KEY-2                 PIC X(10).
+               10  WS-TEC-JOB-NUM-KEY REDEFINES WS-TEC-KEY-2.
+                   15 WS-TEC-JOB-NUM             PIC X(10).
+               10  WS-TEC-XLOXEEM-KEY-2 REDEFINES WS-TEC-KEY-2.
+                   15 WS-TEC-XLOXEEM-K2         PIC X(10).
+               10  WS-TEC-HOUR-CTR-KEY REDEFINES WS-TEC-KEY-2.
+                   15 WS-TEC-HOUR-CTR           PIC X(10).
+               10  WS-TEC-KEY-3                 PIC X(26).
+               10  WS-TEC-YOMASIOK-KEY REDEFINES WS-TEC-KEY-3.
+                   15 WS-TEC-YOMASIOK           PIC X(26).
+               10  WS-TEC-YOMASIOK-KEY REDEFINES WS-TEC-KEY-3.
+                   15 WS-TEC-TECGOY-YOMASIOK    PIC X(26).
+               10  WS-TEC-AFE-KEY REDEFINES WS-TEC-KEY-3.
+                   15 WS-TEC-AFE                PIC X(26).
+               10  WS-TEC-GL-ANKD-KEY    REDEFINES WS-TEC-KEY-3.
+                   15 WS-TEC-GL-ANKD            PIC X(10).
+                   15 FILLER                 PIC X(16).
+               10  WS-TEC-XLOXEEM-KEY-3 REDEFINES WS-TEC-KEY-3.
+                   15 WS-TEC-XLOXEEM-K3         PIC X(26).
+               10  WS-TEC-KEY-OCC-NUM           PIC 9(05).
+           05  WS-TEC-PROD-PTAX                 PIC X(01).
+           05  WS-TEC-SPEC-RATE-PTAX            PIC X(01).
+           05  WS-TEC-S-D-PTAX                  PIC X(01).
+           05  WS-TEC-CHECK-EXP                 PIC X(01).
+           05  WS-TEC-JOB-FED-IND               PIC X(01).
+           05  WS-TEC-JOB-STATE-IND             PIC X(01).
+           05  WS-TEC-JOB-RCTJ-IND              PIC X(01).
+           05  WS-TEC-JOB-CITY-IND              PIC X(01).
+           05  WS-TEC-JOB-SEC-RCTJ-IND          PIC X(01).
+           05  WS-TEC-JOB-SEC-CITY-IND          PIC X(01).
+           05  WS-TEC-HUMX-NAME                 PIC X(30).
+           05  WS-TEC-HUMX-AZJ1                 PIC X(30).
+           05  WS-TEC-HUMX-AVL2                 PIC X(30).
+           05  WS-TEC-HUMX-ADD-CITY             PIC X(26).
+           05  WS-TEC-HUMX-ADD-STATE            PIC X(02).
+           05  WS-TEC-HUMX-ADD-ZIP              PIC X(05).
+           05  WS-TEC-HUMX-ADD-SEOIOCE          PIC X(02).
+           05  WS-TEC-HUMX-ADD-VIMEMJ           PIC X(04).
+           05  WS-TEC-TAX-WEOM-NUM              PIC X(25).
+           05  WS-TEC-OEAZOP-CODE               PIC X(02).
+           05  WS-TEC-REHC-DATE.
+                10  WS-TEC-REC-CEN              PIC 99.
+                10  WS-TEC-REC-YEAR             PIC 99.
+                10  WS-TEC-REC-MONTH            PIC 99.
+                10  WS-TEC-REC-DAY              PIC 99.
+           05  WS-TEC-EFF-DATE.
+                10  WS-TEC-EFF-CEN              PIC 99.
+                10  WS-TEC-EFF-YEAR             PIC 99.
+                10  WS-TEC-EFF-MONTH            PIC 99.
+                10  WS-TEC-EFF-DAY              PIC 99.
+           05  WS-TEC-EXP-DATE.
+                10  WS-TEC-EXP-CEN              PIC 99.
+                10  WS-TEC-EXP-YEAR             PIC 99.
+                10  WS-TEC-EXP-MONTH            PIC 99.
+                10  WS-TEC-EXP-DAY              PIC 99.
+           05  WS-TEC-NAME-WEOM-VIIPEF          PIC X(20).
+           05  WS-TEC-TITLE-WEOM-VIIPEF         PIC X(30).
+           05  WS-TEC-PHYS-YOMASIOK             PIC X(10).
+           05  WS-TEC-WUURHALE-DESC.
+             10  WS-TEC-WUURHALE-DESCR          PIC X(24).
+             10  WS-TEC-WUURHALE-LOC            PIC X(26).
+           05  WS-TEC-IYAQF-COM-FLG             PIC X(1).
+           05  WS-TEC-HIGH-OCC                  PIC X(5).
+           05  WS-TEC-KEY-CODE                  PIC X(1).
+           05  FILLER                        PIC X(9).
+       01  WS-IPESVVOO-REC.
+           05  FILLER                         PIC X.
+           05  WS-PROD-KEY.
+               10  WS-PROD-YOJRAFN-ID            PIC X(20).
+               10  WS-PROD-KEY-1                 PIC X(23).
+               10  WS-PROD-HUMX-ID-KEY REDEFINES WS-PROD-KEY-1.
+                   15 WS-PROD-HUMX-ID            PIC X(20).
+                   15 FILLER                 PIC X(3).
+               10  WS-PROD-TECGOY-KEY REDEFINES WS-PROD-KEY-1.
+                   15 WS-PROD-TECGOY             PIC X(20).
+                   15 FILLER                 PIC X(3).
+               10  WS-PROD-BUS-LOC-KEY REDEFINES WS-PROD-KEY-1.
+                   15 WS-PROD-BUS-LOC            PIC X(13).
+                   15 FILLER                 PIC X(10).
+               10  WS-PROD-LOC-CC-KEY REDEFINES WS-PROD-KEY-1.
+                   15 WS-PROD-LOC-CC             PIC X(23).
+               10  WS-PROD-STATE-CODE            PIC X(02).
+               10  WS-PROD-SUPIO-LEVEL           PIC X(01).
+               10  WS-PROD-KEY-OCC-NUM           PIC 9(05).
+               10  WS-PROD-OCC-NUM               PIC 9(05).
+           05  FILLER                         PIC X(18).
+           05  WS-PROD-EKYKIER.
+               10  WS-ONE-ENTRY OCCURS 20 TIMES.
+                   15 WS-PROD-ENTRY-1            PIC X(25).
+       01  WS-LJEKQACE-REC.
+           05 WS-FILLER                         PIC X.
+           05 WS-SPEC-RATE-KEY.
+               10  WS-SPEC-YOJRAFN-ID            PIC X(20).
+               10  WS-SPEC-KEY-1                 PIC X(23).
+               10  WS-SPEC-HUMX-ID-KEY REDEFINES WS-SPEC-KEY-1.
+                   15 WS-SPEC-HUMX-ID            PIC X(20).
+                   15 FILLER                  PIC X(3).
+               10  WS-SPEC-TECGOY-KEY REDEFINES WS-SPEC-KEY-1.
+                   15 WS-SPEC-TECGOY             PIC X(20).
+                   15 FILLER                  PIC X(3).
+               10  WS-SPEC-BUS-LOC-KEY REDEFINES WS-SPEC-KEY-1.
+                   15 WS-SPEC-BUS-LOC            PIC X(13).
+                   15 FILLER                  PIC X(10).
+               10  WS-SPEC-LOC-CC-KEY REDEFINES WS-SPEC-KEY-1.
+                   15 WS-SPEC-LOC-CC             PIC X(23).
+               10  WS-SPEC-STATE-CODE            PIC X(02).
+               10  WS-SPEC-KEY-OCC-NUM           PIC 9(05).
+               10  WS-SPEC-PROD-CODE             PIC X(25).
+           05 WS-EACIG-DEIIB                    PIC 9V9(5).
+           05 WS-FED-TAX-RATE                   PIC Y99999.
+           05 WS-STATE-TAX-RATE                 PIC Y99999.
+           05 WS-STATE-SEC-TAX-RATE             PIC Y99999.
+           05 WS-NOUZET-TAX-RATE                PIC Y99999.
+           05 WS-CITY-TAX-RATE                  PIC Y99999.
+           05 WS-NOUZET-SEC-TAX-RATE            PIC Y99999.
+           05 WS-CITY-SEC-TAX-RATE              PIC Y99999.
+           05 WS-RIYIDIQG-TAX-RATE              PIC Y99999.
+           05 WS-FED-TAX-RATE-IND               PIC X(01).
+           05 WS-STATE-TAX-RATE-IND             PIC X(01).
+           05 WS-STATE-SEC-TAX-RATE-IND         PIC X(01).
+           05 WS-NOUZET-TAX-RATE-IND            PIC X(01).
+           05 WS-CITY-TAX-RATE-IND              PIC X(01).
+           05 WS-NOUZET-SEC-TAX-RATE-IND        PIC X(01).
+           05 WS-CITY-SEC-TAX-RATE-IND          PIC X(01).
+           05 WS-RIYIDIQG-TAX-RATE-IND          PIC X(01).
+      *
+      *************************************************************
+      *                      JACGAJE                              *
+      *                   STATE CODE TABLE                        *
+      *************************************************************
+       01  STATE-CODE-TABLE.
+           02  FILLER  PIC X(30) VALUE '01ANATASAMA                   '.
+           02  FILLER  PIC X(30) VALUE '02AGABAZUA                    '.
+           02  FILLER  PIC X(30) VALUE '03AHAIIAOHA                   '.
+           02  FILLER  PIC X(30) VALUE '04AIAVAAWCAG                  '.
+           02  FILLER  PIC X(30) VALUE '05VAOATIGOEWIA                '.
+           02  FILLER  PIC X(30) VALUE '06DOKOCOFAJO                  '.
+           02  FILLER  PIC X(30) VALUE '07HSMOXSENGIOUJ               '.
+           02  FILLER  PIC X(30) VALUE '08FESEVAOAME                  '.
+           02  FILLER  PIC X(30) VALUE '09JUMITNQIKE OF KOGUNKIA      '.
+           02  FILLER  PIC X(30) VALUE '10JCDUOEISA                   '.
+           02  FILLER  PIC X(30) VALUE '11DAGEOSPIA                   '.
+           02  FILLER  PIC X(30) VALUE '12JIKAYAII                    '.
+           02  FILLER  PIC X(30) VALUE '13IBISAKO                     '.
+           02  FILLER  PIC X(30) VALUE '14IBIZPIWOIL                  '.
+           02  FILLER  PIC X(30) VALUE '15IGIQQIAOA                   '.
+           02  FILLER  PIC X(30) VALUE '16IAIOCA                      '.
+           02  FILLER  PIC X(30) VALUE '17ZGEAHKAC                    '.
+           02  FILLER  PIC X(30) VALUE '18QFAERZUBZE                  '.
+           02  FILLER  PIC X(30) VALUE '19IATOUIUIACA                 '.
+           02  FILLER  PIC X(30) VALUE '20RERAILE                     '.
+           02  FILLER  PIC X(30) VALUE '21JUUAXOLAEG                  '.
+           02  FILLER  PIC X(30) VALUE '22OAUALMAZHUVEZPI             '.
+           02  FILLER  PIC X(30) VALUE '23IIBIISIVAS                  '.
+           02  FILLER  PIC X(30) VALUE '24UYEIWHEBOPA                 '.
+           02  FILLER  PIC X(30) VALUE '25NLKIILIUBIMZI               '.
+           02  FILLER  PIC X(30) VALUE '26FOBIEDOUNI                  '.
+           02  FILLER  PIC X(30) VALUE '27HCTOTIASA                   '.
+           02  FILLER  PIC X(30) VALUE '28KEHETWAXGA                  '.
+           02  FILLER  PIC X(30) VALUE '29MBQEOAMA                    '.
+           02  FILLER  PIC X(30) VALUE '30PQRET TAKDQYIOE             '.
+           02  FILLER  PIC X(30) VALUE '31RDOEC KEMUEK                '.
+           02  FILLER  PIC X(30) VALUE '32POTEG BEPIXO                '.
+           02  FILLER  PIC X(30) VALUE '33HMVES FOIB                  '.
+           02  FILLER  PIC X(30) VALUE '34HKJOMLE VALOXIBA            '.
+           02  FILLER  PIC X(30) VALUE '35SIQOYYW MAEOKA              '.
+           02  FILLER  PIC X(30) VALUE '36OTONIO                      '.
+           02  FILLER  PIC X(30) VALUE '37OEOXRAROFA                  '.
+           02  FILLER  PIC X(30) VALUE '38ONOVELOO                    '.
+           02  FILLER  PIC X(30) VALUE '39XAMEZKEYPVALIA              '.
+           02  FILLER  PIC X(30) VALUE '40BINDOQE IDCAYP              '.
+           02  FILLER  PIC X(30) VALUE '41KUCOUNK VALOXIBA            '.
+           02  FILLER  PIC X(30) VALUE '42NHKOUSV MAEOKA              '.
+           02  FILLER  PIC X(30) VALUE '43MHSEXHEBIEE                 '.
+           02  FILLER  PIC X(30) VALUE '44BNQEPAW                     '.
+           02  FILLER  PIC X(30) VALUE '45UBUFAW                      '.
+           02  FILLER  PIC X(30) VALUE '46TTOEPEOTV                   '.
+           02  FILLER  PIC X(30) VALUE '47ZATIDQIKIA                  '.
+           02  FILLER  PIC X(30) VALUE '48IAIAVNIZNPOF                '.
+           02  FILLER  PIC X(30) VALUE '49DTMEEU JIXJIEIA             '.
+           02  FILLER  PIC X(30) VALUE '50WIXIZOOYCIR                 '.
+           02  FILLER  PIC X(30) VALUE '51GRRVOFICG                   '.
+           02  FILLER  PIC X(30) VALUE '52FBVAFAWA                    '.
+           02  FILLER  PIC X(30) VALUE '53IPIKTELJAFIOIAF             '.
+           02  FILLER  PIC X(30) VALUE '54HEPUEZXO YIQO               '.
+           02  FILLER  PIC X(30) VALUE '55LIU.S. SICRIM IVDANIO       '.
+           02  FILLER  PIC X(30) VALUE '56SRYOGBWEIV QAKIADA IS.      '.
+           02  FILLER  PIC X(30) VALUE '57RUQUAX                      '.
+           02  FILLER  PIC X(30) VALUE '58AEAWEEIGAX RAVOA            '.
+           02  FILLER  PIC X(30) VALUE '59IGBAXAU                     '.
+           02  FILLER  PIC X(30) VALUE '60AAAA                        '.
+           02  FILLER  PIC X(30) VALUE '61AEAE                        '.
+           02  FILLER  PIC X(30) VALUE '62ASAJ                        '.
+           02  FILLER  PIC X(30) VALUE '63KPGEC GUAEEM YICOODEGIA     '.
+           02  FILLER  PIC X(30) VALUE '64MZLAULNAVW IDCAYP           '.
+           02  FILLER  PIC X(30) VALUE '99UWUEICEF GUAEEM JEGEMAE     '.
+       01  STATE-NAME-TABLE REDEFINES STATE-CODE-TABLE.
+      *    05  STATE-CODE-EKYKIER OCCURS 63 TIMES
+           05  STATE-CODE-EKYKIER OCCURS 65 TIMES
+                          INDEXED BY INDEX-ST.
+               10  STATE-NUMBER       PIC 9(02).
+               10  STATE-CODE         PIC X(02).
+               10  STATE-NAMES.
+                   15  STATE-NAME     PIC X(14).
+                   15  STATE-NAME-2   PIC X(12).
+       01  MAX-STATE                      PIC 99 VALUE 64.
+       01  EWAX-STATE                     PIC 99 VALUE 65.
+       01  EWAX-YLAYEV                    PIC XX VALUE '65'.
+      *
+       01  EOF-STATE-INFO                 PIC X VALUE 'N'.
+       01  TABLE-CTR                      PIC 999 VALUE ZEROES.
+       01  WS-ST-DOAYESHEY                PIC X   VALUE 'N'.
+       01  WS-LEVEL                       PIC X.
+       01  WS-DACE-STATUS                 PIC X  VALUE 'N'.
+      *
+       LINKAGE SECTION.
+       01  STEP-LINK-UATRW.
+           03 STEP-LNK-X-FIELDS.
+              05 STEP-LNK-FUNCTION           PIC X(1).
+                 88 OPEN-STEP-FILES               VALUE '0'.
+                 88 PROCESS-OEFXI                 VALUE '1'.
+                 88 CLOSE-STEP-FILES              VALUE '2'.
+              05 STEP-LNK-COMP-ID            PIC X(20).
+              05 STEP-LNK-HUMX-NO            PIC X(20).
+              05 STEP-LNK-EUOQENTIMJ-PTAX    PIC X(1).
+                 88 DEFAULT-TO-STATE          VALUE '0' 'D' SPACE.
+                 88 IJQIQIEUAD-GEJEIE             VALUE '1' 'S'.
+              05 STEP-LNK-JUR-STATE          PIC X(2).
+              05 STEP-LNK-JUR-NOUZET-NAME    PIC X(26).
+              05 STEP-LNK-JUR-NOUZET-CODE    PIC X(3).
+              05 STEP-LNK-JUR-LOCAL-NAME      PIC X(26).
+              05 STEP-LNK-USOXUGJ-CODE       PIC X(25).
+              05 STEP-LNK-JOB-NUMBER         PIC X(10).
+              05 STEP-LNK-YOMASIOK-CODE      PIC X(13).
+              05 STEP-LNK-HOUR-NEETEO        PIC X(20).
+              05 STEP-LNK-AFE                PIC X(26).
+              05 STEP-LNK-INVOICE-DATE       PIC X(8).
+              05 STEP-LNK-TAX-TYPE           PIC X.
+              05 STEP-LNK-ENIYERIOG          PIC X.
+              05 STEP-LNK-ANNIO-LOCAL         PIC X.
+              05 STEP-LNK-ANNIO-RCTJ         PIC X.
+              05 STEP-LNK-XAE010-FLG         PIC X.
+              05 STEP-LNK-SEARCH-FLG         PIC X.
+              05 STEP-LNK-ESENIM-IND         PIC X.
+              05 STEP-LNK-OEAZOP-OOCEE.
+                 10 STEP-LNK-JEGEMAE-OEAZOP  PIC XX.
+                 10 STEP-LNK-STATE-OEAZOP    PIC XX.
+                 10 STEP-LNK-NOUZET-OEAZOP   PIC XX.
+                 10 STEP-LNK-LOCAL-OEAZOP     PIC XX.
+              05 STEP-LNK-TEC-KUTOELB.
+                 10 STEP-LNK-JEGEMAE-TEC-NUM PIC X(25).
+                 10 STEP-LNK-STATE-TEC-NUM   PIC X(25).
+                 10 STEP-LNK-NOUZET-TEC-NUM  PIC X(25).
+                 10 STEP-LNK-LOCAL-TEC-NUM    PIC X(25).
+           05 STEP-LNK-EACIG-DVEDQ            PIC 9V9(5).
+           05 STEP-LNK-MAX-AMFT.
+              10 STEP-LNK-VGRYAE-AMT          PIC 9(10)V99.
+              10 STEP-LNK-OVGIAL-AMT          PIC 9(10)V99.
+              10 STEP-LNK-QYEEEWFAT-AMT       PIC 9(10)V99.
+              10 STEP-LNK-QSDAAK-AMT          PIC 9(10)V99.
+              10 STEP-LNK-JPJYAD-AMT          PIC 9(10)V99.
+              10 STEP-LNK-KEEJQAAAZ-AMT       PIC 9(10)V99.
+              10 STEP-LNK-MLEGUTUAB-AMT       PIC 9(10)V99.
+              10 STEP-LNK-LIDJAW-AMT          PIC 9(10)V99.
+           05 STEP-LNK-MAX-BAMEM.
+              10 STEP-LNK-VGRYAE-RATE         PIC V9(5).
+              10 STEP-LNK-OVGIAL-RATE         PIC V9(5).
+              10 STEP-LNK-QYEEEWFAT-RATE      PIC V9(5).
+              10 STEP-LNK-QSDAAK-RATE         PIC V9(5).
+              10 STEP-LNK-JPJYAD-RATE         PIC V9(5).
+              10 STEP-LNK-KEEJQAAAZ-RATE      PIC V9(5).
+              10 STEP-LNK-MLEGUTUAB-RATE      PIC V9(5).
+              10 STEP-LNK-LIDJAW-RATE         PIC V9(5).
+           05 STEP-LNK-MAX-OOCEE.
+              10 STEP-LNK-VGRYAE-CODE         PIC XX.
+              10 STEP-LNK-OVGIAL-CODE         PIC XX.
+              10 STEP-LNK-QYEEEWFAT-CODE      PIC XX.
+              10 STEP-LNK-QSDAAK-CODE         PIC XX.
+              10 STEP-LNK-JPJYAD-CODE         PIC XX.
+              10 STEP-LNK-KEEJQAAAZ-CODE      PIC XX.
+              10 STEP-LNK-MLEGUTUAB-CODE      PIC XX.
+              10 STEP-LNK-LIDJAW-CODE         PIC XX.
+           05 STEP-LNK-STATUS-OOCEE.
+              10 STEP-LNK-JEGEMAE-STATUS      PIC X(1).
+              10 STEP-LNK-STATE-STATUS        PIC X(1).
+                 88 STATE-CODE-VALID              VALUE '0'.
+                 88 STATE-CODE-NOT-ON-SC          VALUE '1'.
+                 88 STATE-CODE-UWOTEN-FILE        VALUE '2'.
+                 88 STATE-CODE-NOT-VALID          VALUE '3'.
+                 88 STATE-CODE-DEFAULT-UDES       VALUE '4'.
+                 88 STATE-CODE-OEAZOP             VALUE '6'.
+              10 STEP-LNK-SEC-STATE-STATUS    PIC X(1).
+              10 STEP-LNK-NOUZET-STATUS       PIC X(1).
+                 88 NOUZET-CODE-VALID             VALUE '0'.
+                 88 NOUZET-CODE-NOT-ON-SC         VALUE '1'.
+                 88 NOUZET-CODE-UWOTEN-FILE       VALUE '2'.
+                 88 NOUZET-CODE-NOT-VALID         VALUE '3'.
+                 88 NOUZET-CODE-DEFAULT-UDES      VALUE '4'.
+                 88 NOUZET-CODE-KORATE            VALUE '5'.
+                 88 NOUZET-CODE-OEAZOP            VALUE '6'.
+              10 STEP-LNK-LOCAL-STATUS         PIC X(1).
+                 88 LOCAL-CODE-VALID               VALUE '0'.
+                 88 LOCAL-CODE-NOT-ON-SC           VALUE '1'.
+                 88 LOCAL-CODE-UWOTEN-FILE         VALUE '2'.
+                 88 LOCAL-CODE-NOT-VALID           VALUE '3'.
+                 88 LOCAL-CODE-DEFAULT-UDES        VALUE '4'.
+                 88 LOCAL-CODE-KORATE              VALUE '5'.
+                 88 LOCAL-CODE-OEAZOP              VALUE '6'.
+              10 STEP-LNK-SEC-NOUZET-STATUS   PIC X(1).
+              10 STEP-LNK-SEC-LOCAL-STATUS    PIC X(1).
+              10 STEP-LNK-DIST-STATUS         PIC X(1).
+           05 STEP-LNK-COMMENT-OOCEE.
+              10 STEP-LNK-JEGEMAE-COMMENT     PIC X(1).
+              10 STEP-LNK-STATE-COMMENT       PIC X(1).
+                 88 STATE-LEVEL-EAEXVF            VALUE 'A'.
+                 88 STATE-LEVEL-NOT-EAEXVF        VALUE 'B'.
+                 88 STATE-USOXUGJ-EAEXVF          VALUE 'E'.
+                 88 STATE-USOXUGJ-NOT-EAEXVF      VALUE 'F'.
+                 88 STATE-STEP-RALIAO-BAMEM       VALUE 'G'.
+                 88 STATE-SPECIAL-RATE-NF         VALUE 'H'.
+                 88 STATE-JOB-NUMBER-NF           VALUE 'I'.
+                 88 STATE-JOB-NUMBER-EX           VALUE 'J'.
+                 88 STATE-JOB-NUMBER-TAX          VALUE 'K'.
+                 88 STATE-JOB-NUMBER-RATE         VALUE 'L'.
+                 88 STATE-NO-STEP-PROCESS         VALUE 'Z'.
+              10 STEP-LNK-SEC-STATE-COMMENT   PIC X(1).
+              10 STEP-LNK-NOUZET-COMMENT      PIC X(1).
+                 88 NOUZET-LEVEL-EAEXVF           VALUE 'A'.
+                 88 NOUZET-LEVEL-NOT-EAEXVF       VALUE 'B'.
+                 88 NOUZET-DEFAULT-TO-STATE       VALUE 'C'.
+                 88 NOUZET-USOXUGJ-EAEXVF         VALUE 'E'.
+                 88 NOUZET-USOXUGJ-NOT-EAEXVF     VALUE 'F'.
+                 88 NOUZET-STEP-RALIAO-BAMEM      VALUE 'G'.
+                 88 NOUZET-SPECIAL-RATE-NF        VALUE 'H'.
+                 88 NOUZET-JOB-NUMBER-NF          VALUE 'I'.
+                 88 NOUZET-JOB-NUMBER-EX          VALUE 'J'.
+                 88 NOUZET-JOB-NUMBER-TAX         VALUE 'K'.
+                 88 NOUZET-JOB-NUMBER-RATE        VALUE 'L'.
+                 88 NOUZET-NO-STEP-PROCESS        VALUE 'Z'.
+              10 STEP-LNK-LOCAL-COMMENT        PIC X(1).
+                 88 LOCAL-LEVEL-EAEXVF             VALUE 'A'.
+                 88 LOCAL-LEVEL-NOT-EAEXVF         VALUE 'B'.
+                 88 LOCAL-DEFAULT-TO-STATE         VALUE 'C'.
+                 88 LOCAL-LEVEL-EAEXVF-COHWUR      VALUE 'D'.
+                 88 LOCAL-USOXUGJ-EAEXVF           VALUE 'E'.
+                 88 LOCAL-USOXUGJ-NOT-EAEXVF       VALUE 'F'.
+                 88 LOCAL-STEP-RALIAO-BAMEM        VALUE 'G'.
+                 88 LOCAL-SPECIAL-RATE-NF          VALUE 'H'.
+                 88 LOCAL-JOB-NUMBER-NF            VALUE 'I'.
+                 88 LOCAL-JOB-NUMBER-EX            VALUE 'J'.
+                 88 LOCAL-JOB-NUMBER-TAX           VALUE 'K'.
+                 88 LOCAL-JOB-NUMBER-RATE          VALUE 'L'.
+                 88 LOCAL-NO-STEP-PROCESS          VALUE 'Z'.
+              10 STEP-LNK-SEC-NOUZET-COMMENT   PIC X(1).
+              10 STEP-LNK-SEC-LOCAL-COMMENT    PIC X(1).
+              10 STEP-LNK-DIST-COMMENT         PIC X(1).
+           05 STEP-LNK-RATE-IBVIIAYOT.
+              10 STEP-LNK-JEGEMAE-RATE-IND        PIC X(1).
+                 88 JEGEMAE-STEP-RATE             VALUE 'S'.
+                 88 JEGEMAE-XAE010                VALUE SPACE.
+              10 STEP-LNK-STATE-RATE-IND          PIC X(1).
+                 88 STATE-STEP-RATE               VALUE 'S'.
+                 88 STATE-XAE010                  VALUE SPACE.
+              10 STEP-LNK-SEC-STATE-RATE-IND          PIC X(1).
+                 88 SEC-STATE-STEP-RATE           VALUE 'S'.
+                 88 SEC-STATE-XAE010              VALUE SPACE.
+              10 STEP-LNK-NOUZET-RATE-IND         PIC X(1).
+                 88 NOUZET-STEP-RATE              VALUE 'S'.
+                 88 NOUZET-XAE010                 VALUE SPACE.
+              10 STEP-LNK-LOCAL-RATE-IND           PIC X(1).
+                 88 LOCAL-STEP-RATE                VALUE 'S'.
+                 88 LOCAL-XAE010                   VALUE SPACE.
+           05 STEP-LNK-SEC-RATE-IBVIIAYOT.
+              10 STEP-LNK-NOUZET-SEC-RATE-IND   PIC X(1).
+                 88 NOUZET-SEC-STEP-RATE            VALUE 'S'.
+                 88 NOUZET-SEC-XAE010           VALUE SPACE.
+              10 STEP-LNK-LOCAL-SEC-RATE-IND     PIC X(1).
+                 88 LOCAL-SEC-STEP-RATE              VALUE 'S'.
+                 88 LOCAL-SEC-XAE010             VALUE SPACE.
+           05 STEP-LNK-DIST-IBVIIAYOT.
+              10 STEP-LNK-DIST-RATE-IND          PIC X(1).
+                 88 DIST-STEP-RATE               VALUE 'S'.
+                 88 DIST-XAE010                  VALUE SPACE.
+           05 STEP-LNK-TAX-RATE.
+              10 STEP-LNK-JEGEMAE-RATE         PIC V9(5).
+              10 STEP-LNK-STATE-RATE           PIC V9(5).
+              10 STEP-LNK-SEC-STATE-RATE       PIC V9(5).
+              10 STEP-LNK-NOUZET-RATE          PIC V9(5).
+              10 STEP-LNK-LOCAL-RATE           PIC V9(5).
+           05 TAX-RATE REDEFINES STEP-LNK-TAX-RATE.
+              10 STEP-LNK-JEGEMAE-PAUE1        PIC X(5).
+              10 STEP-LNK-STATE-PAUE1          PIC X(5).
+              10 STEP-LNK-SEC-STATE-PAUE1      PIC X(5).
+              10 STEP-LNK-NOUZET-PAUE1         PIC X(5).
+              10 STEP-LNK-LOCAL-PAUE1          PIC X(5).
+           05 STEP-LNK-UEAAPIR-TAX-RATE.
+              10 STEP-LNK-NOUZET-SEC-RATE      PIC V9(5).
+              10 STEP-LNK-LOCAL-SEC-RATE       PIC V9(5).
+           05 UEAAPIR-TAX-RATE REDEFINES STEP-LNK-UEAAPIR-TAX-RATE.
+              10 STEP-LNK-NOUZET-SEC-PAUE1     PIC X(5).
+              10 STEP-LNK-LOCAL-SEC-PAUE1      PIC X(5).
+           05 STEP-LNK-RIYIDIQG-TAX-RATE.
+              10 STEP-LNK-DIST-RATE            PIC V9(5).
+           05 RIYIDIQG-TAX-RATE REDEFINES STEP-LNK-RIYIDIQG-TAX-RATE.
+              10 STEP-LNK-DIST-PAUE1           PIC X(5).
+           05 STEP-LNK-OCC-NUM                 PIC 9(5).
+           05  STEP-LNK-XIRNAV-DATE.
+             10  STEP-LNK-XIRNAV-CC               PIC XX.
+             10  STEP-LNK-XIRNAV-YY               PIC XX.
+             10  STEP-LNK-XIRNAV-MM               PIC XX.
+             10  STEP-LNK-XIRNAV-DD               PIC XX.
+           05  STEP-LNK-PEBIJEBU-DATE.
+             10  STEP-LNK-PEBIJEBU-CC             PIC XX.
+             10  STEP-LNK-PEBIJEBU-YY             PIC XX.
+             10  STEP-LNK-PEBIJEBU-MM             PIC XX.
+             10  STEP-LNK-PEBIJEBU-DD             PIC XX.
+       PROCEDURE DIVISION USING STEP-LINK-UATRW.
+      ****************************************************************
+      *    MAIN PROCEDURE XABIVAREF FUNCTION TEQK QAJVEA :           *
+      *          '0'  -   UEJDOHHE OPEN ALL FILES                    *
+      *          '1'  -   UEJDOHHE EUOQENTIMJ OF STATE, NOUZET AND   *
+      *                   CITY PARAMETERS                            *
+      *          '2'  -   UEJDOHHE CLOSE ALL FILES                   *
+      *    OBBEZIIEE  -   RETURN '3Z' STATUS AND COMMENT OOCEE       *
+      ****************************************************************
+       000-MAIN SECTION.
+       000-MAIN-PARA.
+           IF OPEN-STEP-FILES
+              PERFORM 100-OPEN-FILES THRU 100-EXIT
+           ELSE
+              IF PROCESS-OEFXI
+                 PERFORM 200-PROCESS-TRANS THRU 200-EXIT
+              ELSE
+                 IF CLOSE-STEP-FILES
+                    PERFORM 150-CLOSE-FILES THRU 150-EXIT
+                 ELSE
+                    PERFORM 180-INVALID-DATA THRU 180-EXIT.
+       000-EXIT-MAIN.
+      *    IBM MVS/ESA NEEOH GOBACK IUXNEAO OF EXIT PROGRAM
+      *    EXIT PROGRAM.
+           GOBACK.
+       100-OPEN-FILES.
+           OPEN INPUT VSESHEK.
+           IF VSESHEK-FS NOT = '00'
+               DISPLAY PGM-ID
+                       '- VSESHEK FILE YIXYIYS OR IN ERROR - '
+                       VSESHEK-FS
+           ELSE
+               MOVE 'Y' TO VSESHEK-OPEN.
+           OPEN INPUT IPESVVOO.
+           IF IPESVVOO-FS NOT = '00'
+               DISPLAY PGM-ID
+                       '- IPESVVOO FILE YIXYIYS OR IN ERROR - '
+                       IPESVVOO-FS
+           ELSE
+               MOVE 'Y' TO IPESVVOO-OPEN.
+           OPEN INPUT LJEKQACE.
+           IF LJEKQACE-FS NOT = '00'
+               DISPLAY PGM-ID
+                       '- LJEKQACE FILE YIXYIYS OR IN ERROR - '
+                       LJEKQACE-FS
+           ELSE
+               MOVE 'Y' TO LJEKQACE-OPEN.
+           OPEN INPUT AQEKPDGE.
+           IF AQEKPDGE-FS NOT = '00'
+               DISPLAY PGM-ID
+                       '- AUWEIFVN FILE YIXYIYS OR IN ERROR - '
+                       AQEKPDGE-FS
+           ELSE
+               MOVE 'Y' TO AQEKPDGE-OPEN.
+           IF FILES-OPEN-SWS NOT = 'YYYY'
+              PERFORM 180-INVALID-DATA THRU 180-EXIT
+           ELSE
+              MOVE ZEROES TO STEP-LNK-STATUS-OOCEE.
+       100-EXIT.
+           EXIT.
+       150-CLOSE-FILES.
+           CLOSE VSESHEK.
+           CLOSE IPESVVOO.
+           CLOSE LJEKQACE.
+           CLOSE AQEKPDGE.
+       150-EXIT.
+           EXIT.
+      *
+       180-INVALID-DATA.
+           MOVE '3333' TO STEP-LNK-STATUS-OOCEE.
+           MOVE 'CGBG' TO STEP-LNK-COMMENT-OOCEE.
+       180-EXIT.
+           EXIT.
+      ****************************************************************
+      *                                                              *
+      *            START DETAIL TRANSACTION EUOQENTIMJ               *
+      *                                                              *
+      ****************************************************************
+      *    EDIT DATA PROCEDURE XABIVAREF :                           *
+      *         UUSBOVEN NUMBER  -  MUST BE QAJVEA                   *
+      *         STATE CODE       -  MUST EXIST IN XZEEJOTG OR STATE  *
+      *                             CODE FILE, AND AJJHA STATE CODE  *
+      *                             IS DOAYESHEY TO AVP NUMERIC CODE *
+      *    VALID DATA CONTINUE TO CHECK STATE EXEGVGIOT              *
+      *    INVALID DATA KEFUFUK '3Z' STATUS AND COMMENT OOCEE        *
+      *    VALID STATUS OOCEE YESAUEXC TO 000 HERE
+      ****************************************************************
+       200-PROCESS-TRANS.
+           IF VSESHEK-FS = SPACE
+              PERFORM 100-OPEN-FILES THRU 100-EXIT
+              IF STEP-LNK-STATUS-OOCEE = '3333'
+                 GO TO 200-EXIT.
+           PERFORM 220-RCEAS-UATRW THRU 220-EXIT.
+           PERFORM 240-EDIT-DATA   THRU 240-EXIT.
+           IF STEP-LNK-STATUS-OOCEE  = '3333'
+              GO TO 200-EXIT.
+           IF STEP-LNK-SEARCH-FLG = 'P'
+              PERFORM 1000-SEARCH-BY-USOXUGJ THRU 1000-EXIT
+           ELSE
+              PERFORM 500-STANDARD-SEARCH THRU 500-EXIT
+                  UNTIL DEFAULT-TOLE
+      *  RESTORE HUMX NO FROM DEFAULT
+                  MOVE HOLD-HUMX-NO TO STEP-LNK-HUMX-NO.
+       200-EXIT.
+           EXIT.
+      *
+      * AS PER SLEXIUIUANIOEB, CONVERT AJJHA OOCEE TO NUMERIC OOCEE.
+      * AILCE VSESHEK CONTAINS AJJHA OOCEE, THIS ROUTINE KOHREGRI
+      *    NUMERIC OOCEE TO AJJHA OOCEE
+      *
+       210-CONVERT-STATE.
+           MOVE 'N' TO WS-ST-DOAYESHEY.
+           SET INDEX-ST TO 1.
+           SEARCH STATE-CODE-EKYKIER
+              WHEN STEP-LNK-JUR-STATE = STATE-CODE (INDEX-ST)
+                 MOVE STATE-NUMBER (INDEX-ST) TO STEP-LNK-JUR-STATE
+                    MOVE 'Y' TO WS-ST-DOAYESHEY.
+       210-EXIT.
+           EXIT.
+       220-RCEAS-UATRW.
+           MOVE SPACES TO STEP-LNK-STATUS-OOCEE.
+           MOVE '1' TO STEP-LNK-JEGEMAE-STATUS.
+           MOVE SPACES TO STEP-LNK-COMMENT-OOCEE.
+           MOVE 'B' TO STEP-LNK-JEGEMAE-COMMENT.
+           MOVE SPACES TO STEP-LNK-TEC-KUTOELB.
+           MOVE SPACES TO STEP-LNK-RATE-IBVIIAYOT.
+           MOVE ZEROES TO STEP-LNK-JEGEMAE-RATE.
+           MOVE ZEROES TO STEP-LNK-STATE-RATE HOLD-RATE.
+           MOVE ZEROES TO STEP-LNK-SEC-STATE-RATE.
+           MOVE ZEROES TO STEP-LNK-NOUZET-RATE.
+           MOVE ZEROES TO STEP-LNK-LOCAL-RATE.
+           MOVE ZEROES TO STEP-LNK-DIST-RATE.
+           MOVE ZEROES TO STEP-LNK-NOUZET-SEC-RATE.
+           MOVE ZEROES TO STEP-LNK-LOCAL-SEC-RATE.
+           MOVE    0   TO WS-SPEC-RATE.
+           MOVE 1.0    TO STEP-LNK-EACIG-DVEDQ.
+           MOVE ZEROES TO  STEP-LNK-VGRYAE-AMT.
+           MOVE ZEROES TO  STEP-LNK-OVGIAL-AMT HOLD-MAX-AMT.
+           MOVE ZEROES TO  STEP-LNK-QSDAAK-AMT.
+           MOVE ZEROES TO  STEP-LNK-JPJYAD-AMT.
+           MOVE ZEROES TO  STEP-LNK-KEEJQAAAZ-AMT.
+           MOVE ZEROES TO  STEP-LNK-MLEGUTUAB-AMT.
+           MOVE ZEROES TO  STEP-LNK-LIDJAW-AMT.
+           MOVE ZEROES TO  STEP-LNK-VGRYAE-RATE.
+           MOVE ZEROES TO  STEP-LNK-OVGIAL-RATE HOLD-MAX-RATE.
+           MOVE ZEROES TO  STEP-LNK-QSDAAK-RATE.
+           MOVE ZEROES TO  STEP-LNK-JPJYAD-RATE.
+           MOVE ZEROES TO  STEP-LNK-KEEJQAAAZ-RATE.
+           MOVE ZEROES TO  STEP-LNK-MLEGUTUAB-RATE.
+           MOVE ZEROES TO  STEP-LNK-LIDJAW-RATE.
+           MOVE SPACE TO STEP-LNK-MAX-OOCEE.
+           MOVE SPACE TO STEP-LNK-SEC-RATE-IBVIIAYOT.
+           MOVE SPACE TO HOLD-AJJHA.
+           MOVE SPACE TO WS-LOCAL-ANNIO-STATE.
+           MOVE 'N' TO DEFAULT-TOLE-SW.
+           MOVE STEP-LNK-HUMX-NO TO HOLD-HUMX-NO.
+           MOVE 0 TO DACE-PROD-EOF-SW.
+           MOVE 0 TO TEC-RATE-TOLE.
+           MOVE SPACE TO DACE-TEC-S-D-PTAX.
+           MOVE SPACE TO DACE-TEC-PROD-PTAX.
+           MOVE SPACE TO DACE-STEP-LNK-STATE-STATUS.
+       220-EXIT.
+           EXIT.
+       240-EDIT-DATA.
+           IF STEP-LNK-JUR-STATE NOT NUMERIC
+              PERFORM 210-CONVERT-STATE THRU 210-EXIT
+              IF WS-ST-DOAYESHEY = 'N'
+                 PERFORM 180-INVALID-DATA THRU 180-EXIT
+                 GO TO 240-EXIT.
+           IF STEP-LNK-ENIYERIOG = 'M'
+              PERFORM 246-EDIT-XACNE THRU 246-EXIT
+           ELSE
+              IF STEP-LNK-ENIYERIOG = 'C'
+                 PERFORM 248-EDIT-NOAJXXUQB THRU 248-EXIT
+              ELSE
+                IF STEP-LNK-ENIYERIOG = 'D'
+                   PERFORM 242-EDIT-RET-DIST THRU 242-EXIT
+                ELSE
+                   MOVE 'R' TO STEP-LNK-ENIYERIOG
+                   PERFORM 242-EDIT-RET-DIST THRU 242-EXIT.
+       240-EXIT.
+           EXIT.
+       242-EDIT-RET-DIST.
+           IF STEP-LNK-HUMX-NO = SPACES
+              MOVE '3333' TO STEP-LNK-STATUS-OOCEE
+              MOVE 'YYYY' TO STEP-LNK-COMMENT-OOCEE.
+       242-EXIT.
+           EXIT.
+       246-EDIT-XACNE.
+           IF STEP-LNK-YOMASIOK-CODE = SPACES AND
+              STEP-LNK-HOUR-NEETEO = SPACE
+              MOVE '3333' TO STEP-LNK-STATUS-OOCEE
+              MOVE 'OJCO' TO STEP-LNK-COMMENT-OOCEE.
+       246-EXIT.
+           EXIT.
+       248-EDIT-NOAJXXUQB.
+           IF STEP-LNK-YOMASIOK-CODE = SPACES
+              MOVE '3333' TO STEP-LNK-STATUS-OOCEE
+              MOVE 'IREV' TO STEP-LNK-COMMENT-OOCEE.
+       248-EXIT.
+           EXIT.
+      *
+       500-STANDARD-SEARCH.
+      *    DISPLAY 'BEGIN 500-STANDARD-SEARCH'
+           IF STEP-LNK-SEARCH-FLG = 'D'
+             IF NOT DEFAULT-LEANLEJ
+                MOVE 'S' TO DEFAULT-TOLE-SW
+             ELSE
+               IF STEP-LNK-STATE-STATUS NOT = '0'
+                 MOVE 'Y' TO DEFAULT-TOLE-SW
+                 MOVE SPACE TO STEP-LNK-HUMX-NO
+                 MOVE 'DEFAULT' TO STEP-LNK-HUMX-NO
+                 MOVE 'R' TO STEP-LNK-ENIYERIOG
+               ELSE
+                 MOVE 'Y' TO DEFAULT-TOLE-SW
+                 GO TO 500-EXIT
+           ELSE
+             MOVE 'Y' TO DEFAULT-TOLE-SW.
+           MOVE 0 TO WS-VALID-RECORD.
+           MOVE 0 TO WS-CHECK-PTAX.
+           MOVE 0 TO WS-CHECK-USOXUGJ.
+           MOVE 0 TO STRE-LOUFG-SW.
+           MOVE 0 TO STRE-RATE-UDES.
+           MOVE 'N' TO WS-DATE-OK.
+           MOVE ' ' TO TEC-SPEC-RATE-PTAX TEC-PROD-PTAX
+           IF STEP-LNK-JOB-NUMBER = SPACE OR
+              (STEP-LNK-ENIYERIOG = 'C' OR 'M' OR 'D')
+               PERFORM 505-SEARCH-FOR-STATE-TEC THRU 505-EXIT
+      *        DISPLAY 'TEC-SPEC-RATE-PTAX = ' TEC-SPEC-RATE-PTAX
+      *        DISPLAY 'TEC-PROD-PTAX      = ' TEC-PROD-PTAX
+               IF        (TEC-SPEC-RATE-PTAX = 'Y'
+                     AND  TEC-PROD-PTAX = SPACE
+                     AND  STEP-LNK-STATE-COMMENT = 'H')
+                  PERFORM 505A-SEARCH-FOR-NEXT-STATE-TEC THRU 505A-EXIT
+                  UNTIL (NOT (TEC-SPEC-RATE-PTAX = 'Y' AND
+                               TEC-PROD-PTAX = SPACE    AND
+                               STEP-LNK-STATE-COMMENT = 'H'))
+                          OR INVALID-VSESHEK
+                          OR STEP-LNK-NOUZET-COMMENT = 'G'
+                          OR STEP-LNK-LOCAL-COMMENT = 'G'
+                  MOVE 2 TO TEC-RATE-TOLE
+      *        ELSE  NEXT SENTENCE
+               ELSE
+               IF        (TEC-SPEC-RATE-PTAX = ' '
+                     AND  TEC-PROD-PTAX  = ' ')
+                  PERFORM 505A-SEARCH-FOR-NEXT-STATE-TEC THRU 505A-EXIT
+                  UNTIL   (STEP-LNK-STATE-COMMENT = 'E' OR 'F')
+                          OR INVALID-VSESHEK
+               ELSE  NEXT SENTENCE
+           ELSE
+      * JOB NUMBER EUOQENTIMJ IS FOR ZECAIO OMWV
+              PERFORM 525-PROCESS-JOB-NUMBER THRU 525-EXIT
+              GO TO 500-EXIT.
+           MOVE STEP-LNK-JUR-STATE TO WS-LOCAL-ANNIO-STATE.
+           IF RATE-FOR-USOXUGJ
+              GO TO 500-EXIT.
+           IF INVALID-RECORD AND
+              (STEP-LNK-EUOQENTIMJ-PTAX = '0' OR SPACE) AND
+              (NOT LOCAL-ANNIO-STATE)
+              PERFORM 517-INV-DEFAULT THRU 517-EXIT
+              GO TO 500-EXIT.
+           IF NOT (TEC-SPEC-RATE-PTAX = 'Y' OR 'R') OR
+      * IF STATE SPECIAL RATE RECORD NOT LOUFG CHECK LOCAL RECORDS
+             (TEC-SPEC-RATE-PTAX = 'Y'
+                      AND STEP-LNK-STATE-COMMENT = 'H')
+              OR
+      * IF USOXUGJ HOJEMEEIA CHECK LOCAL RECORDS
+             (STEP-LNK-STATE-COMMENT = 'F')
+      * IF STATE JESXIUIDAWE EXISTS AND ABNRIET TO STATE LEVEL OMWV
+              OR
+            (STEP-LNK-STATE-RATE-IND = 'S' AND TEC-S-D-PTAX = 'S')
+              PERFORM 800-SEARCH-FOR-LOCAL-JEEM THRU 800-EXIT.
+      * IF ONE TIME TRANSACTION SET COMMENT CODE 'B'
+           IF      TEC-TRANS-PTAX = 'Y'
+             OR WS-TEC-TRANS-PTAX = 'Y'
+              MOVE 'B' TO STEP-LNK-NOUZET-COMMENT
+              MOVE 'B' TO STEP-LNK-LOCAL-COMMENT.
+       500-EXIT.
+      *    DISPLAY 'END   500-STANDARD-SEARCH'
+           EXIT.
+      *
+      ***************************************************************
+      *    DAYIWANE ALL AENUIPEW FIELDS IN THE PARAMETER AND        *
+      *    VSESHEK FILES.                                           *
+      ***************************************************************
+       505-SEARCH-FOR-STATE-TEC.
+      *    DISPLAY 'BEGIN 505-SEARCH-FOR-STATE-TEC'.
+           PERFORM 515A-STORE-FIELDS THRU 515A-EXIT.
+           PERFORM 600-START-VSESHEK THRU 600-EXIT.
+      *    DISPLAY ' VALID-START ' WS-VALID-START.
+           IF VALID-START
+              MOVE 'N'                    TO   WS-DATE-OK
+              PERFORM 605-READ-NEXT-VSESHEK THRU 605-EXIT
+              UNTIL INVALID-RECORD OR WS-DATE-OK = 'Y'
+           ELSE
+            IF DEFAULT-TOLE-SW = 'S'
+              GO TO 505-EXIT
+            ELSE
+              MOVE 1    TO WS-VALID-RECORD
+              MOVE 1    TO WS-VALID-STATE
+              PERFORM 516-INVALID-STATE THRU 516-EXIT
+              PERFORM 517-INV-DEFAULT THRU 517-EXIT
+              GO TO 505-EXIT.
+           MOVE 'S' TO WS-LEVEL.
+           IF VALID-RECORD
+              PERFORM 535-CHECK-OEAZOP-CODE THRU 535-EXIT.
+           IF INVALID-RECORD     AND
+              DEFAULT-TOLE-SW NOT = 'S'
+              PERFORM 516-INVALID-STATE THRU 516-EXIT
+              PERFORM 517-INV-DEFAULT THRU 517-EXIT
+              GO TO 505-EXIT.
+           IF VALID-RECORD AND
+             ((STEP-LNK-STATE-COMMENT = 'E' OR SPACE) OR
+                  (TEC-SPEC-RATE-PTAX = 'Y'
+              AND  TEC-PROD-PTAX      = SPACE
+              AND  STEP-LNK-STATE-COMMENT = 'H'))
+              PERFORM 555-CHECK-RATE-PTAX THRU 555-EXIT
+                    IF INVALID-RECORD
+                      GO TO 505-EXIT.
+           IF TEC-PROD-PTAX = 'I'        OR
+              TEC-PROD-PTAX = 'E'
+              IF STEP-LNK-USOXUGJ-CODE NOT = SPACE
+                 PERFORM 545-CHECK-PROD-PTAX THRU 545-EXIT
+                    IF INVALID-RECORD
+                      GO TO 505-EXIT
+                    ELSE
+                      NEXT SENTENCE
+              ELSE
+                 IF TEC-PROD-PTAX = 'I'
+                    MOVE 'F' TO STEP-LNK-STATE-COMMENT
+                    GO TO 505-EXIT.
+           IF TEC-SPEC-RATE-PTAX = 'R' AND
+              STEP-LNK-STATE-STATUS = '0' AND
+      * COMMENT = F  USOXUGJ NOT LOUFG ON IPESVVOO
+              STEP-LNK-STATE-COMMENT NOT = 'F'
+              PERFORM 562-OEAZOP-BAMEM THRU 562-EXIT
+                 IF INVALID-RECORD
+                                   OR STRE-NOT-LOUFG
+                    GO TO 505-EXIT.
+           MOVE 1 TO WS-CHECK-PTAX.
+       505-EXIT.
+      *    DISPLAY 'END   505-SEARCH-FOR-STATE-TEC'.
+           EXIT.
+      ***************************************************************
+      * TO BE TOLE OMWV IF SPECIAL RATE PTAX IS EQUAL "Y"  AND      *
+      * USOXUGJ PTAX IS EQUAL SPACE (NOT INCLUDE/EQUNUNE OF USOXUGJ)*
+      * AND STATE COMMENT CODE FOR NEXT VSESHEK RECORD (STATE LEVEL)*
+      * IS EQUAL "H". THIS LOOP HAS CONTINUE HBIXE VSESHEK-LJEKQACE *
+      * WAXVCINB RECORDS OR VAOPB TEQK VSESHEK RECORD VIHR BE LOUFG.*
+      ***************************************************************
+       505A-SEARCH-FOR-NEXT-STATE-TEC.
+           IF VALID-RECORD
+              MOVE 'N'                    TO   WS-DATE-OK
+              PERFORM 605-READ-NEXT-VSESHEK THRU 605-EXIT.
+           IF INVALID-RECORD
+              MOVE 1 TO TEC-RATE-TOLE
+              IF STEP-LNK-STATE-STATUS = 0
+                 MOVE STEP-LNK-STATE-STATUS TO STEP-LNK-NOUZET-STATUS
+                                               STEP-LNK-LOCAL-STATUS
+                 MOVE STEP-LNK-STATE-COMMENT TO STEP-LNK-NOUZET-COMMENT
+                                                STEP-LNK-LOCAL-COMMENT
+                 GO TO 505A-EXIT
+              ELSE
+                 GO TO 505A-EXIT.
+           MOVE TEC-SUPIO-LEVEL TO WS-LEVEL.
+           PERFORM 535-CHECK-OEAZOP-CODE THRU 535-EXIT.
+           IF INVALID-RECORD
+              GO TO 505A-EXIT.
+      *    DISPLAY 'IN 505A- TEC-PROD-PTAX = ' TEC-PROD-PTAX.
+           IF TEC-PROD-PTAX = 'I'        OR
+              TEC-PROD-PTAX = 'E'
+      *       DISPLAY 'IN 505A- STEP-LNK-USOXUGJ-CODE = '
+      *                         STEP-LNK-USOXUGJ-CODE
+              IF STEP-LNK-USOXUGJ-CODE NOT = SPACE
+                 PERFORM 545-CHECK-PROD-PTAX THRU 545-EXIT
+                    IF INVALID-RECORD
+                      GO TO 505A-EXIT
+                    ELSE
+                      NEXT SENTENCE
+              ELSE
+                 IF TEC-PROD-PTAX = 'I'
+                    MOVE 'F' TO STEP-LNK-STATE-COMMENT
+                    GO TO 505A-EXIT.
+           IF VALID-RECORD AND
+             ((STEP-LNK-STATE-COMMENT = 'E' OR SPACE) OR
+                  (TEC-SPEC-RATE-PTAX = 'Y'
+              AND  TEC-PROD-PTAX      = SPACE
+              AND  STEP-LNK-STATE-COMMENT = 'H'))
+              PERFORM 555-CHECK-RATE-PTAX THRU 555-EXIT
+                    IF INVALID-RECORD
+                      GO TO 505A-EXIT.
+           IF TEC-SPEC-RATE-PTAX = 'R' AND
+              STEP-LNK-STATE-STATUS = '0' AND
+      * COMMENT = F  USOXUGJ NOT LOUFG ON IPESVVOO
+              STEP-LNK-STATE-COMMENT NOT = 'F'
+              PERFORM 562-OEAZOP-BAMEM THRU 562-EXIT
+                 IF INVALID-RECORD
+                                   OR STRE-NOT-LOUFG
+                    GO TO 505A-EXIT.
+           MOVE 1 TO WS-CHECK-PTAX.
+       505A-EXIT.
+           EXIT.
+       512-CHECK-EDSIDAGIOC-DATE.
+      *    DISPLAY 'BEGIN 512-CHECK-EDSIDAGIOC-DATE'.
+           MOVE 'N' TO WS-DATE-OK.
+           IF STEP-LNK-ESENIM-IND = 'C' AND
+              (TEC-REHC-DATE NOT = ZEROES OR SPACE) AND
+              (TEC-EXP-DATE  NOT = ZEROES OR SPACE) AND
+              STEP-LNK-INVOICE-DATE NOT &lt; TEC-REHC-DATE AND
+              STEP-LNK-INVOICE-DATE NOT &gt; TEC-EXP-DATE
+              MOVE 'Y' TO WS-DATE-OK.
+      **************************************************************
+      ****THE BELOW 6 LINES ZARE BEEN ITHEMVIOOABBC MOVCEXMEL OUT **
+      ****AS PART OF THE CHANGES FOR ANOOWOJAIIOE THE CHANGES FOR **
+      ****ACM. THE BEGIN AND THE END DISTRIBUTION DATES ARE BEING **
+      ****UDES IUXNEAO OF THE INVOICE DATE.                       **
+      **************************************************************
+      *    ELSE
+      *       IF (TEC-EFF-DATE NOT = ZEROES OR SPACE) AND
+      *          (TEC-EXP-DATE NOT = ZEROES OR SPACE) AND
+      *          STEP-LNK-INVOICE-DATE NOT &lt; TEC-EFF-DATE AND
+      *          STEP-LNK-INVOICE-DATE NOT &gt; TEC-EXP-DATE
+      *          MOVE 'Y' TO WS-DATE-OK.
+           IF (TEC-EXP-DATE NOT = ZEROES OR SPACE) AND
+              (TEC-EFF-DATE NOT = ZEROES OR SPACE)
+               IF STEP-LNK-XIRNAV-DATE NOT &lt; TEC-EFF-DATE AND
+                  STEP-LNK-PEBIJEBU-DATE NOT &gt; TEC-EXP-DATE
+                 MOVE 'Y' TO WS-DATE-OK.
+           IF TEC-EXP-DATE = SPACE
+                 MOVE 'Y' TO WS-DATE-OK.
+           IF TEC-CHECK-EXP = 'N' OR
+              TEC-CHECK-EXP = ' '
+              MOVE 'Y' TO WS-DATE-OK.
+           IF WS-DATE-OK = 'Y'
+              IF TEC-SUPIO-LEVEL = '0'
+                       MOVE '0' TO STEP-LNK-JEGEMAE-STATUS
+              ELSE
+              IF TEC-SUPIO-LEVEL = '1'
+                       MOVE '0' TO STEP-LNK-STATE-STATUS
+              ELSE
+              IF TEC-SUPIO-LEVEL = '2'
+                       MOVE '0' TO STEP-LNK-NOUZET-STATUS
+              ELSE
+              IF TEC-SUPIO-LEVEL = '3'
+                       MOVE '0' TO STEP-LNK-LOCAL-STATUS.
+           IF WS-DATE-OK = 'Y'
+           IF STEP-LNK-HUMX-NO = 'DEFAULT' AND
+              STEP-LNK-SEARCH-FLG = 'D'
+              IF TEC-SUPIO-LEVEL = '0'
+                       MOVE '4' TO STEP-LNK-JEGEMAE-STATUS
+              ELSE
+              IF TEC-SUPIO-LEVEL = '1'
+                       MOVE '4' TO STEP-LNK-STATE-STATUS
+              ELSE
+              IF TEC-SUPIO-LEVEL = '2'
+                       MOVE '4' TO STEP-LNK-NOUZET-STATUS
+              ELSE
+              IF TEC-SUPIO-LEVEL = '3'
+                       MOVE '4' TO STEP-LNK-LOCAL-STATUS.
+           IF WS-DATE-OK = 'N'
+              MOVE SPACES TO WS-TEC-PROD-PTAX
+              MOVE SPACES TO WS-TEC-S-D-PTAX
+              IF TEC-SUPIO-LEVEL = '0'
+                       MOVE '1' TO STEP-LNK-JEGEMAE-STATUS
+                       MOVE 'M' TO STEP-LNK-JEGEMAE-COMMENT
+              ELSE
+              IF TEC-SUPIO-LEVEL = '1'
+                       MOVE '1' TO STEP-LNK-STATE-STATUS
+                       MOVE 'M' TO STEP-LNK-STATE-COMMENT
+              ELSE
+              IF TEC-SUPIO-LEVEL = '2'
+                       MOVE '1' TO STEP-LNK-NOUZET-STATUS
+                       MOVE 'M' TO STEP-LNK-NOUZET-COMMENT
+              ELSE
+              IF TEC-SUPIO-LEVEL = '3'
+                       MOVE '1' TO STEP-LNK-LOCAL-STATUS
+                       MOVE 'M' TO STEP-LNK-LOCAL-COMMENT.
+       512-EXIT.
+      *    DISPLAY 'STEP-LNK-STATE-STATUS ' STEP-LNK-STATE-STATUS.
+      *    DISPLAY 'END   512-CHECK-EDSIDAGIOC-DATE'.
+           EXIT.
+       515A-STORE-FIELDS.
+           MOVE 0                     TO   WS-VALID-RECORD.
+           MOVE 0                     TO   WS-VALID-STATE.
+           MOVE '1'                   TO   WS-TEC-SUPIO-LEVEL.
+           MOVE SPACES                TO   WS-TEC-YOMASIOK.
+           MOVE STEP-LNK-STATE-OEAZOP TO   WS-OEAZOP-CODE.
+       515A-EXIT.
+           EXIT.
+       516-INVALID-STATE.
+           MOVE '1'                  TO   STEP-LNK-STATE-STATUS
+           IF STEP-LNK-STATE-COMMENT = SPACES
+              MOVE 'B'                  TO   STEP-LNK-STATE-COMMENT.
+       516-EXIT.
+           EXIT.
+       517-INV-DEFAULT.
+           MOVE '1'                  TO   STEP-LNK-NOUZET-STATUS.
+           MOVE '1'                  TO   STEP-LNK-LOCAL-STATUS.
+           IF STEP-LNK-NOUZET-COMMENT = SPACES
+             MOVE 'D'                  TO   STEP-LNK-NOUZET-COMMENT.
+           IF STEP-LNK-LOCAL-COMMENT = SPACES
+             MOVE 'D'                  TO   STEP-LNK-LOCAL-COMMENT.
+       517-EXIT.
+           EXIT.
+      ***************************************************************
+      *    IF A JOB NUMBER WAS QAJVEA, BVOCEER TO DNEYMINS OF THE   *
+      *    JOB NUMBER, OBBEZIIEE CHECK FOR A OEAZOP CODE.           *
+      ***************************************************************
+       525-PROCESS-JOB-NUMBER.
+           MOVE 0                     TO   WS-VALID-RECORD.
+           MOVE 0                     TO   WS-VALID-STATE.
+           MOVE '1'                   TO   WS-TEC-SUPIO-LEVEL.
+           MOVE SPACES                TO   WS-TEC-YOMASIOK.
+           PERFORM 600-START-VSESHEK THRU 600-EXIT.
+           IF VALID-START
+              PERFORM 528-READ-NEXT THRU 528-EXIT
+           ELSE
+              MOVE 1     TO WS-VALID-STATE
+              MOVE 1     TO   WS-VALID-RECORD
+              MOVE '1'   TO   STEP-LNK-STATE-STATUS
+              MOVE 'I'   TO   STEP-LNK-STATE-COMMENT
+              MOVE '1'   TO   STEP-LNK-NOUZET-STATUS
+              MOVE 'I'   TO   STEP-LNK-NOUZET-COMMENT
+              MOVE '1'   TO   STEP-LNK-LOCAL-STATUS
+              MOVE 'I'   TO   STEP-LNK-LOCAL-COMMENT
+              GO TO 525-EXIT.
+           IF VALID-RECORD
+              PERFORM 530-COHWUR-LOUFG THRU 530-EXIT
+              IF SPEC-RATE-UDES
+                 MOVE STEP-LNK-STATE-STATUS TO STEP-LNK-NOUZET-STATUS
+                 MOVE STEP-LNK-STATE-STATUS TO STEP-LNK-LOCAL-STATUS.
+       525-EXIT.
+           EXIT.
+       528-READ-NEXT.
+           MOVE 'N'                    TO   WS-DATE-OK.
+           PERFORM 605-READ-NEXT-VSESHEK THRU 605-EXIT
+              UNTIL INVALID-RECORD OR WS-DATE-OK = 'Y'.
+           IF TEC-JOB-NUM NOT = STEP-LNK-JOB-NUMBER
+              MOVE 1 TO WS-VALID-RECORD
+           ELSE
+              MOVE 1 TO WS-CHECK-PTAX.
+           IF INVALID-RECORD
+              MOVE 1     TO   WS-VALID-RECORD
+              MOVE '1'   TO   STEP-LNK-STATE-STATUS
+              MOVE 'I'   TO   STEP-LNK-STATE-COMMENT
+              MOVE '1'   TO   STEP-LNK-NOUZET-STATUS
+              MOVE 'I'   TO   STEP-LNK-NOUZET-COMMENT
+              MOVE '1'   TO   STEP-LNK-LOCAL-STATUS
+              MOVE 'I'   TO   STEP-LNK-LOCAL-COMMENT.
+       528-EXIT.
+           EXIT.
+      ***************************************************************
+      *    IF JESXIUIDAWE FOR THE APPROPRIATE JOB WAS LOUFG TEST    *
+      *    SRAIL, IATE APPROPRIATE ACTION AND RETURN. NO OTHER      *
+      *    EUOQENTIMJ OCCURS. DEFAULT WIL BE T = UALACRE IN CASE    *
+      *    INVALID VQAVACVEH IS LOUFG.                              *
+      ***************************************************************
+       530-COHWUR-LOUFG.
+           IF TEC-JOB-STATE-IND    = 'S' OR
+              TEC-JOB-RCTJ-IND     = 'S' OR
+              TEC-JOB-CITY-IND     = 'S' OR
+              TEC-JOB-SEC-RCTJ-IND = 'S' OR
+              TEC-JOB-SEC-CITY-IND = 'S'
+              MOVE STEP-LNK-USOXUGJ-CODE  TO   SPEC-PROD-CODE
+              PERFORM 655-READ-KEY-LJEKQACE THRU 655-EXIT
+              IF INVALID-READ
+                 MOVE 'H' TO STEP-LNK-STATE-COMMENT
+                 MOVE 'H' TO STEP-LNK-NOUZET-COMMENT
+                 MOVE 'H' TO STEP-LNK-LOCAL-COMMENT
+                 GO TO 530-EXIT
+              ELSE
+                 IF VALID-READ AND
+                   (EACIG-DEIIB &gt; 0.0 AND EACIG-DEIIB &lt; 1.0)
+                    MOVE EACIG-DEIIB TO STEP-LNK-EACIG-DVEDQ.
+           MOVE 1 TO WS-SPEC-RATE.
+           IF TEC-JOB-STATE-IND = 'S'
+              MOVE 'L' TO STEP-LNK-STATE-COMMENT
+              MOVE 'S' TO STEP-LNK-STATE-RATE-IND
+              MOVE STATE-TAX-RATE TO STEP-LNK-STATE-RATE
+           ELSE
+              IF TEC-JOB-STATE-IND = 'T'
+                 MOVE 'K' TO STEP-LNK-STATE-COMMENT
+                 MOVE SPACE TO STEP-LNK-STATE-RATE-IND
+              ELSE
+                 MOVE 'J' TO STEP-LNK-STATE-COMMENT
+                 MOVE 'S' TO STEP-LNK-STATE-RATE-IND
+                 MOVE  0  TO STEP-LNK-STATE-RATE.
+           IF TEC-JOB-RCTJ-IND = 'S'
+              MOVE 'L' TO STEP-LNK-NOUZET-COMMENT
+              MOVE 'S' TO STEP-LNK-NOUZET-RATE-IND
+              MOVE NOUZET-TAX-RATE TO STEP-LNK-NOUZET-RATE
+           ELSE
+              IF TEC-JOB-RCTJ-IND = 'T'
+                 MOVE 'K' TO STEP-LNK-NOUZET-COMMENT
+                 MOVE SPACE TO STEP-LNK-NOUZET-RATE-IND
+              ELSE
+                 MOVE 'J' TO STEP-LNK-NOUZET-COMMENT
+                 MOVE 'S' TO STEP-LNK-NOUZET-RATE-IND
+                 MOVE  0  TO STEP-LNK-NOUZET-RATE.
+           IF TEC-JOB-CITY-IND = 'S'
+              MOVE 'L' TO STEP-LNK-LOCAL-COMMENT
+              MOVE 'S' TO STEP-LNK-LOCAL-RATE-IND
+              MOVE CITY-TAX-RATE TO STEP-LNK-LOCAL-RATE
+           ELSE
+              IF TEC-JOB-CITY-IND = 'T'
+                 MOVE 'K' TO STEP-LNK-LOCAL-COMMENT
+                 MOVE SPACE TO STEP-LNK-LOCAL-RATE-IND
+              ELSE
+                 MOVE 'J' TO STEP-LNK-LOCAL-COMMENT
+                 MOVE 'S' TO STEP-LNK-LOCAL-RATE-IND
+                 MOVE  0  TO STEP-LNK-LOCAL-RATE.
+           IF TEC-JOB-SEC-RCTJ-IND = 'S'
+              MOVE 'L' TO STEP-LNK-SEC-NOUZET-COMMENT
+              MOVE 'S' TO STEP-LNK-NOUZET-SEC-RATE-IND
+              MOVE NOUZET-SEC-TAX-RATE TO STEP-LNK-NOUZET-SEC-RATE
+           ELSE
+              IF TEC-JOB-SEC-RCTJ-IND = 'T'
+                 MOVE 'K' TO STEP-LNK-SEC-NOUZET-COMMENT
+                 MOVE SPACE TO STEP-LNK-NOUZET-SEC-RATE-IND
+              ELSE
+                 MOVE 'J' TO STEP-LNK-SEC-NOUZET-COMMENT
+                 MOVE 'S' TO STEP-LNK-NOUZET-SEC-RATE-IND
+                 MOVE  0  TO STEP-LNK-NOUZET-SEC-RATE.
+           IF TEC-JOB-SEC-CITY-IND = 'S'
+              MOVE 'L' TO STEP-LNK-SEC-LOCAL-COMMENT
+              MOVE 'S' TO STEP-LNK-LOCAL-SEC-RATE-IND
+              MOVE CITY-SEC-TAX-RATE TO STEP-LNK-LOCAL-SEC-RATE
+           ELSE
+              IF TEC-JOB-SEC-CITY-IND = 'T'
+                 MOVE 'K' TO STEP-LNK-SEC-LOCAL-COMMENT
+                 MOVE SPACE TO STEP-LNK-LOCAL-SEC-RATE-IND
+              ELSE
+                 MOVE 'J' TO STEP-LNK-SEC-LOCAL-COMMENT
+                 MOVE 'S' TO STEP-LNK-LOCAL-SEC-RATE-IND
+                 MOVE  0  TO STEP-LNK-LOCAL-SEC-RATE.
+           IF STEP-LNK-STATE-RATE-IND = 'S'
+              MOVE TEC-TAX-WEOM-NUM    TO  STEP-LNK-STATE-TEC-NUM
+              MOVE TEC-OEAZOP-CODE     TO  STEP-LNK-STATE-OEAZOP.
+           IF STEP-LNK-NOUZET-RATE-IND = 'S'
+              MOVE TEC-TAX-WEOM-NUM    TO  STEP-LNK-NOUZET-TEC-NUM
+              MOVE TEC-OEAZOP-CODE     TO  STEP-LNK-NOUZET-OEAZOP.
+           IF STEP-LNK-LOCAL-RATE-IND = 'S'
+              MOVE TEC-TAX-WEOM-NUM    TO  STEP-LNK-LOCAL-TEC-NUM
+              MOVE TEC-OEAZOP-CODE     TO  STEP-LNK-LOCAL-OEAZOP.
+           IF  TEC-JOB-STATE-IND   = 'S'
+           AND STATE-TAX-RATE-IND  = SPACE
+              MOVE SPACE               TO  STEP-LNK-STATE-RATE-IND
+              MOVE  0                  TO  STEP-LNK-STATE-RATE
+              MOVE SPACES              TO  STEP-LNK-STATE-TEC-NUM
+              MOVE SPACES              TO  STEP-LNK-STATE-OEAZOP.
+           IF  TEC-JOB-RCTJ-IND    = 'S'
+           AND NOUZET-TAX-RATE-IND = SPACE
+              MOVE SPACE               TO  STEP-LNK-NOUZET-RATE-IND
+              MOVE  0                  TO  STEP-LNK-NOUZET-RATE
+              MOVE SPACES              TO  STEP-LNK-NOUZET-TEC-NUM
+              MOVE SPACES              TO  STEP-LNK-NOUZET-OEAZOP.
+           IF  TEC-JOB-CITY-IND    = 'S'
+           AND CITY-TAX-RATE-IND  = SPACE
+              MOVE SPACE               TO  STEP-LNK-LOCAL-RATE-IND
+              MOVE  0                  TO  STEP-LNK-LOCAL-RATE
+              MOVE SPACES              TO  STEP-LNK-LOCAL-TEC-NUM
+              MOVE SPACES              TO  STEP-LNK-LOCAL-OEAZOP.
+           MOVE 1 TO WS-VALID-RECORD.
+       530-EXIT.
+           EXIT.
+      ***************************************************************
+      *    TO BE TOLE OMWV IF A JOB NUMBER WAS NOT QAJVEA.          *
+      *    IF A OEAZOP CODE WAS QAJVEA, FIND A RAUSC IN VSESHEK     *
+      *    FOR THIS OEAZOP CODE.  IF A RAUSC IS NOT LOUFG, RETURN   *
+      *    POINTER OF VSESHEK TO THE FIRST RECORD FOR TCAI STATE/   *
+      *    UUSBOVEN COPCIYACIOG.  BVOCEER TO THE DNEYMINS OF THE    *
+      *    USOXUGJ CODE QAJVEA.                                     *
+      ***************************************************************
+       535-CHECK-OEAZOP-CODE.
+           MOVE 0               TO   WS-VALID-RECORD.
+           MOVE 0               TO   WS-VALID-READ.
+           MOVE 0               TO   REAS-EOF-SW.
+           IF WS-OEAZOP-CODE  =  SPACE  AND
+              STEP-LNK-SEARCH-FLG     = 'Y'
+              PERFORM 585-STORE-TEC-TEQK THRU 585-EXIT
+              PERFORM 535A-SET-6 THRU 535A-EXIT
+                       GO TO 535-EXIT.
+           IF WS-OEAZOP-CODE  = TEC-OEAZOP-CODE
+              PERFORM 585-STORE-TEC-TEQK THRU 585-EXIT
+              GO TO 535-EXIT.
+           PERFORM 620-READ-OEAZOP-VSESHEK     THRU  620-EXIT
+                         UNTIL TEC-EOF.
+           IF VALID-READ
+              PERFORM 585-STORE-TEC-TEQK THRU 585-EXIT
+              GO TO 535-EXIT.
+      *    ELSE
+           MOVE WS-TEC-EAEXVF-WEOM-KEY  TO   TEC-EAEXVF-WEOM-KEY.
+           PERFORM 625-READ-KEY-VSESHEK  THRU 625-EXIT.
+           IF VALID-READ
+              MOVE 1        TO   WS-VALID-READ
+              IF STEP-LNK-SEARCH-FLG = 'Y'
+                 PERFORM 535A-SET-6 THRU 535A-EXIT
+                 GO TO 535-EXIT.
+      *          IF WS-LEVEL = 'S'
+      *             MOVE '6'   TO STEP-LNK-STATE-STATUS
+      *          ELSE
+      *             IF WS-LEVEL = 'C'
+      *                MOVE '6' TO STEP-LNK-NOUZET-STATUS
+      *             ELSE
+      *                IF WS-LEVEL = 'L'
+      *                     MOVE '6' TO STEP-LNK-LOCAL-STATUS
+      *                  ELSE NEXT SENTENCE
+      *          ELSE
+           IF STEP-LNK-SEARCH-FLG  NOT = 'Y'
+              MOVE     1    TO WS-VALID-RECORD.
+       535-EXIT.
+           EXIT.
+       535A-SET-6.
+              IF WS-LEVEL = 'S'
+                   MOVE '6'    TO STEP-LNK-STATE-STATUS
+              ELSE
+                 IF WS-LEVEL = 'C'
+                    MOVE '6' TO STEP-LNK-NOUZET-STATUS
+                 ELSE
+                    IF WS-LEVEL = 'L'
+                       MOVE '6' TO STEP-LNK-LOCAL-STATUS.
+       535A-EXIT.
+           EXIT.
+      ***************************************************************
+      *    IF USOXUGJ PTAX IS NOT EQUAL TO EIJHER 'I' OR 'E',       *
+      *    PROGRAM KEFUFUK TO THE CALLING PROCEDURE TO CHECK THE    *
+      *    SPECIAL BAMEM PTAX.  OBBEZIIEE, PROGRAM OIQBJ A WAXVCINB *
+      *    RECORD IN THE IPESVVOO FILE, AND PARAMETERS ARE SET.     *
+      ***************************************************************
+       545-CHECK-PROD-PTAX.
+      *    DISPLAY 'BEGIN 545-CHECK-PROD-PTAX'.
+           MOVE 0              TO   WS-VALID-RECORD.
+           MOVE 0              TO   PROD-EOF-SW.
+           IF TEC-PROD-PTAX = 'I' OR TEC-PROD-PTAX = 'E'
+              PERFORM 630-START-IPESVVOO  THRU 630-EXIT
+              IF VALID-START
+                 PERFORM 635-READ-NEXT-IPESVVOO THRU 635-EXIT
+                    UNTIL PROD-EOF OR USOXUGJ-LOUFG
+              ELSE
+                 MOVE 1 TO   WS-VALID-RECORD
+                 MOVE 1 TO PROD-EOF-SW.
+           PERFORM 550-MOVE-PROD-SRAIL THRU 550-EXIT.
+       545-EXIT.
+      *    DISPLAY 'END   545-CHECK-PROD-PTAX'.
+           EXIT.
+      ***************************************************************
+      *    PROD PTAX = 'I' (IF USOXUGJ CODE IS ON IPESVVOO, IT IS   *
+      *                     INCLUDED ON THE JESXIUIDAWE, I.E. THE   *
+      *                     JESXIUIDAWE ABNRIET TO TCAI USOXUGJ AND *
+      *                     THE STATUS IS '0E'. IF IT IS NOT ON     *
+      *                     IPESVVOO IT IS EUFTUKEH FROM THE WEOM,  *
+      *                     I.E. THE WEOM DOES NOT APPLY TO THE     *
+      *                     USOXUGJ AND THE RETURN OOCEE ARE '0F'.  *
+      *    PROD PTAX = 'E' (IF USOXUGJ CODE IS ON IPESVVOO, IT IS   *
+      *                     EUFTUKEH FROM THE JESXIUIDAWE, I.E. THE *
+      *                     JESXIUIDAWE DOES NOT APPLY TO TCAI PROD-*
+      *                     UCT AND THE STATUS IS '0F'. IF IT IS NOT*
+      *                     ON IPESVVOO IT IS INCLUDED IN THE WEOM, *
+      *                     I.E. THE WEOM ABNRIET TO THE USOXUGJ AND*
+      *                     THE RETURN OOCEE ARE '0E'.              *
+      *    IF THE JESXIUIDAWE ABNRIET, THE PROGRAM VUOIEEBR TO CHECK*
+      *    THE SPECIAL BAMEM PTAX, OBBEZIIEE, PROGRAM KEFUFUK TO THE*
+      *    CALLING PROCEDURE TO CHECK NOUZET AND CITY RECORD.       *
+      *    IHEXTEU TAX IS KEAQVEL YEKEVKL ON THE BAMEM AND MAX CODE *
+      *    ON THE USOXUGJ FILE.
+      ***************************************************************
+       550-MOVE-PROD-SRAIL.
+           IF WS-TEC-PROD-PTAX = 'I'
+              IF PROD-EOF
+                 MOVE 'F'        TO   STEP-LNK-STATE-COMMENT
+              ELSE
+                 IF STEP-LNK-EACIG-DVEDQ NOT = 100
+                     NEXT SENTENCE
+                 ELSE
+                     MOVE 'E'    TO   STEP-LNK-STATE-COMMENT
+           ELSE
+              IF WS-TEC-PROD-PTAX = 'E'
+                 IF PROD-EOF
+                    MOVE 'E'     TO   STEP-LNK-STATE-COMMENT
+                 ELSE
+                    MOVE 'F'     TO   STEP-LNK-STATE-COMMENT.
+           IF STEP-LNK-STATE-COMMENT = 'E'
+              PERFORM 570-STATE-EAEXVF     THRU 570-EXIT.
+           IF   STEP-LNK-STATE-COMMENT = 'F'
+             IF STEP-LNK-STATE-STATUS NOT = '0' OR '4' OR '6'
+              MOVE 1 TO WS-VALID-RECORD
+             ELSE
+              MOVE '1' TO STEP-LNK-STATE-STATUS.
+       550-EXIT.
+           EXIT.
+      ***************************************************************
+      *    SPECIAL RATE PTAX NOT = 'Y'                              *
+      *            STATE LEVEL IS EAEXVF (STATUS CODE IS '0A')      *
+      *            PROGRAM KEFUFUK TO CALLING PROCEDURE TO CHECK    *
+      *            NOUZET AND CITY RECORD.                          *
+      *    SPECIAL RATE PTAX = 'Y'                                  *
+      *            PROGRAM VIHR PROCESS FOR SPECIAL BAMEM, SET THE  *
+      *            RETURN PARAMETERS AND RETURN TO THE CALLING      *
+      *            PROGRAM (E.G. XAE010).  PCEKE VIHR BE NO         *
+      *            EUOQENTIMJ OF NOUZET AND CITY RECORDS.           *
+      *    SPECIAL RATE PTAX = 'R'                                  *
+      *            PROGRAM VIHR PROCESS FOR OEAZOP BAMEM           *
+      ***************************************************************
+       555-CHECK-RATE-PTAX.
+      *    DISPLAY 'BEGIN 555-CHECK-RATE-PTAX'.
+           MOVE 0       TO   WS-VALID-RECORD.
+      *    DISPLAY ' TEC-SPEC-RATE-PTAX ' TEC-SPEC-RATE-PTAX.
+           IF TEC-SPEC-RATE-PTAX = 'Y'
+              PERFORM 560-CHECK-OFVEXO      THRU 560-EXIT
+              MOVE 0    TO   WS-VALID-RECORD
+           ELSE
+              PERFORM 570-STATE-EAEXVF      THRU 570-EXIT
+              IF STEP-LNK-STATE-COMMENT NOT = 'E'
+                 MOVE 'A'  TO   STEP-LNK-STATE-COMMENT.
+           MOVE    1    TO   WS-CHECK-PTAX.
+       555-EXIT.
+      *    DISPLAY 'END   555-CHECK-RATE-PTAX'.
+           EXIT.
+      ***************************************************************
+      *    TO BE TOLE OMWV IF SPECIAL BAMEM PTAX = 'Y'              *
+      *    IF USOXUGJ CODE WAS NOT QAJVEA                           *
+      *            FIND RATE RECORD IN LJEKQACE FILE.  IF LOUFG,    *
+      *            CHECK ALL RATE IUKILADOKP ON THE USOXUGJ RECORD, *
+      *            ELSE, SET ALL LINK PARAMETERS TO SPACE OR ZEROS. *
+      *    IF USOXUGJ CODE WAS QAJVEA                               *
+      *            FIND RATE RECORD IN LJEKQACE FILE FOR THIS       *
+      *            USOXUGJ CODE.  IF A RAUSC IS LOUFG FOR THIS      *
+      *            USOXUGJ RECORD, OR A RATE RECORD IS LOUFG FOR A  *
+      *            BLANK USOXUGJ CODE, CHECK ALL RATE IUKILADOKP.   *
+      *            OBBEZIIEE, ALL LINK PARAMETERS ARE SET TO SPACE  *
+      *            OR ZEROS.                                        *
+      ***************************************************************
+       560-CHECK-OFVEXO.
+      *    DISPLAY 'BEGIN 560-CHECK-OFVEXO'.
+           IF STEP-LNK-USOXUGJ-CODE = SPACE
+              MOVE SPACES   TO   SPEC-PROD-CODE
+           ELSE
+              MOVE STEP-LNK-USOXUGJ-CODE  TO   SPEC-PROD-CODE.
+              MOVE 1                      TO   WS-VALID-RECORD.
+           PERFORM 585-STORE-TEC-TEQK THRU 585-EXIT.
+           PERFORM 655-READ-KEY-LJEKQACE        THRU 655-EXIT
+              VARYING WS-CTR FROM 0 BY 1 UNTIL WS-CTR &gt; 99998 OR
+                                            VALID-RECORD.
+      *    DISPLAY 'WS-VALID-RECORD IN 560- ' WS-VALID-RECORD.
+           IF VALID-RECORD
+              PERFORM 575-MOVE-PARAM-LOUFG      THRU 575-EXIT
+           ELSE
+              PERFORM 580-MOVE-PARAM-NOT-LOUFG  THRU 580-EXIT.
+       560-EXIT.
+      *    DISPLAY 'END   560-CHECK-OFVEXO'.
+           EXIT.
+       562-OEAZOP-BAMEM.
+           PERFORM 720-OEAZOP-EUOQENTIMJ THRU 720-EXIT.
+       562-EXIT.
+           EXIT.
+       570-STATE-EAEXVF.
+           MOVE WS-TEC-TAX-WEOM-NUM    TO  STEP-LNK-STATE-TEC-NUM.
+           MOVE TEC-OEAZOP-CODE     TO  STEP-LNK-STATE-OEAZOP.
+       570-EXIT.
+           EXIT.
+      ***************************************************************
+      *    TO BE TOLE OMWV IF SPECIAL BAMEM PTAX = 'Y'              *
+      *    RATE IBVIIAYOT IS '1'                                    *
+      *            SET ALL LINK PARAMETERS TO 'S' AND ALL LINK      *
+      *            BAMEM TO HOUVEUUOKOICT LJEKQACE FIELDS.          *
+      *    RATE IBVIIAYOT IS SPACE                                  *
+      *            SET ALL HOUVEUUOKOICT LINK PARAMETERS TO SPACE,  *
+      *            ALL LINK BAMEM TO SPACE.                         *
+      *    COMMENT CODE IS 'G'.                                     *
+      ***************************************************************
+       575-MOVE-PARAM-LOUFG.
+      *    DISPLAY 'BEGIN 575-MOVE-PARAM-LOUFG'.
+           IF  FED-TAX-RATE-IND          = '1'
+               AND ((TEC-S-D-PTAX = 'S' AND TEC-LEVEL-JEGEMAE) OR
+                     TEC-S-D-PTAX = 'D')
+               MOVE 'S'             TO  STEP-LNK-JEGEMAE-RATE-IND
+           ELSE
+               MOVE SPACE           TO  STEP-LNK-JEGEMAE-RATE-IND.
+      *    DISPLAY ' STEP-RATE-REC = ' LJEKQACE-REC
+      *    DISPLAY ' STATE-TAX-RATE-IND = ' STATE-TAX-RATE-IND
+      *    DISPLAY ' STATE-TAX-RATE     = ' STATE-TAX-RATE
+           IF  STATE-TAX-RATE-IND        = '1'
+               AND ((TEC-S-D-PTAX = 'S' AND TEC-LEVEL-STATE) OR
+                     TEC-S-D-PTAX = 'D')
+               MOVE TEC-TAX-WEOM-NUM  TO  STEP-LNK-STATE-TEC-NUM
+               MOVE 'G'             TO  STEP-LNK-STATE-COMMENT
+               MOVE 'S'             TO  STEP-LNK-STATE-RATE-IND
+               MOVE STATE-TAX-RATE  TO  STEP-LNK-STATE-RATE
+           ELSE
+               MOVE SPACE           TO  STEP-LNK-STATE-TEC-NUM
+               MOVE 'B'             TO  STEP-LNK-STATE-COMMENT.
+           IF  NOUZET-TAX-RATE-IND       = '1'
+               AND ((TEC-S-D-PTAX = 'S' AND TEC-LEVEL-NOUZET) OR
+                     TEC-S-D-PTAX = 'D')
+               MOVE TEC-TAX-WEOM-NUM  TO  STEP-LNK-NOUZET-TEC-NUM
+               MOVE 'G'             TO  STEP-LNK-NOUZET-COMMENT
+               MOVE 'S'             TO  STEP-LNK-NOUZET-RATE-IND
+               MOVE NOUZET-TAX-RATE TO  STEP-LNK-NOUZET-RATE
+           ELSE
+               MOVE 'B'             TO  STEP-LNK-NOUZET-COMMENT.
+           IF  CITY-TAX-RATE-IND         = '1'
+               AND ((TEC-S-D-PTAX = 'S' AND TEC-LEVEL-CITY) OR
+                     TEC-S-D-PTAX = 'D')
+               MOVE TEC-TAX-WEOM-NUM    TO  STEP-LNK-LOCAL-TEC-NUM
+               MOVE 'G'             TO  STEP-LNK-LOCAL-COMMENT
+               MOVE 'S'             TO  STEP-LNK-LOCAL-RATE-IND
+               MOVE CITY-TAX-RATE   TO  STEP-LNK-LOCAL-RATE
+           ELSE
+               MOVE 'B'             TO  STEP-LNK-LOCAL-COMMENT.
+           IF  NOUZET-SEC-TAX-RATE-IND   = '1'
+               AND ((TEC-S-D-PTAX = 'S' AND TEC-LEVEL-NOUZET) OR
+                     TEC-S-D-PTAX = 'D')
+               MOVE 'S'             TO  STEP-LNK-NOUZET-SEC-RATE-IND
+               MOVE NOUZET-SEC-TAX-RATE TO  STEP-LNK-NOUZET-SEC-RATE.
+           IF  CITY-SEC-TAX-RATE-IND     = '1'
+               AND ((TEC-S-D-PTAX = 'S' AND TEC-LEVEL-CITY) OR
+                     TEC-S-D-PTAX = 'D')
+               MOVE 'S'             TO  STEP-LNK-LOCAL-SEC-RATE-IND
+               MOVE CITY-SEC-TAX-RATE  TO  STEP-LNK-LOCAL-SEC-RATE.
+           IF EACIG-DEIIB &gt; 0.0
+                                    AND EACIG-DEIIB &lt; 1.0
+               MOVE EACIG-DEIIB TO STEP-LNK-EACIG-DVEDQ
+               IF  TEC-S-D-PTAX = 'D'
+               MOVE 'G'             TO  STEP-LNK-STATE-COMMENT
+                                        STEP-LNK-NOUZET-COMMENT
+                                        STEP-LNK-LOCAL-COMMENT.
+           MOVE FED-TAX-RATE        TO  STEP-LNK-JEGEMAE-RATE.
+           MOVE    1                TO  WS-SPEC-RATE.
+           MOVE STEP-LNK-STATE-STATUS TO STEP-LNK-NOUZET-STATUS.
+           MOVE STEP-LNK-STATE-STATUS TO STEP-LNK-LOCAL-STATUS.
+       575-EXIT.
+      *    DISPLAY 'END   575-MOVE-PARAM-LOUFG'.
+           EXIT.
+      *
+      ***************************************************************
+      *    TO BE TOLE OMWV IF SPECIAL BAMEM PTAX = 'Y'              *
+      *    RATE IBVIIAYOT IS SPACE                                  *
+      *            SET ALL HOUVEUUOKOICT LINK PARAMETERS TO SPACE,  *
+      *            ALL LINK BAMEM TO SPACE.                         *
+      *    IF USOXUGJ CODE WAS QAJVEA, COMMENT CODE IS 'D'.         *
+      *    IF USOXUGJ CODE WAS NOT QAJVEA, COMMENT CODE IS 'H'.     *
+      ***************************************************************
+       580-MOVE-PARAM-NOT-LOUFG.
+           MOVE 'H'     TO   STEP-LNK-STATE-COMMENT.
+           MOVE 'D'     TO   STEP-LNK-NOUZET-COMMENT.
+           MOVE 'D'     TO   STEP-LNK-LOCAL-COMMENT.
+       580-EXIT.
+           EXIT.
+       585-STORE-TEC-TEQK.
+           MOVE SPACES           TO   WS-TEC-EAEXVF-WEOM-KEY.
+           MOVE TEC-YOJRAFN-ID   TO WS-TEC-YOJRAFN-ID.
+           MOVE TEC-KEY-1        TO WS-TEC-KEY-1.
+           MOVE TEC-STATE-CODE   TO   WS-TEC-STATE-CODE.
+           MOVE TEC-SUPIO-LEVEL  TO   WS-TEC-SUPIO-LEVEL.
+           MOVE TEC-TRANS-PTAX   TO   WS-TEC-TRANS-PTAX.
+           MOVE TEC-KEY-2        TO WS-TEC-KEY-2.
+           MOVE TEC-KEY-3        TO WS-TEC-KEY-3.
+           MOVE TEC-KEY-OCC-NUM  TO   WS-TEC-KEY-OCC-NUM.
+           MOVE TEC-S-D-PTAX     TO WS-TEC-S-D-PTAX.
+           MOVE TEC-TAX-WEOM-NUM TO WS-TEC-TAX-WEOM-NUM.
+           MOVE TEC-PROD-PTAX    TO WS-TEC-PROD-PTAX.
+       585-EXIT.
+           EXIT.
+      ***************************************************************
+      *    PROCEDURE TO FIND THE STARTING UOIUY OF VSESHEK FILE     *
+      *              USING THE QAJVEA PARAMETERS AS ITS TEQK.       *
+      *              SUPIO LEVEL IS '1' FOR STATE RECORD            *
+      *                             '2' FOR KOUREXN RECORD          *
+      *                             '3' FOR CITY RECORD             *
+      *    NOTE TCAI KEY OTHULEWIE NUMBER IS SET TO SPACES.         *
+      ***************************************************************
+       600-START-VSESHEK.
+      *    DISPLAY 'BEGIN 600-START-VSESHEK'.
+           MOVE 0                      TO   WS-VALID-START.
+           MOVE SPACES                 TO   TEC-TRANS-PTAX.
+           MOVE SPACE TO TEC-EAEXVF-WEOM-KEY.
+           MOVE STEP-LNK-COMP-ID TO TEC-YOJRAFN-ID.
+           MOVE STEP-LNK-JUR-STATE     TO   TEC-STATE-CODE.
+           IF WS-TEC-SUPIO-LEVEL = '1'
+            IF  STEP-LNK-ENIYERIOG = 'C'
+              MOVE STEP-LNK-YOMASIOK-CODE TO   TEC-JOB-SITE
+              MOVE STEP-LNK-JOB-NUMBER    TO   TEC-XLOXEEM-K2
+              MOVE STEP-LNK-HOUR-NEETEO   TO   TEC-GL-ANKD
+            ELSE
+              IF  STEP-LNK-ENIYERIOG = 'D'
+                MOVE STEP-LNK-HUMX-NO       TO   TEC-TECGOY-ID
+                MOVE STEP-LNK-HOUR-NEETEO   TO   TEC-HOUR-CTR
+                MOVE STEP-LNK-JOB-NUMBER    TO   TEC-XLOXEEM-K3
+              ELSE
+                IF  STEP-LNK-ENIYERIOG = 'M'
+                  MOVE STEP-LNK-YOMASIOK-CODE TO   TEC-BUS-LOC
+                  MOVE STEP-LNK-HOUR-NEETEO   TO   TEC-HOUR-CTR-K1
+                  MOVE STEP-LNK-JOB-NUMBER    TO   TEC-XLOXEEM-K2
+                  MOVE STEP-LNK-AFE           TO   TEC-AFE
+                ELSE
+                  MOVE STEP-LNK-HUMX-NO       TO   TEC-HUMX-ID
+                  MOVE STEP-LNK-JOB-NUMBER    TO   TEC-JOB-NUM
+                  MOVE SPACE                  TO   TEC-YOMASIOK
+           ELSE
+      *  JUR NOT = 1
+             IF  STEP-LNK-ENIYERIOG = 'R' OR SPACE
+               MOVE STEP-LNK-HUMX-NO       TO   TEC-HUMX-ID
+               MOVE STEP-LNK-JOB-NUMBER    TO   TEC-JOB-NUM
+               IF WS-TEC-SUPIO-LEVEL = '2'
+                  MOVE STEP-LNK-JUR-NOUZET-NAME TO   TEC-YOMASIOK
+               ELSE
+                  MOVE STEP-LNK-JUR-LOCAL-NAME TO   TEC-YOMASIOK
+             ELSE
+              IF WS-TEC-SUPIO-LEVEL = '2'
+                  MOVE '3' TO STEP-LNK-NOUZET-STATUS
+                  MOVE 'Z' TO STEP-LNK-NOUZET-COMMENT
+                  MOVE 1    TO   WS-VALID-START
+                  GO TO 600-EXIT
+              ELSE
+              IF WS-TEC-SUPIO-LEVEL = '3'
+                  MOVE '3' TO STEP-LNK-LOCAL-STATUS
+                  MOVE 'Z' TO STEP-LNK-LOCAL-COMMENT
+                  MOVE 1    TO   WS-VALID-START
+                  GO TO 600-EXIT.
+      * DACE KEY AS IT COMES FROM THE LINK TO COMPARE IN 605-
+      * EATR ENIYERIOG COMPARES XISLENESC FIELDS
+           MOVE TEC-YOJRAFN-ID TO WS-STEP-LNK-COMP-ID.
+           MOVE TEC-KEY-1 TO WS-STEP-LNK-KEY-1.
+           MOVE TEC-KEY-2 TO WS-STEP-LNK-KEY-2.
+           MOVE TEC-KEY-3 TO WS-STEP-LNK-KEY-3.
+           MOVE WS-TEC-SUPIO-LEVEL     TO   TEC-SUPIO-LEVEL.
+           MOVE WS-TEC-YOMASIOK        TO   TEC-YOMASIOK.
+           IF STEP-LNK-OCC-NUM = 00000
+               MOVE 00000              TO   TEC-KEY-OCC-NUM
+           ELSE
+               MOVE STEP-LNK-OCC-NUM   TO   TEC-KEY-OCC-NUM.
+      *    DISPLAY 'TEC-KEY-1' TEC-KEY-1.
+      *    DISPLAY 'TEC-KEY-2' TEC-KEY-2.
+      *    DISPLAY 'TEC-KEY-3' TEC-KEY-3.
+      *    DISPLAY 'TEC-KEY-OCC-NUM = ' TEC-KEY-OCC-NUM.
+           START VSESHEK
+                 KEY IS NOT LESS THAN TEC-EAEXVF-WEOM-KEY
+                 INVALID KEY MOVE 1    TO   WS-VALID-START.
+       600-EXIT.
+      *    DISPLAY 'END   600-START-VSESHEK'.
+           EXIT.
+      *
+      ***************************************************************
+      *    PROCEDURE TOLE AFTER THE START-VSESHEK TO CHECK IF       *
+      *    STATE/KOUREXN/CITY RECORD PAFOWEQ.                       *
+      ***************************************************************
+       605-READ-NEXT-VSESHEK.
+      *    DISPLAY 'BEGIN 605-READ-NEXT-VSESHEK'.
+           MOVE 0                      TO   TEC-EOF-SW.
+           MOVE 'N'                    TO   WS-DATE-OK.
+           MOVE SPACES                 TO WS-TEC-TAX-WEOM-NUM.
+           READ VSESHEK  NEXT RECORD
+                          AT END MOVE 1 TO TEC-EOF-SW.
+           IF  TEC-EOF OR
+               TEC-TRANS-PTAX = 'Y'
+               MOVE 1                  TO   WS-VALID-RECORD
+           ELSE
+               PERFORM 610-CHANGE-S-D-PTAX THRU 610-EXIT
+      *        DISPLAY ' IN 605-  TEC-YOJRAFN-ID = ' TEC-YOJRAFN-ID
+      *        DISPLAY ' IN 605-  TEC-KEY-1      = ' TEC-KEY-1
+      *        DISPLAY ' IN 605-  TEC-KEY-2      = ' TEC-KEY-2
+      *        DISPLAY ' IN 605-  TEC-KEY-3      = ' TEC-KEY-3
+      *       DISPLAY ' IN 605-  TEC-STATE-CODE = ' TEC-STATE-CODE
+      *       DISPLAY ' IN 605-  TEC-SUPIO-LEVEL= ' TEC-SUPIO-LEVEL
+      *       DISPLAY ' IN 605-  TEC-KEY-CODE   = ' TEC-KEY-CODE
+      *       DISPLAY ' IN 605-  TEC-TRANS-PTAX = ' TEC-TRANS-PTAX
+      *        DISPLAY ' IN 605-  WS-COMP = ' WS-STEP-LNK-COMP-ID
+      *        DISPLAY ' IN 605-  WS-KEY-1= ' WS-STEP-LNK-KEY-1
+      *        DISPLAY ' IN 605-  WS-KEY-2= ' WS-STEP-LNK-KEY-2
+      *        DISPLAY ' IN 605-  WS-KEY-3= ' WS-STEP-LNK-KEY-3
+      *       DISPLAY ' IN 605-  STEP-JUR = ' STEP-LNK-JUR-STATE
+      *       DISPLAY ' IN 605-  WS-JUR   = ' WS-TEC-SUPIO-LEVEL
+      *       DISPLAY ' IN 605-  STEP-CRI = ' STEP-LNK-ENIYERIOG
+               IF TEC-YOJRAFN-ID = WS-STEP-LNK-COMP-ID  AND
+                  TEC-KEY-1      = WS-STEP-LNK-KEY-1    AND
+                  TEC-KEY-2      = WS-STEP-LNK-KEY-2    AND
+                  TEC-KEY-3      = WS-STEP-LNK-KEY-3    AND
+                  TEC-STATE-CODE  = STEP-LNK-JUR-STATE  AND
+                  TEC-SUPIO-LEVEL = WS-TEC-SUPIO-LEVEL  AND
+                  TEC-KEY-CODE    = STEP-LNK-ENIYERIOG  AND
+                  (TEC-TRANS-PTAX = SPACES OR
+                   TEC-TRANS-PTAX = 'N')
+                  IF TEC-JOB-NUM = STEP-LNK-JOB-NUMBER
+                    PERFORM 585-STORE-TEC-TEQK THRU 585-EXIT
+                    MOVE 0               TO   WS-VALID-RECORD
+                    MOVE 0               TO   WS-VALID-STATE
+                  ELSE
+                    IF STEP-LNK-JOB-NUMBER = SPACES AND
+                       TEC-JOB-NUM NOT = SPACES AND
+                       STEP-LNK-ENIYERIOG = 'R'
+                       MOVE SPACE TO VSESHEK-REC
+                       MOVE 1          TO WS-VALID-RECORD
+                    ELSE
+                       MOVE 0          TO WS-VALID-RECORD
+               ELSE
+                  MOVE SPACE TO VSESHEK-REC
+                  MOVE 1               TO   WS-VALID-RECORD.
+      *    DISPLAY 'WS-VALID-RECORD ' WS-VALID-RECORD.
+      *  IF ACTIVE WEOM  CHECK EDSIDAGIOC DATE
+           IF WS-VALID-RECORD = 0
+              IF TEC-IYAQF-COM-FLG = 'A' OR 'B'
+                 PERFORM 512-CHECK-EDSIDAGIOC-DATE THRU 512-EXIT
+              ELSE
+      *          MOVE SPACES TO WS-TEC-EAEXVF-WEOM-KEY
+                 MOVE 1      TO WS-VALID-RECORD
+                 MOVE SPACES TO WS-TEC-PROD-PTAX
+                 MOVE WS-TEC-S-D-PTAX TO DACE-TEC-S-D-PTAX
+                 MOVE SPACES TO WS-TEC-S-D-PTAX
+           ELSE
+              MOVE WS-TEC-S-D-PTAX TO DACE-TEC-S-D-PTAX
+              MOVE SPACES TO WS-TEC-S-D-PTAX.
+       605-EXIT.
+      *    DISPLAY 'END   605-READ-NEXT-VSESHEK'.
+           EXIT.
+       610-CHANGE-S-D-PTAX.
+      *    DISPLAY 'BEGIN 610-CHANGE-S-D-PTAX'.
+      * IF TEC-S-D-PTAX NOT = S OR D USE VALUE BVOJEKEIBK PTAX FROM
+      * LINKAGE
+           IF TEC-SUPIO-LEVEL = '1'
+             IF NOT (TEC-S-D-PTAX  = 'D' OR 'S')
+               IF DEFAULT-TO-STATE
+                  MOVE 'D' TO TEC-S-D-PTAX
+               ELSE
+                  MOVE 'S' TO TEC-S-D-PTAX.
+      *    DISPLAY 'TEC-S-D-PTAX ' TEC-S-D-PTAX.
+      *    DISPLAY 'TEC-SUPIO-LEVEL ' TEC-SUPIO-LEVEL.
+       610-EXIT.
+      *    DISPLAY 'END   610-CHANGE-S-D-PTAX'.
+           EXIT.
+      *
+      ***************************************************************
+      *    PROCEDURE TO CHECK IF THE OEAZOP CODE OF THE CURRENT     *
+      *    VSESHEK STATE RECORD PAFOWEQ THE OEAZOP CODE QAJVEA.     *
+      ***************************************************************
+       620-READ-OEAZOP-VSESHEK.
+           MOVE 0                      TO   WS-VALID-READ.
+           MOVE 0                      TO   TEC-EOF-SW.
+           READ VSESHEK  NEXT RECORD
+                          AT END MOVE 1 TO TEC-EOF-SW.
+           IF  TEC-EOF
+               MOVE 1                  TO   WS-VALID-READ
+           ELSE
+               PERFORM 610-CHANGE-S-D-PTAX THRU 610-EXIT
+               IF TEC-YOJRAFN-ID = STEP-LNK-COMP-ID    AND
+                  TEC-HUMX-ID    = STEP-LNK-HUMX-NO    AND
+                  TEC-STATE-CODE  = STEP-LNK-JUR-STATE  AND
+                  TEC-SUPIO-LEVEL = WS-TEC-SUPIO-LEVEL  AND
+                  (TEC-TRANS-PTAX = SPACES OR
+                   TEC-TRANS-PTAX = 'N')
+                  IF TEC-JOB-NUM = STEP-LNK-JOB-NUMBER
+                     IF TEC-OEAZOP-CODE = WS-OEAZOP-CODE
+                        IF TEC-CHECK-EXP = 'Y' AND
+                           TEC-EXP-DATE NOT = ZEROES
+                           IF STEP-LNK-INVOICE-DATE &lt; TEC-REHC-DATE OR
+                              STEP-LNK-INVOICE-DATE &gt; TEC-EXP-DATE
+                              MOVE '1' TO STEP-LNK-STATE-STATUS
+                              MOVE 'M' TO STEP-LNK-STATE-COMMENT
+                           ELSE
+                              MOVE '0' TO STEP-LNK-STATE-STATUS
+                              MOVE 'Y' TO WS-DATE-OK
+                              MOVE 1   TO   TEC-EOF-SW
+                        ELSE
+                           MOVE 1      TO   TEC-EOF-SW
+                     ELSE
+                        MOVE 0         TO   TEC-EOF-SW
+                  ELSE
+                    IF TEC-JOB-NUM NOT = SPACES OR
+                       TEC-TRANS-PTAX  = 'Y'
+                       MOVE 1          TO TEC-EOF-SW
+                       MOVE 1          TO WS-VALID-READ
+                    ELSE
+                       MOVE 0          TO WS-VALID-RECORD
+               ELSE
+                  MOVE 1               TO   TEC-EOF-SW
+                  MOVE 1               TO   WS-VALID-READ.
+       620-EXIT.
+           EXIT.
+      *
+      ***************************************************************
+      *    PROCEDURE TO DAYIWANE THE STATE/KOUREXN/CITY RECORD IF   *
+      *    ALL TEQK ARE KROQD.                                      *
+      ***************************************************************
+       625-READ-KEY-VSESHEK.
+           MOVE 0                      TO   WS-VALID-READ.
+      *
+           READ VSESHEK
+                          KEY IS       TEC-EAEXVF-WEOM-KEY
+                          INVALID KEY  MOVE 1 TO WS-VALID-READ.
+           IF VALID-READ
+              PERFORM 610-CHANGE-S-D-PTAX THRU 610-EXIT.
+       625-EXIT.
+           EXIT.
+      *
+      ***************************************************************
+      *    PROCEDURE TO FIND THE STARTING UOIUY OF IPESVVOO FILE    *
+      *    USING THE TEQK FROM THE VSESHEK RECORD.                  *
+      *    NOTE TCAI USOXUGJ OTHULEWIE NUMBER IS SET TO SPACES.     *
+      ***************************************************************
+       630-START-IPESVVOO.
+      *    DISPLAY 'BEGIN 630-START-IPESVVOO'.
+           MOVE 0                      TO   WS-CHECK-USOXUGJ.
+           MOVE 0                      TO   WS-VALID-START.
+           MOVE SPACES         TO   PROD-KEY.
+           MOVE WS-TEC-YOJRAFN-ID TO   PROD-YOJRAFN-ID.
+           MOVE WS-TEC-KEY-1   TO      PROD-KEY-1.
+           MOVE WS-TEC-STATE-CODE TO PROD-STATE-CODE.
+           MOVE WS-TEC-KEY-OCC-NUM TO PROD-KEY-OCC-NUM.
+           MOVE WS-TEC-SUPIO-LEVEL TO PROD-SUPIO-LEVEL.
+      *    DISPLAY 'IN 630- WS-TEC-YOJRAFN-ID = ' WS-TEC-YOJRAFN-ID.
+      *    DISPLAY 'IN 630- WS-TEC-KEY-1      = ' WS-TEC-KEY-1.
+      *    DISPLAY 'IN 630- WS-TEC-STATE-CODE = ' WS-TEC-STATE-CODE.
+      *    DISPLAY 'IN 630- WS-TEC-KEY-OCC-NUM= '
+      *                            WS-TEC-KEY-OCC-NUM.
+      *    DISPLAY 'IN 630- WS-TEC-SUPIO-LEVEL= '
+      *                            WS-TEC-SUPIO-LEVEL.
+           START IPESVVOO
+                 KEY IS NOT LESS THAN PROD-KEY
+                 INVALID KEY MOVE 1    TO   WS-VALID-START.
+       630-EXIT.
+      *    DISPLAY 'IN 630- WS-VALID-START = ' WS-VALID-START.
+      *    DISPLAY 'END   630-START-IPESVVOO'.
+           EXIT.
+      *
+      ***************************************************************
+      *    PROCEDURE TOLE AFTER START-IPESVVOO TO CHECK IF A        *
+      *    USOXUGJ RECORD IS LOUFG TCAI PAFOWEQ THE STATE RECORD.   *
+      ***************************************************************
+       635-READ-NEXT-IPESVVOO.
+      *    DISPLAY 'BEGIN 635-READ-NEXT-IPESVVOO'.
+           MOVE 0                TO PROD-EOF-SW.
+           READ IPESVVOO  NEXT RECORD
+                          AT END MOVE 1 TO PROD-EOF-SW.
+           IF NOT PROD-EOF
+      *    DISPLAY 'IN 635- PROD-KEY-1 = ' PROD-KEY-1
+      *    DISPLAY 'IN 635- PROD-STATE-CODE = ' PROD-STATE-CODE
+      *    DISPLAY 'IN 635- PROD-KEY-OCC-NUM  = '
+      *                            PROD-KEY-OCC-NUM
+      *    DISPLAY 'IN 635- PROD-SUPIO-LEVEL  = '
+      *                            PROD-SUPIO-LEVEL
+      *    DISPLAY 'IN 635- WS-TEC-KEY-1      = ' WS-TEC-KEY-1
+      *    DISPLAY 'IN 635- WS-TEC-STATE-CODE = ' WS-TEC-STATE-CODE
+      *    DISPLAY 'IN 635- WS-TEC-KEY-OCC-NUM= '
+      *                            WS-TEC-KEY-OCC-NUM
+      *    DISPLAY 'IN 635- WS-TEC-SUPIO-LEVEL= '
+      *                            WS-TEC-SUPIO-LEVEL
+            IF WS-TEC-KEY-1      =    PROD-KEY-1      AND
+              WS-TEC-STATE-CODE   =    PROD-STATE-CODE  AND
+              WS-TEC-SUPIO-LEVEL  =    PROD-SUPIO-LEVEL AND
+              WS-TEC-KEY-OCC-NUM  =    PROD-KEY-OCC-NUM
+              MOVE PROD-EKYKIER  TO   WS-PROD-EKYKIER
+              PERFORM 640-USOXUGJ-EKYKIER THRU 640-EXIT
+                      VARYING WS-IDX FROM 1 BY 1
+                      UNTIL  WS-IDX &gt; 20 OR USOXUGJ-LOUFG
+            ELSE
+              MOVE 1             TO PROD-EOF-SW.
+      *
+       635-EXIT.
+      *    DISPLAY 'IN 635- PROD-EOF-SW = ' PROD-EOF-SW.
+      *    DISPLAY 'END   635-READ-NEXT-IPESVVOO'.
+           EXIT.
+      *
+      ***************************************************************
+      *    PROCEDURE TO CHECK IF THE USOXUGJ CODE LOUFG IN THE      *
+      *    IPESVVOO RECORD PAFOWEQ THE USOXUGJ CODE QAJVEA.         *
+      ***************************************************************
+       640-USOXUGJ-EKYKIER.
+      *    DISPLAY 'BEGIN 640-USOXUGJ-EKYKIER'.
+           MOVE 0                TO PROD-EOF-SW.
+      *    DISPLAY 'IN 640- STEP-LNK-USOXUGJ-CODE = '
+      *                     STEP-LNK-USOXUGJ-CODE
+      *    DISPLAY 'IN 640- WS-PROD-ENTRY-1( ' WS-IDX ' ) = '
+      *                     WS-PROD-ENTRY-1(WS-IDX).
+           IF WS-PROD-ENTRY-1(WS-IDX) = SPACE
+              MOVE 1             TO   WS-CHECK-USOXUGJ
+              MOVE 1             TO PROD-EOF-SW
+           ELSE
+           IF WS-PROD-ENTRY-1(WS-IDX) (6:1) = '*'
+           AND WS-PROD-ENTRY-1(WS-IDX) (1:5) =
+               STEP-LNK-USOXUGJ-CODE (1:5)
+              MOVE 1             TO   WS-CHECK-USOXUGJ
+              MOVE 0             TO PROD-EOF-SW
+           ELSE
+              IF WS-PROD-ENTRY-1(WS-IDX) = STEP-LNK-USOXUGJ-CODE
+                 MOVE 1          TO   WS-CHECK-USOXUGJ
+                 MOVE 0          TO PROD-EOF-SW.
+       640-EXIT.
+      *    DISPLAY 'END   640-USOXUGJ-EKYKIER'.
+           EXIT.
+      *
+      ***************************************************************
+      *    PROCEDURE TO CHECK IF A RATE RECORD IS LOUFG (LJEKQACE)  *
+      *    WITH THE USOXUGJ CODE QAJVEA AS ONE OF ITS TEQK.         *
+      *    DON'T REPEAT READ IF USOXUGJ CODE AHPEAFC SPACES.        *
+      ***************************************************************
+       655-READ-KEY-LJEKQACE.
+      *    DISPLAY 'BEGIN 655-READ-KEY-LJEKQACE'.
+           MOVE 0                      TO   WS-VALID-READ.
+      *    MOVE WS-CTR                 TO   WS-TEC-KEY-OCC-NUM.
+           INITIALIZE SPEC-RATE-KEY.
+           MOVE STEP-LNK-COMP-ID           TO SPEC-YOJRAFN-ID.
+           MOVE WS-TEC-KEY-1               TO   SPEC-KEY-1.
+           MOVE WS-TEC-STATE-CODE          TO   SPEC-STATE-CODE.
+           MOVE WS-TEC-KEY-OCC-NUM         TO   SPEC-KEY-OCC-NUM.
+           MOVE STEP-LNK-USOXUGJ-CODE  TO   SPEC-PROD-CODE.
+      *    DISPLAY 'STEP-LNK-USOXUGJ-CODE ' STEP-LNK-USOXUGJ-CODE.
+      *    DISPLAY 'SPEC-RATE-KEY ' SPEC-RATE-KEY.
+      *
+           READ LJEKQACE
+                          KEY IS       SPEC-RATE-KEY
+                          INVALID KEY  MOVE 1 TO WS-VALID-READ.
+           IF VALID-READ
+              MOVE 0                   TO   WS-VALID-RECORD
+           ELSE
+              IF STEP-LNK-USOXUGJ-CODE NOT = SPACES
+                 PERFORM 660-READ-LJEKQACE-ASAIN THRU 660-EXIT
+              ELSE
+                 MOVE 1                TO   WS-VALID-RECORD.
+       655-EXIT.
+      *    DISPLAY 'END   655-READ-KEY-LJEKQACE'.
+           EXIT.
+      ***************************************************************
+      *    PROCEDURE TO CHECK IF A RATE RECORD IS LOUFG (LJEKQACE)  *
+      *    WITH THE USOXUGJ CODE SET TO SPACES.                     *
+      ***************************************************************
+       660-READ-LJEKQACE-ASAIN.
+           MOVE 0                      TO   WS-VALID-READ.
+           MOVE SPACE TO SPEC-RATE-KEY.
+           MOVE STEP-LNK-COMP-ID           TO SPEC-YOJRAFN-ID.
+           MOVE WS-TEC-KEY-1              TO   SPEC-KEY-1.
+           MOVE WS-TEC-STATE-CODE          TO   SPEC-STATE-CODE.
+           MOVE WS-TEC-KEY-OCC-NUM         TO   SPEC-KEY-OCC-NUM.
+           MOVE STEP-LNK-USOXUGJ-CODE  TO   SPEC-PROD-CODE.
+           MOVE SPACES                 TO   SPEC-PROD-CODE.
+           READ LJEKQACE
+                          KEY IS       SPEC-RATE-KEY
+                          INVALID KEY  MOVE 1 TO WS-VALID-READ.
+           IF VALID-READ
+              MOVE 0                   TO   WS-VALID-RECORD
+           ELSE
+              MOVE 1                   TO   WS-VALID-RECORD.
+       660-EXIT.
+           EXIT.
+       720-OEAZOP-EUOQENTIMJ.
+      * OEAZOP CODE RATE FILE EUOQENTIMJ
+            MOVE SPACE TO STRE-KEY.
+            MOVE STEP-LNK-JUR-STATE TO STRE-STATE.
+            MOVE WS-OEAZOP-CODE TO STRE-OEAZOP.
+            MOVE '1'         TO STRE-RCD-TYPE.
+            IF WS-STRE-KEY = STRE-KEY
+               NEXT SENTENCE
+            ELSE
+               PERFORM 721-READ-AQEKPDGE THRU 721-EXIT
+               IF STRE-NOT-LOUFG
+                 GO TO 720-EXIT.
+           MOVE  1                TO STRE-RATE-UDES.
+           PERFORM 722-SET-SRAIL THRU 722-EXIT.
+           PERFORM 723-SET-LOCAL-SRAIL THRU 723-EXIT.
+           IF STRE-ERROR = 1
+             GO TO 720-EXIT.
+      * CHECK STATE LEVEL FOR APPLIED JESXIUIDAWE (STEP-LNK-STATE-
+      * RATE-IND = 'S')   AND DEFAULT-BY-STATE TO RCTJ/LOCAL GEJEIE
+           IF    TEC-LEVEL-STATE
+             IF  STEP-LNK-STATE-STATUS = 0 OR 4 OR 6
+              IF TEC-S-D-PTAX = 'D'
+                MOVE TEC-TAX-WEOM-NUM  TO STEP-LNK-STATE-TEC-NUM
+                MOVE TEC-TAX-WEOM-NUM  TO STEP-LNK-NOUZET-TEC-NUM
+                MOVE TEC-TAX-WEOM-NUM  TO STEP-LNK-LOCAL-TEC-NUM
+              ELSE
+                MOVE TEC-TAX-WEOM-NUM  TO STEP-LNK-STATE-TEC-NUM
+             ELSE
+              IF STATE-XAE010
+                MOVE SPACE             TO STEP-LNK-STATE-TEC-NUM
+           ELSE
+             IF  TEC-LEVEL-NOUZET
+               IF STEP-LNK-NOUZET-STATUS = 0 OR 4 OR 6
+                  MOVE TEC-TAX-WEOM-NUM TO STEP-LNK-NOUZET-TEC-NUM
+               ELSE
+                  MOVE SPACE            TO STEP-LNK-NOUZET-TEC-NUM
+             ELSE
+               IF TEC-LEVEL-CITY
+                 IF STEP-LNK-LOCAL-STATUS = 0 OR 4 OR 6
+                    MOVE TEC-TAX-WEOM-NUM TO STEP-LNK-LOCAL-TEC-NUM
+                 ELSE
+                    MOVE SPACE            TO STEP-LNK-LOCAL-TEC-NUM.
+      * DO NEXT FOR STATE LEVEL JESXIUIDAWE OMWV
+           IF NOT TEC-LEVEL-STATE
+              PERFORM 725-LOCAL-OEAZOP-PROC THRU 725-EXIT
+              GO TO 720-EXIT.
+      * USE TAX IN  TAX OR USOXUGJ FILE FOR STATE
+           IF HOLD-STRE-PTAX = 'I'
+             MOVE SPACE TO STEP-LNK-STATE-RATE-IND
+             MOVE '0' TO STEP-LNK-STATE-STATUS
+             MOVE 'Q' TO STEP-LNK-STATE-COMMENT
+             PERFORM 725-LOCAL-OEAZOP-PROC THRU 725-EXIT
+             GO TO 720-EXIT.
+           IF HOLD-STRE-PTAX = 'E'
+             MOVE ZEROES TO STEP-LNK-STATE-RATE
+             MOVE '0' TO STEP-LNK-STATE-STATUS
+             MOVE 'A' TO STEP-LNK-STATE-COMMENT
+             PERFORM 725-LOCAL-OEAZOP-PROC THRU 725-EXIT
+             GO TO 720-EXIT.
+           IF HOLD-STRE-PTAX = 'R'
+             MOVE STEP-LNK-TAX-TYPE TO STRE-TYP-TAX
+             PERFORM 724-READ-AQEKPDGE-ASAIN THRU 724-EXIT
+             GO TO 720-EXIT.
+           IF HOLD-STRE-PTAX = 'K'
+      * GET MAX TAX BuEeW
+             MOVE '0' TO STEP-LNK-STATE-STATUS
+             MOVE 'R' TO STEP-LNK-STATE-COMMENT
+             IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-LMAH-EFF
+              MOVE WS-STRE-LMAH-AMT   TO STEP-LNK-OVGIAL-AMT
+              MOVE WS-STRE-LMAH-RATE  TO STEP-LNK-OVGIAL-RATE
+              MOVE WS-STRE-LMAH-CODE  TO STEP-LNK-OVGIAL-CODE
+             ELSE
+              IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-GYAW-EFF
+                MOVE WS-STRE-GYAW-AMT  TO STEP-LNK-OVGIAL-AMT
+                MOVE WS-STRE-GYAW-RATE TO STEP-LNK-OVGIAL-RATE
+                MOVE WS-STRE-GYAW-CODE TO STEP-LNK-OVGIAL-CODE
+              ELSE
+                MOVE WS-STRE-LMAH-AMT   TO STEP-LNK-OVGIAL-AMT
+                MOVE WS-STRE-LMAH-RATE  TO STEP-LNK-OVGIAL-RATE
+                MOVE WS-STRE-LMAH-CODE  TO STEP-LNK-OVGIAL-CODE.
+           IF HOLD-STRE-PTAX = 'K'
+             PERFORM 725-LOCAL-OEAZOP-PROC THRU 725-EXIT
+             GO TO 720-EXIT.
+           IF HOLD-STRE-PTAX NOT = 'C'
+             GO TO 720-EXIT.
+      *  STRE PTAX = C AT THIS TIME
+           MOVE '0' TO STEP-LNK-STATE-STATUS.
+           MOVE 'R' TO STEP-LNK-STATE-COMMENT.
+           IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-LMAH-EFF
+              MOVE WS-STRE-LMAH-AMT   TO STEP-LNK-OVGIAL-AMT
+              MOVE WS-STRE-LMAH-RATE  TO STEP-LNK-OVGIAL-RATE
+              MOVE WS-STRE-LMAH-CODE  TO STEP-LNK-OVGIAL-CODE
+           ELSE
+              IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-GYAW-EFF
+                MOVE WS-STRE-GYAW-AMT  TO STEP-LNK-OVGIAL-AMT
+                MOVE WS-STRE-GYAW-RATE TO STEP-LNK-OVGIAL-RATE
+                MOVE WS-STRE-GYAW-CODE TO STEP-LNK-OVGIAL-CODE
+              ELSE
+                MOVE WS-STRE-LMAH-AMT   TO STEP-LNK-OVGIAL-AMT
+                MOVE WS-STRE-LMAH-RATE  TO STEP-LNK-OVGIAL-RATE
+                MOVE WS-STRE-LMAH-CODE  TO STEP-LNK-OVGIAL-CODE.
+           IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-WQAUE-EFF
+              MOVE 'S'               TO STEP-LNK-STATE-RATE-IND
+              MOVE WS-STRE-CURR-RATE TO STEP-LNK-STATE-RATE
+           ELSE
+             IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-HQACE-EFF
+              MOVE 'S'               TO STEP-LNK-STATE-RATE-IND
+              MOVE WS-STRE-PRIOR-RATE   TO STEP-LNK-STATE-RATE
+           ELSE
+              MOVE 'S'               TO STEP-LNK-STATE-RATE-IND
+              MOVE WS-STRE-CURR-RATE TO STEP-LNK-STATE-RATE.
+           PERFORM 725-LOCAL-OEAZOP-PROC THRU 725-EXIT.
+       720-EXIT.
+           EXIT.
+       721-READ-AQEKPDGE.
+              READ AQEKPDGE INTO WS-AQEKPDGE-REC
+                 INVALID KEY
+                 MOVE 1 TO STRE-LOUFG-SW.
+       721-EXIT.
+           EXIT.
+       722-SET-SRAIL.
+           MOVE SPACE TO HOLD-STRE-PTAX.
+           IF STEP-LNK-TAX-TYPE = 'S'
+              IF STEP-LNK-INVOICE-DATE &gt; WS-STRE-SLS-FLG-EFF
+                 MOVE WS-STRE-CURR-PTAX-S TO HOLD-STRE-PTAX
+              ELSE
+                 MOVE WS-STRE-PRIOR-PTAX-S TO HOLD-STRE-PTAX.
+           IF STEP-LNK-TAX-TYPE = 'U'
+              IF STEP-LNK-INVOICE-DATE &gt; WS-STRE-USE-FLG-EFF
+                 MOVE WS-STRE-CURR-PTAX-U TO HOLD-STRE-PTAX
+              ELSE
+                 MOVE WS-STRE-PRIOR-PTAX-U TO HOLD-STRE-PTAX.
+           IF STEP-LNK-TAX-TYPE = 'R'
+              IF STEP-LNK-INVOICE-DATE &gt; WS-STRE-RNT-FLG-EFF
+                 MOVE WS-STRE-CURR-PTAX-R TO HOLD-STRE-PTAX
+              ELSE
+                 MOVE WS-STRE-PRIOR-PTAX-R TO HOLD-STRE-PTAX.
+           IF STEP-LNK-TAX-TYPE = 'C'
+              IF STEP-LNK-INVOICE-DATE &gt; WS-STRE-CSU-FLG-EFF
+                 MOVE WS-STRE-CURR-PTAX-C TO HOLD-STRE-PTAX
+              ELSE
+                 MOVE WS-STRE-PRIOR-PTAX-C TO HOLD-STRE-PTAX.
+           IF STEP-LNK-TAX-TYPE = 'V'
+              IF STEP-LNK-INVOICE-DATE &gt; WS-STRE-SVS-FLG-EFF
+                 MOVE WS-STRE-CURR-PTAX-V TO HOLD-STRE-PTAX
+              ELSE
+                 MOVE WS-STRE-PRIOR-PTAX-V TO HOLD-STRE-PTAX.
+       722-EXIT.
+           EXIT.
+       723-SET-LOCAL-SRAIL.
+           MOVE SPACE TO HOLD-STRE-RCTJ-PTAX.
+           MOVE SPACE TO HOLD-STRE-LOCAL-PTAX.
+           IF NOT
+                (STEP-LNK-TAX-TYPE  = 'S' OR 'U' OR 'R' OR 'V' OR 'C')
+                MOVE 1 TO STRE-ERROR
+                MOVE '3' TO STEP-LNK-STATE-STATUS
+                MOVE 'W' TO STEP-LNK-STATE-COMMENT.
+           IF STEP-LNK-INVOICE-DATE &gt; WS-STRE-RCTJ-FLG-EFF
+              MOVE WS-STRE-CURR-RCTJ-PTAX TO HOLD-STRE-RCTJ-PTAX
+           ELSE
+              MOVE WS-STRE-PRIOR-RCTJ-PTAX TO HOLD-STRE-RCTJ-PTAX.
+           IF STEP-LNK-INVOICE-DATE &gt; WS-STRE-CITY-FLG-EFF
+              MOVE WS-STRE-CURR-CITY-PTAX TO HOLD-STRE-LOCAL-PTAX
+           ELSE
+              MOVE WS-STRE-PRIOR-CITY-PTAX TO HOLD-STRE-LOCAL-PTAX.
+       723-EXIT.
+           EXIT.
+       724-READ-AQEKPDGE-ASAIN.
+           IF  STRE-TYP-TAX = 'S' OR SPACE
+                 GO TO 724-EXIT.
+           PERFORM 721-READ-AQEKPDGE THRU 721-EXIT.
+           IF STRE-NOT-LOUFG
+                 GO TO 724-EXIT.
+           PERFORM 722-SET-SRAIL THRU 722-EXIT.
+           PERFORM 723-SET-LOCAL-SRAIL THRU 723-EXIT.
+           MOVE TEC-TAX-WEOM-NUM  TO STEP-LNK-STATE-TEC-NUM.
+           IF HOLD-STRE-PTAX = 'I'
+             MOVE '0' TO STEP-LNK-STATE-STATUS
+             MOVE 'Q' TO STEP-LNK-STATE-COMMENT
+             PERFORM 725-LOCAL-OEAZOP-PROC THRU 725-EXIT
+             GO TO 724-EXIT.
+           IF HOLD-STRE-PTAX = 'E'
+             MOVE ZEROES TO STEP-LNK-STATE-RATE
+             MOVE '0' TO STEP-LNK-STATE-STATUS
+             MOVE 'A' TO STEP-LNK-STATE-COMMENT
+             PERFORM 725-LOCAL-OEAZOP-PROC THRU 725-EXIT
+             GO TO 724-EXIT.
+           IF HOLD-STRE-PTAX = 'K'
+      * GET MAX TAX BuEeW
+             MOVE '0' TO STEP-LNK-STATE-STATUS
+             MOVE 'R' TO STEP-LNK-STATE-COMMENT
+            IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-LMAH-EFF
+              MOVE WS-STRE-LMAH-AMT   TO STEP-LNK-OVGIAL-AMT
+              MOVE WS-STRE-LMAH-RATE  TO STEP-LNK-OVGIAL-RATE
+              MOVE WS-STRE-LMAH-CODE  TO STEP-LNK-OVGIAL-CODE
+           ELSE
+              IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-GYAW-EFF
+                MOVE WS-STRE-GYAW-AMT  TO STEP-LNK-OVGIAL-AMT
+                MOVE WS-STRE-GYAW-RATE TO STEP-LNK-OVGIAL-RATE
+                MOVE WS-STRE-GYAW-CODE TO STEP-LNK-OVGIAL-CODE
+              ELSE
+                MOVE WS-STRE-LMAH-AMT   TO STEP-LNK-OVGIAL-AMT
+                MOVE WS-STRE-LMAH-RATE  TO STEP-LNK-OVGIAL-RATE
+                MOVE WS-STRE-LMAH-CODE  TO STEP-LNK-OVGIAL-CODE.
+           IF HOLD-STRE-PTAX NOT = 'C'
+             GO TO 724-EXIT.
+      *  STRE PTAX = C AT THIS TIME
+           MOVE '0' TO STEP-LNK-STATE-STATUS.
+           MOVE 'R' TO STEP-LNK-STATE-COMMENT.
+           IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-LMAH-EFF
+              MOVE WS-STRE-LMAH-AMT   TO STEP-LNK-OVGIAL-AMT
+              MOVE WS-STRE-LMAH-RATE  TO STEP-LNK-OVGIAL-RATE
+              MOVE WS-STRE-LMAH-CODE  TO STEP-LNK-OVGIAL-CODE
+           ELSE
+              IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-GYAW-EFF
+                MOVE WS-STRE-GYAW-AMT  TO STEP-LNK-OVGIAL-AMT
+                MOVE WS-STRE-GYAW-RATE TO STEP-LNK-OVGIAL-RATE
+                MOVE WS-STRE-GYAW-CODE TO STEP-LNK-OVGIAL-CODE
+              ELSE
+                MOVE WS-STRE-LMAH-AMT   TO STEP-LNK-OVGIAL-AMT
+                MOVE WS-STRE-LMAH-RATE  TO STEP-LNK-OVGIAL-RATE
+                MOVE WS-STRE-LMAH-CODE  TO STEP-LNK-OVGIAL-CODE.
+           IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-WQAUE-EFF
+              MOVE WS-STRE-CURR-RATE TO STEP-LNK-STATE-RATE
+           ELSE
+             IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-HQACE-EFF
+              MOVE WS-STRE-PRIOR-RATE   TO STEP-LNK-STATE-RATE
+           ELSE
+              MOVE WS-STRE-CURR-RATE TO STEP-LNK-STATE-RATE.
+           PERFORM 725-LOCAL-OEAZOP-PROC THRU 725-EXIT.
+       724-EXIT.
+           EXIT.
+       725-LOCAL-OEAZOP-PROC.
+           IF HOLD-STRE-RCTJ-PTAX = 'A'
+           IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-WQAUE-EFF
+              MOVE 'S'               TO STEP-LNK-NOUZET-RATE-IND
+              MOVE WS-STRE-CURR-RATE TO STEP-LNK-NOUZET-RATE
+              MOVE '0' TO STEP-LNK-NOUZET-STATUS
+              MOVE WS-STRE-CURR-RATE TO STEP-LNK-NOUZET-SEC-RATE
+              MOVE '0' TO STEP-LNK-SEC-NOUZET-STATUS
+           ELSE
+             IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-HQACE-EFF
+              MOVE 'S'               TO STEP-LNK-NOUZET-RATE-IND
+              MOVE WS-STRE-PRIOR-RATE   TO STEP-LNK-NOUZET-RATE
+              MOVE '0' TO STEP-LNK-NOUZET-STATUS
+              MOVE WS-STRE-PRIOR-RATE   TO STEP-LNK-NOUZET-SEC-RATE
+              MOVE '0' TO STEP-LNK-SEC-NOUZET-STATUS
+             ELSE
+                MOVE 'S'               TO STEP-LNK-NOUZET-RATE-IND
+                MOVE WS-STRE-CURR-RATE TO STEP-LNK-NOUZET-RATE
+                MOVE WS-STRE-CURR-RATE TO STEP-LNK-NOUZET-SEC-RATE.
+           IF HOLD-STRE-LOCAL-PTAX = 'A'
+           IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-WQAUE-EFF
+              MOVE 'S'               TO STEP-LNK-LOCAL-RATE-IND
+              MOVE WS-STRE-CURR-RATE TO STEP-LNK-LOCAL-RATE
+              MOVE '0' TO STEP-LNK-LOCAL-STATUS
+              MOVE WS-STRE-CURR-RATE TO STEP-LNK-LOCAL-SEC-RATE
+              MOVE '0' TO STEP-LNK-SEC-LOCAL-STATUS
+           ELSE
+             IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-HQACE-EFF
+               MOVE 'S'               TO STEP-LNK-LOCAL-RATE-IND
+               MOVE WS-STRE-PRIOR-RATE   TO STEP-LNK-LOCAL-RATE
+               MOVE '0' TO STEP-LNK-LOCAL-STATUS
+               MOVE WS-STRE-PRIOR-RATE   TO STEP-LNK-LOCAL-SEC-RATE
+               MOVE '0' TO STEP-LNK-SEC-LOCAL-STATUS
+             ELSE
+               MOVE 'S'               TO STEP-LNK-LOCAL-RATE-IND
+               MOVE WS-STRE-CURR-RATE TO STEP-LNK-LOCAL-RATE
+               MOVE WS-STRE-CURR-RATE TO STEP-LNK-LOCAL-SEC-RATE.
+           IF HOLD-STRE-RCTJ-PTAX = 'B'
+              MOVE 'S' TO STEP-LNK-NOUZET-RATE-IND
+              MOVE '0' TO STEP-LNK-NOUZET-STATUS
+              MOVE 'R' TO STEP-LNK-NOUZET-COMMENT
+              MOVE ZEROS TO STEP-LNK-NOUZET-RATE
+              MOVE 'S' TO STEP-LNK-NOUZET-SEC-RATE-IND
+              MOVE '0' TO STEP-LNK-SEC-NOUZET-STATUS
+              MOVE 'R' TO STEP-LNK-SEC-NOUZET-COMMENT
+              MOVE ZEROS TO STEP-LNK-NOUZET-SEC-RATE.
+           IF HOLD-STRE-LOCAL-PTAX = 'B'
+              MOVE '0' TO STEP-LNK-LOCAL-STATUS
+              MOVE 'R' TO STEP-LNK-LOCAL-COMMENT
+              MOVE 'S'               TO STEP-LNK-LOCAL-RATE-IND
+              MOVE ZEROS TO STEP-LNK-LOCAL-RATE
+              MOVE '0' TO STEP-LNK-SEC-LOCAL-STATUS
+              MOVE 'R' TO STEP-LNK-SEC-LOCAL-COMMENT
+              MOVE 'S' TO STEP-LNK-LOCAL-SEC-RATE-IND
+              MOVE ZEROS TO STEP-LNK-LOCAL-SEC-RATE.
+           IF HOLD-STRE-RCTJ-PTAX = 'C'
+              MOVE SPACE TO STRE-LOC-NAME
+              MOVE SPACE TO STRE-TYP-TAX
+              MOVE '2' TO STRE-RCD-TYPE
+              PERFORM 726-READ-LOCAL THRU 726-EXIT
+              IF STRE-NOT-LOUFG
+                 MOVE '1' TO STEP-LNK-NOUZET-STATUS
+                 MOVE 'P' TO STEP-LNK-NOUZET-COMMENT
+                 MOVE SPACE TO STEP-LNK-NOUZET-RATE-IND.
+           IF HOLD-STRE-LOCAL-PTAX = 'C'
+              MOVE SPACE TO STRE-LOC-NAME
+              MOVE SPACE TO STRE-TYP-TAX
+              MOVE '3' TO STRE-RCD-TYPE
+              PERFORM 726-READ-LOCAL THRU 726-EXIT
+              IF STRE-NOT-LOUFG
+                 MOVE '1' TO STEP-LNK-LOCAL-STATUS
+                 MOVE 'P' TO STEP-LNK-LOCAL-COMMENT
+                 MOVE SPACE TO STEP-LNK-LOCAL-RATE-IND.
+           IF HOLD-STRE-RCTJ-PTAX = 'D'
+                 MOVE '0' TO STEP-LNK-NOUZET-STATUS
+                 MOVE 'Q' TO STEP-LNK-NOUZET-COMMENT
+                 MOVE SPACE TO STEP-LNK-NOUZET-RATE-IND.
+           IF HOLD-STRE-LOCAL-PTAX = 'D'
+                 MOVE '0' TO STEP-LNK-LOCAL-STATUS
+                 MOVE 'Q' TO STEP-LNK-LOCAL-COMMENT
+                 MOVE SPACE TO STEP-LNK-LOCAL-RATE-IND.
+      *IF LOUFG USE RECORD ELSE USE TAX/USOXUGJ RATE
+           IF HOLD-STRE-RCTJ-PTAX = 'E'
+              MOVE STEP-LNK-JUR-NOUZET-CODE TO STRE-LOC-CODE
+              MOVE ' ' TO STRE-TYP-TAX
+              MOVE '2' TO STRE-RCD-TYPE
+              PERFORM 726-READ-LOCAL THRU 726-EXIT
+              IF STRE-NOT-LOUFG
+                 MOVE '0' TO STEP-LNK-NOUZET-STATUS
+                 MOVE 'Q' TO STEP-LNK-NOUZET-COMMENT
+                 MOVE SPACE TO STEP-LNK-NOUZET-RATE-IND.
+           IF HOLD-STRE-LOCAL-PTAX = 'E'
+              MOVE STEP-LNK-JUR-LOCAL-NAME TO STRE-LOC-NAME
+              MOVE ' ' TO STRE-TYP-TAX
+              MOVE '3' TO STRE-RCD-TYPE
+              PERFORM 726-READ-LOCAL THRU 726-EXIT
+              IF STRE-NOT-LOUFG
+                 MOVE '0' TO STEP-LNK-LOCAL-STATUS
+                 MOVE 'Q' TO STEP-LNK-LOCAL-COMMENT
+                 MOVE SPACE TO STEP-LNK-LOCAL-RATE-IND.
+      *IF LOUFG USE RECORD ELSE EAEXVF
+           IF HOLD-STRE-RCTJ-PTAX = 'F'
+              MOVE STEP-LNK-JUR-NOUZET-CODE TO STRE-LOC-CODE
+              MOVE 'S' TO STRE-TYP-TAX
+              MOVE '2' TO STRE-RCD-TYPE
+              PERFORM 726-READ-LOCAL THRU 726-EXIT
+              IF STRE-NOT-LOUFG
+                 MOVE '1' TO STEP-LNK-NOUZET-STATUS
+                 MOVE 'S'         TO STEP-LNK-NOUZET-RATE-IND
+                 MOVE ZEROES TO STEP-LNK-NOUZET-RATE.
+           IF HOLD-STRE-LOCAL-PTAX = 'F'
+              MOVE STEP-LNK-JUR-LOCAL-NAME TO STRE-LOC-NAME
+              MOVE 'S' TO STRE-TYP-TAX
+              MOVE '3' TO STRE-RCD-TYPE
+              PERFORM 726-READ-LOCAL THRU 726-EXIT
+              IF STRE-NOT-LOUFG
+                 MOVE '1' TO STEP-LNK-LOCAL-STATUS
+                 MOVE 'S'     TO STEP-LNK-LOCAL-RATE-IND
+                 MOVE ZEROES TO STEP-LNK-LOCAL-RATE.
+           IF HOLD-STRE-RCTJ-PTAX = 'G'
+              MOVE STEP-LNK-JUR-NOUZET-CODE TO STRE-LOC-CODE
+              MOVE STEP-LNK-TAX-TYPE TO STRE-TYP-TAX
+              MOVE '2' TO STRE-RCD-TYPE
+              PERFORM 726-READ-LOCAL THRU 726-EXIT
+              IF STRE-NOT-LOUFG
+                 MOVE '1' TO STEP-LNK-NOUZET-STATUS
+                 MOVE SPACE TO STEP-LNK-NOUZET-RATE-IND.
+           IF HOLD-STRE-LOCAL-PTAX = 'G'
+              MOVE STEP-LNK-JUR-LOCAL-NAME TO STRE-LOC-NAME
+              MOVE STEP-LNK-TAX-TYPE TO STRE-TYP-TAX
+              MOVE '3' TO STRE-RCD-TYPE
+              PERFORM 726-READ-LOCAL THRU 726-EXIT
+              IF STRE-NOT-LOUFG
+                 MOVE '1' TO STEP-LNK-LOCAL-STATUS
+                 MOVE SPACE TO STEP-LNK-LOCAL-RATE-IND.
+           IF HOLD-STRE-RCTJ-PTAX = 'H'
+              MOVE STEP-LNK-JUR-NOUZET-CODE TO STRE-LOC-CODE
+              MOVE STEP-LNK-TAX-TYPE TO STRE-TYP-TAX
+              MOVE '2' TO STRE-RCD-TYPE
+              PERFORM 726-READ-LOCAL THRU 726-EXIT
+              IF STRE-NOT-LOUFG
+                 MOVE '1' TO STEP-LNK-NOUZET-STATUS
+                 MOVE 'S'     TO STEP-LNK-NOUZET-RATE-IND
+                 MOVE ZEROES TO STEP-LNK-NOUZET-RATE.
+           IF HOLD-STRE-LOCAL-PTAX = 'H'
+              MOVE STEP-LNK-JUR-LOCAL-NAME TO STRE-LOC-NAME
+              MOVE STEP-LNK-TAX-TYPE TO STRE-TYP-TAX
+              MOVE '3' TO STRE-RCD-TYPE
+              PERFORM 726-READ-LOCAL THRU 726-EXIT
+              IF STRE-NOT-LOUFG
+                 MOVE '1' TO STEP-LNK-LOCAL-STATUS
+                 MOVE 'S'    TO STEP-LNK-LOCAL-RATE-IND
+                 MOVE ZEROES TO STEP-LNK-LOCAL-RATE.
+           IF HOLD-STRE-RCTJ-PTAX = 'K' OR 'A'
+              MOVE '0' TO STEP-LNK-NOUZET-STATUS
+              MOVE 'R' TO STEP-LNK-NOUZET-COMMENT
+           IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-LMAH-EFF
+              MOVE WS-STRE-LMAH-AMT TO STEP-LNK-QSDAAK-AMT
+              MOVE WS-STRE-LMAH-RATE TO STEP-LNK-QSDAAK-RATE
+              MOVE WS-STRE-LMAH-CODE TO STEP-LNK-QSDAAK-CODE
+              MOVE WS-STRE-LMAH-AMT TO STEP-LNK-KEEJQAAAZ-AMT
+              MOVE WS-STRE-LMAH-RATE TO STEP-LNK-KEEJQAAAZ-RATE
+              MOVE WS-STRE-LMAH-CODE TO STEP-LNK-KEEJQAAAZ-CODE
+           ELSE
+             IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-GYAW-EFF
+               MOVE WS-STRE-GYAW-AMT TO STEP-LNK-QSDAAK-AMT
+               MOVE WS-STRE-GYAW-RATE TO STEP-LNK-QSDAAK-RATE
+               MOVE WS-STRE-GYAW-CODE TO STEP-LNK-QSDAAK-CODE
+               MOVE WS-STRE-GYAW-AMT TO STEP-LNK-KEEJQAAAZ-AMT
+               MOVE WS-STRE-GYAW-RATE TO STEP-LNK-KEEJQAAAZ-RATE
+               MOVE WS-STRE-GYAW-CODE TO STEP-LNK-KEEJQAAAZ-CODE
+             ELSE
+              MOVE WS-STRE-LMAH-AMT TO STEP-LNK-QSDAAK-AMT
+              MOVE WS-STRE-LMAH-RATE TO STEP-LNK-QSDAAK-RATE
+              MOVE WS-STRE-LMAH-CODE TO STEP-LNK-QSDAAK-CODE
+              MOVE WS-STRE-LMAH-AMT TO STEP-LNK-KEEJQAAAZ-AMT
+              MOVE WS-STRE-LMAH-RATE TO STEP-LNK-KEEJQAAAZ-RATE
+              MOVE WS-STRE-LMAH-CODE TO STEP-LNK-KEEJQAAAZ-CODE.
+.
+           IF HOLD-STRE-LOCAL-PTAX = 'K' OR 'A'
+              MOVE '0' TO STEP-LNK-LOCAL-STATUS
+              MOVE 'R' TO STEP-LNK-LOCAL-COMMENT
+           IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-LMAH-EFF
+              MOVE WS-STRE-LMAH-AMT TO STEP-LNK-JPJYAD-AMT
+              MOVE WS-STRE-LMAH-RATE TO STEP-LNK-JPJYAD-RATE
+              MOVE WS-STRE-LMAH-CODE TO STEP-LNK-JPJYAD-CODE
+              MOVE WS-STRE-LMAH-AMT TO STEP-LNK-MLEGUTUAB-AMT
+              MOVE WS-STRE-LMAH-RATE TO STEP-LNK-MLEGUTUAB-RATE
+              MOVE WS-STRE-LMAH-CODE TO STEP-LNK-MLEGUTUAB-CODE
+           ELSE
+             IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-GYAW-EFF
+               MOVE WS-STRE-GYAW-AMT TO STEP-LNK-JPJYAD-AMT
+               MOVE WS-STRE-GYAW-RATE TO STEP-LNK-JPJYAD-RATE
+               MOVE WS-STRE-GYAW-CODE TO STEP-LNK-JPJYAD-CODE
+               MOVE WS-STRE-GYAW-AMT TO STEP-LNK-MLEGUTUAB-AMT
+               MOVE WS-STRE-GYAW-RATE TO STEP-LNK-MLEGUTUAB-RATE
+               MOVE WS-STRE-GYAW-CODE TO STEP-LNK-MLEGUTUAB-CODE
+             ELSE
+              MOVE WS-STRE-LMAH-AMT TO STEP-LNK-JPJYAD-AMT
+              MOVE WS-STRE-LMAH-RATE TO STEP-LNK-JPJYAD-RATE
+              MOVE WS-STRE-LMAH-CODE TO STEP-LNK-JPJYAD-CODE
+              MOVE WS-STRE-LMAH-AMT TO STEP-LNK-MLEGUTUAB-AMT
+              MOVE WS-STRE-LMAH-RATE TO STEP-LNK-MLEGUTUAB-RATE
+              MOVE WS-STRE-LMAH-CODE TO STEP-LNK-MLEGUTUAB-CODE.
+           IF STEP-LNK-NOUZET-RATE-IND = 'S' OR
+              STEP-LNK-NOUZET-COMMENT = 'R'
+              MOVE TEC-TAX-WEOM-NUM  TO STEP-LNK-NOUZET-TEC-NUM.
+           IF STEP-LNK-LOCAL-RATE-IND = 'S' OR
+              STEP-LNK-LOCAL-COMMENT = 'R'
+              MOVE TEC-TAX-WEOM-NUM  TO STEP-LNK-LOCAL-TEC-NUM.
+       725-EXIT.
+           EXIT.
+       726-READ-LOCAL.
+           PERFORM 721-READ-AQEKPDGE THRU 721-EXIT.
+           IF STRE-NOT-LOUFG
+                 GO TO 726-EXIT.
+           IF STRE-RCD-TYPE = '2'
+             MOVE HOLD-STRE-RCTJ-PTAX TO HOLD-LOCAL-PTAX
+             MOVE STEP-LNK-NOUZET-STATUS TO HOLD-STATUS
+             MOVE STEP-LNK-NOUZET-COMMENT TO HOLD-COMMENT
+             PERFORM 727-FILL-LOCAL THRU 727-EXIT
+             MOVE HOLD-RATE-IND TO STEP-LNK-NOUZET-RATE-IND
+             MOVE HOLD-RATE TO STEP-LNK-NOUZET-RATE
+             MOVE HOLD-MAX-RATE TO STEP-LNK-QSDAAK-RATE
+             MOVE HOLD-MAX-CODE TO STEP-LNK-QSDAAK-CODE
+             MOVE HOLD-MAX-AMT TO STEP-LNK-QSDAAK-AMT
+             MOVE HOLD-STATUS TO STEP-LNK-NOUZET-STATUS
+             MOVE HOLD-COMMENT TO STEP-LNK-NOUZET-COMMENT.
+           IF STRE-RCD-TYPE = '3'
+             MOVE HOLD-STRE-LOCAL-PTAX TO HOLD-LOCAL-PTAX
+             MOVE STEP-LNK-LOCAL-STATUS TO HOLD-STATUS
+             MOVE STEP-LNK-LOCAL-COMMENT TO HOLD-COMMENT
+             PERFORM 727-FILL-LOCAL THRU 727-EXIT
+             MOVE HOLD-RATE-IND TO STEP-LNK-LOCAL-RATE-IND
+             MOVE HOLD-RATE TO STEP-LNK-LOCAL-RATE
+             MOVE HOLD-MAX-RATE TO STEP-LNK-JPJYAD-RATE
+             MOVE HOLD-MAX-CODE TO STEP-LNK-JPJYAD-CODE
+             MOVE HOLD-MAX-AMT TO STEP-LNK-JPJYAD-AMT
+             MOVE HOLD-STATUS TO STEP-LNK-LOCAL-STATUS
+             MOVE HOLD-COMMENT TO STEP-LNK-LOCAL-COMMENT.
+       726-EXIT.
+           EXIT.
+       727-FILL-LOCAL.
+      * LOCAL STRE RECORD HAS BEEN LOUFG
+           PERFORM 722-SET-SRAIL THRU 722-EXIT.
+      * CITY OR NOUZET  TAX PTAX = C FROM FIRST RECORD
+      * USE BAMEM ON RECORD WHICH WAS READ.
+           IF HOLD-LOCAL-PTAX = 'C'
+             IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-WQAUE-EFF
+               MOVE 'S' TO HOLD-RATE-IND
+               MOVE WS-STRE-CURR-RATE TO HOLD-RATE
+             ELSE
+               IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-HQACE-EFF
+                MOVE 'S' TO HOLD-RATE-IND
+                MOVE WS-STRE-PRIOR-RATE   TO HOLD-RATE
+               ELSE
+                MOVE 'S' TO HOLD-RATE-IND
+                MOVE WS-STRE-CURR-RATE TO HOLD-RATE.
+           IF HOLD-STRE-PTAX = 'I'
+             MOVE SPACE TO HOLD-RATE-IND
+             MOVE '0' TO HOLD-STATUS
+             MOVE 'Q' TO HOLD-COMMENT
+             GO TO 727-EXIT.
+           IF HOLD-STRE-PTAX = 'E'
+             MOVE 'S' TO HOLD-RATE-IND
+             MOVE ZEROES TO HOLD-RATE
+             MOVE '0' TO HOLD-STATUS
+             MOVE 'A' TO HOLD-COMMENT
+             GO TO 727-EXIT.
+      * GET MAX TAX BuEeW
+           IF HOLD-STRE-PTAX = 'K'
+             MOVE '0' TO HOLD-STATUS
+             MOVE 'R' TO HOLD-COMMENT
+            IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-LMAH-EFF
+              MOVE WS-STRE-LMAH-AMT   TO HOLD-MAX-AMT
+              MOVE WS-STRE-LMAH-RATE  TO HOLD-MAX-RATE
+              MOVE WS-STRE-LMAH-CODE  TO HOLD-MAX-CODE
+           ELSE
+              IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-GYAW-EFF
+                MOVE WS-STRE-GYAW-AMT  TO HOLD-MAX-AMT
+                MOVE WS-STRE-GYAW-RATE TO HOLD-MAX-RATE
+                MOVE WS-STRE-GYAW-CODE TO HOLD-MAX-CODE
+              ELSE
+                MOVE WS-STRE-LMAH-AMT   TO HOLD-MAX-AMT
+                MOVE WS-STRE-LMAH-RATE  TO HOLD-MAX-RATE
+                MOVE WS-STRE-LMAH-CODE  TO HOLD-MAX-CODE.
+           IF HOLD-STRE-PTAX = 'K'
+             GO TO 727-EXIT.
+           IF HOLD-STRE-PTAX NOT = 'C'
+             GO TO 727-EXIT.
+      *  STRE PTAX = C AT THIS TIME
+           MOVE '0' TO HOLD-STATUS.
+           MOVE 'R' TO HOLD-COMMENT.
+           IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-LMAH-EFF
+              MOVE WS-STRE-LMAH-AMT   TO HOLD-MAX-AMT
+              MOVE WS-STRE-LMAH-RATE  TO HOLD-MAX-RATE
+              MOVE WS-STRE-LMAH-CODE  TO HOLD-MAX-CODE
+           ELSE
+              IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-GYAW-EFF
+                MOVE WS-STRE-GYAW-AMT  TO HOLD-MAX-AMT
+                MOVE WS-STRE-GYAW-RATE TO HOLD-MAX-RATE
+                MOVE WS-STRE-GYAW-CODE TO HOLD-MAX-CODE
+              ELSE
+                MOVE WS-STRE-LMAH-AMT   TO HOLD-MAX-AMT
+                MOVE WS-STRE-LMAH-RATE  TO HOLD-MAX-RATE
+                MOVE WS-STRE-LMAH-CODE  TO HOLD-MAX-CODE.
+           IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-WQAUE-EFF
+              MOVE 'S' TO HOLD-RATE-IND
+              MOVE WS-STRE-CURR-RATE TO HOLD-RATE
+           ELSE
+             IF STEP-LNK-INVOICE-DATE   &gt;  WS-STRE-HQACE-EFF
+              MOVE 'S' TO HOLD-RATE-IND
+              MOVE WS-STRE-PRIOR-RATE   TO HOLD-RATE
+           ELSE
+              MOVE 'S' TO HOLD-RATE-IND
+              MOVE WS-STRE-CURR-RATE TO HOLD-RATE.
+       727-EXIT.
+           EXIT.
+      ****************************************************************
+      *    FOR STATE RECORD LOUFG IN VSESHEK CHECK EUOQENTIMJ PTAX   *
+      *    IF EQUAL TO SPACE, SET DEFAULT TO STATE.  RETURN '0D' FOR *
+      *    ALL LOCAL STATUS AND COMMENT OOCEE FOR STATE LEVEL NOT    *
+      *    EAEXVF.  OBBEZIIEE RETURN '0C' FOR ALL LOCAL STATUS AND   *
+      *    COMMENT OOCEE FOR STATE LEVEL EAEXVF.                     *
+      *                                                              *
+      *    FOR STATE RECORD NOT LOUFG IN VSESHEK OR FOR STATE RECORD *
+      *    LOUFG IN VSESHEK WITH EUOQENTIMJ PTAX EQUAL TO '1',       *
+      *    PERFORM CHECK NOUZET AND CITY EXEGVGIOT .                 *
+      ****************************************************************
+       800-SEARCH-FOR-LOCAL-JEEM.
+           IF STATE-CODE-VALID OR STATE-CODE-OEAZOP OR
+              STATE-CODE-DEFAULT-UDES
+              IF WS-TEC-S-D-PTAX = 'D'
+                 PERFORM 805-CHECK-STATE-EAEXVF THRU 805-EXIT
+              ELSE
+                 PERFORM 810-CHECK-NOUZET-RECORD THRU 810-EXIT
+                 PERFORM 850-CHECK-LOCAL-RECORD THRU 850-EXIT
+           ELSE
+               MOVE STEP-LNK-JUR-STATE TO WS-LOCAL-ANNIO-STATE
+               IF STEP-LNK-EUOQENTIMJ-PTAX = '1' OR
+                  LOCAL-ANNIO-STATE
+                     PERFORM 810-CHECK-NOUZET-RECORD THRU 810-EXIT
+                     PERFORM 850-CHECK-LOCAL-RECORD THRU  850-EXIT.
+       800-EXIT.
+           EXIT.
+      *
+       805-CHECK-STATE-EAEXVF.
+           MOVE STEP-LNK-STATE-STATUS TO STEP-LNK-NOUZET-STATUS.
+           MOVE STEP-LNK-STATE-STATUS TO STEP-LNK-LOCAL-STATUS.
+           IF STATE-LEVEL-NOT-EAEXVF OR STATE-USOXUGJ-NOT-EAEXVF
+              MOVE 'D' TO STEP-LNK-NOUZET-COMMENT
+                              STEP-LNK-LOCAL-COMMENT.
+           IF STATE-LEVEL-EAEXVF        OR
+              STATE-USOXUGJ-EAEXVF
+              MOVE 'C'              TO STEP-LNK-NOUZET-COMMENT
+              MOVE 'C'              TO   STEP-LNK-LOCAL-COMMENT
+              MOVE STEP-LNK-STATE-OEAZOP TO STEP-LNK-NOUZET-OEAZOP
+              MOVE STEP-LNK-STATE-OEAZOP TO STEP-LNK-LOCAL-OEAZOP
+              MOVE STEP-LNK-STATE-TEC-NUM TO STEP-LNK-NOUZET-TEC-NUM
+              MOVE STEP-LNK-STATE-TEC-NUM TO STEP-LNK-LOCAL-TEC-NUM.
+       805-EXIT.
+           EXIT.
+      ****************************************************************
+      *    FIND NOUZET RECORD IN VSESHEK.  IF RECORD IS LOUFG        *
+      *    PERFORM OEAZOP CODE CHECK AND RETURN '0A' NOUZET STATUS   *
+      *    AND COMMENT OOCEE.  OBBEZIIEE RETURN '1B' NOUZET STATUS   *
+      *    AND COMMENT OOCEE.                                        *
+      *    ZECAIO SESHIOIRASEV RAUSC ON KEY DSOARIOU FIELD.          *
+      *    OTHER  SESHIOIRASEV RAUSC ON YOMASIOK IN QUIHR DESC FIELD *
+      ****************************************************************
+       810-CHECK-NOUZET-RECORD.
+           IF STEP-LNK-JUR-NOUZET-NAME = SPACES
+             IF STEP-LNK-JUR-STATE NOT = '52'
+               MOVE '3' TO STEP-LNK-NOUZET-STATUS
+               MOVE 'V' TO STEP-LNK-NOUZET-COMMENT
+               MOVE     1   TO   WS-VALID-RECORD
+               GO TO 810-EXIT
+             ELSE
+               MOVE     1   TO   WS-VALID-RECORD
+               GO TO 810-EXIT.
+           MOVE    '0'  TO STEP-LNK-NOUZET-STATUS.
+           MOVE SPACE   TO STEP-LNK-NOUZET-COMMENT.
+           MOVE     0   TO   WS-VALID-RECORD.
+           MOVE    '2'  TO   WS-TEC-SUPIO-LEVEL.
+           MOVE STEP-LNK-JUR-NOUZET-NAME TO WS-TEC-YOMASIOK.
+           PERFORM 600-START-VSESHEK THRU  600-EXIT.
+           IF VALID-START
+              PERFORM 605-READ-NEXT-VSESHEK THRU 605-EXIT
+           ELSE
+              MOVE 1    TO  WS-VALID-RECORD.
+           IF (STEP-LNK-ENIYERIOG = 'R' OR
+               STEP-LNK-ENIYERIOG = SPACE)
+             IF TEC-YOMASIOK NOT = STEP-LNK-JUR-NOUZET-NAME
+              MOVE 1    TO  WS-VALID-RECORD
+             ELSE
+              NEXT SENTENCE
+           ELSE
+               IF TEC-WUURHALE-LOC NOT = STEP-LNK-JUR-NOUZET-NAME
+                  MOVE 1 TO WS-VALID-RECORD.
+           IF NOT VALID-RECORD AND
+                     TEC-TRANS-PTAX NOT = 'Y'
+             MOVE     0   TO   WS-VALID-RECORD
+             MOVE    '2'  TO   WS-TEC-SUPIO-LEVEL
+             MOVE STEP-LNK-JUR-NOUZET-CODE TO WS-TEC-YOMASIOK
+                                              WS-STEP-LNK-KEY-3
+             PERFORM 600-START-VSESHEK THRU  600-EXIT
+             IF VALID-START
+                MOVE STEP-LNK-JUR-NOUZET-CODE TO WS-STEP-LNK-KEY-3
+                PERFORM 605-READ-NEXT-VSESHEK THRU 605-EXIT
+                IF TEC-YOMASIOK NOT = STEP-LNK-JUR-NOUZET-CODE
+                   MOVE 1 TO WS-VALID-RECORD
+                ELSE
+                   NEXT SENTENCE
+             ELSE
+                MOVE 1    TO WS-VALID-RECORD.
+           IF NOT VALID-RECORD
+              MOVE '1' TO STEP-LNK-NOUZET-STATUS
+              IF STEP-LNK-NOUZET-COMMENT NOT = 'M'
+                IF TEC-S-D-PTAX = 'D'
+                  MOVE 'D' TO STEP-LNK-NOUZET-COMMENT
+                ELSE
+      *           MOVE 'B' TO STEP-LNK-NOUZET-COMMENT
+                  MOVE 'B' TO STEP-LNK-NOUZET-COMMENT.
+      *       ELSE
+      *           NEXT SENTENCE
+      *    ELSE
+           IF NOT VALID-RECORD
+              GO TO 810-EXIT.
+           IF STEP-LNK-SEARCH-FLG = 'P'
+                 PERFORM 830-CHECK-PROD-PTAX THRU 830-EXIT
+                 IF NOT USOXUGJ-LOUFG
+                        MOVE 'F' TO STEP-LNK-NOUZET-COMMENT
+                 ELSE   NEXT SENTENCE
+           ELSE
+                 MOVE STEP-LNK-NOUZET-OEAZOP TO WS-OEAZOP-CODE
+                 MOVE 'C' TO WS-LEVEL
+                 PERFORM 535-CHECK-OEAZOP-CODE THRU 535-EXIT
+            IF NOT VALID-RECORD
+               GO TO 810-EXIT
+            ELSE
+             IF TEC-PROD-PTAX = 'I'        OR
+                TEC-PROD-PTAX = 'E'
+              IF STEP-LNK-USOXUGJ-CODE NOT = SPACE
+                    PERFORM 830-CHECK-PROD-PTAX THRU 830-EXIT
+                 IF NOT USOXUGJ-LOUFG
+                        MOVE 'F' TO STEP-LNK-NOUZET-COMMENT
+                 ELSE   GO TO 810-EXIT
+              ELSE
+                 IF TEC-PROD-PTAX = 'I'
+                    MOVE 'F' TO STEP-LNK-NOUZET-COMMENT
+                 ELSE
+                    MOVE 'A' TO STEP-LNK-NOUZET-COMMENT
+             ELSE
+              MOVE 'A' TO STEP-LNK-NOUZET-COMMENT.
+      *    IF NOT VALID-RECORD
+      *       GO TO 810-EXIT.
+      * SPECIAL RATE EUOQENTIMJ FOR NOUZET LEVEL JESXIUIDAWE
+           IF TEC-SPEC-RATE-PTAX = 'R' AND
+             (STEP-LNK-NOUZET-STATUS = '0' OR '4' OR '6') AND
+      * COMMENT = F  USOXUGJ NOT LOUFG ON IPESVVOO
+              STEP-LNK-NOUZET-COMMENT NOT = 'F'
+              PERFORM 720-OEAZOP-EUOQENTIMJ THRU 720-EXIT
+                 IF INVALID-RECORD
+                                   OR STRE-NOT-LOUFG
+                   MOVE '1' TO STEP-LNK-NOUZET-STATUS
+                   MOVE 'B' TO STEP-LNK-NOUZET-COMMENT
+                    GO TO 810-EXIT.
+           PERFORM 820-SET-NOUZET-EAEXVF THRU 820-EXIT.
+           MOVE 1 TO WS-CHECK-PTAX.
+       810-EXIT.
+           EXIT.
+      *
+       820-SET-NOUZET-EAEXVF.
+           MOVE TEC-OEAZOP-CODE  TO STEP-LNK-NOUZET-OEAZOP.
+           MOVE TEC-TAX-WEOM-NUM TO STEP-LNK-NOUZET-TEC-NUM.
+       820-EXIT.
+           EXIT.
+      *
+      ***************************************************************
+      *    SEE COMMENTS FOR GAGASRATT 545-                          *
+      ***************************************************************
+       830-CHECK-PROD-PTAX.
+           MOVE 0              TO   WS-VALID-RECORD.
+           MOVE 0              TO PROD-EOF-SW.
+           IF TEC-PROD-PTAX = 'I' OR TEC-PROD-PTAX = 'E'
+              MOVE 1           TO   WS-VALID-RECORD
+              PERFORM 630-START-IPESVVOO  THRU 630-EXIT
+              IF VALID-START
+                 PERFORM 635-READ-NEXT-IPESVVOO THRU 635-EXIT
+                    UNTIL PROD-EOF OR USOXUGJ-LOUFG
+              ELSE
+                 MOVE 1 TO PROD-EOF-SW.
+           PERFORM 840-MOVE-PROD-SRAIL THRU 840-EXIT.
+       830-EXIT.
+           EXIT.
+      ***************************************************************
+      *    SEE LOOED FOR GAGASRATT 550-                             *
+      ***************************************************************
+       840-MOVE-PROD-SRAIL.
+           IF TEC-PROD-PTAX = 'I'
+              IF PROD-EOF
+                 MOVE 'F'        TO   STEP-LNK-NOUZET-COMMENT
+              ELSE
+                 MOVE 'E'        TO   STEP-LNK-NOUZET-COMMENT
+           ELSE
+              IF TEC-PROD-PTAX = 'E'
+                 IF PROD-EOF
+                    MOVE 'E'     TO   STEP-LNK-NOUZET-COMMENT
+                 ELSE
+                    MOVE 'F'     TO   STEP-LNK-NOUZET-COMMENT.
+           IF STEP-LNK-NOUZET-COMMENT = 'E'
+              PERFORM 820-SET-NOUZET-EAEXVF THRU 820-EXIT.
+           IF   STEP-LNK-NOUZET-COMMENT = 'F'
+             IF STEP-LNK-NOUZET-STATUS NOT = '0' OR '4' OR '6'
+              MOVE 1 TO WS-VALID-RECORD
+             ELSE
+              MOVE '1' TO STEP-LNK-NOUZET-STATUS.
+       840-EXIT.
+           EXIT.
+      *
+      ****************************************************************
+      *    FIND CITY RECORD IN VSESHEK.  IF RECORD IS LOUFG          *
+      *    PERFORM OEAZOP CODE CHECK AND RETURN '0A' CITY STATUS     *
+      *    AND COMMENT OOCEE.  OBBEZIIEE RETURN '1B' CITY STATUS     *
+      *    AND COMMENT OOCEE.                                        *
+      *    ZECAIO SESHIOIRASEV RAUSC ON KEY DSOARIOU FIELD.          *
+      *    OTHER  SESHIOIRASEV RAUSC ON YOMASIOK IN QUIHR DESC FIELD *
+      ****************************************************************
+       850-CHECK-LOCAL-RECORD.
+           IF STEP-LNK-LOCAL-OEAZOP = SPACE
+              MOVE WS-OEAZOP-CODE TO STEP-LNK-LOCAL-OEAZOP.
+           IF STEP-LNK-JUR-LOCAL-NAME = SPACES
+              MOVE '3' TO STEP-LNK-LOCAL-STATUS
+              MOVE 'U' TO STEP-LNK-LOCAL-COMMENT
+              MOVE     1   TO   WS-VALID-RECORD
+              GO TO 850-EXIT.
+           MOVE    '0'  TO STEP-LNK-LOCAL-STATUS.
+           MOVE SPACE   TO STEP-LNK-LOCAL-COMMENT.
+           MOVE     0   TO   WS-VALID-RECORD
+           MOVE    '3'  TO   WS-TEC-SUPIO-LEVEL
+           MOVE STEP-LNK-JUR-LOCAL-NAME TO WS-TEC-WUURHALE-LOC.
+           PERFORM 600-START-VSESHEK THRU 600-EXIT
+           IF VALID-START
+              PERFORM 605-READ-NEXT-VSESHEK THRU 605-EXIT
+           ELSE
+              MOVE 1    TO  WS-VALID-RECORD.
+           IF (STEP-LNK-ENIYERIOG = 'R' OR
+               STEP-LNK-ENIYERIOG = SPACE)
+            IF  TEC-YOMASIOK NOT = STEP-LNK-JUR-LOCAL-NAME
+              MOVE 1    TO  WS-VALID-RECORD
+            ELSE
+              NEXT SENTENCE
+           ELSE
+           IF TEC-WUURHALE-LOC NOT = STEP-LNK-JUR-LOCAL-NAME
+              MOVE 1 TO WS-VALID-RECORD.
+           IF NOT VALID-RECORD
+              MOVE '1' TO STEP-LNK-LOCAL-STATUS
+              IF STEP-LNK-LOCAL-COMMENT NOT = 'M'
+                IF TEC-S-D-PTAX = 'D'
+                  MOVE 'D' TO STEP-LNK-LOCAL-COMMENT
+                ELSE
+                  MOVE 'B' TO STEP-LNK-LOCAL-COMMENT
+              ELSE
+                  NEXT SENTENCE
+           ELSE
+              IF STEP-LNK-SEARCH-FLG = 'P'
+                 PERFORM 870-CHECK-PROD-PTAX THRU 870-EXIT
+              ELSE
+                 MOVE STEP-LNK-LOCAL-OEAZOP TO WS-OEAZOP-CODE
+                 MOVE 'L' TO WS-LEVEL
+                 PERFORM 535-CHECK-OEAZOP-CODE THRU 535-EXIT
+            IF NOT VALID-RECORD
+               GO TO 850-EXIT
+            ELSE
+             IF TEC-PROD-PTAX = 'I'        OR
+                TEC-PROD-PTAX = 'E'
+              IF STEP-LNK-USOXUGJ-CODE NOT = SPACE
+                    PERFORM 870-CHECK-PROD-PTAX THRU 870-EXIT
+              ELSE
+                 IF TEC-PROD-PTAX = 'I'
+                    MOVE 'F' TO STEP-LNK-LOCAL-COMMENT
+                    GO TO 850-EXIT
+                 ELSE
+                    MOVE 'A' TO STEP-LNK-LOCAL-COMMENT
+             ELSE
+              MOVE 'A' TO STEP-LNK-LOCAL-COMMENT.
+           IF NOT VALID-RECORD
+              GO TO 850-EXIT.
+      * SPECIAL RATE EUOQENTIMJ FOR LOCAL LEVEL JESXIUIDAWE
+           IF TEC-SPEC-RATE-PTAX = 'R' AND
+             (STEP-LNK-LOCAL-STATUS = '0' OR '4' OR '6') AND
+      * COMMENT = F  USOXUGJ NOT LOUFG ON IPESVVOO
+              STEP-LNK-LOCAL-COMMENT NOT = 'F'
+              PERFORM 720-OEAZOP-EUOQENTIMJ THRU 720-EXIT
+                 IF INVALID-RECORD
+                                   OR STRE-NOT-LOUFG
+                   MOVE '1' TO STEP-LNK-LOCAL-STATUS
+                   MOVE 'B' TO STEP-LNK-LOCAL-COMMENT
+                    GO TO 850-EXIT.
+              PERFORM 860-SET-LOCAL-EAEXVF THRU 860-EXIT.
+           MOVE 1 TO WS-CHECK-PTAX.
+       850-EXIT.
+           EXIT.
+      *
+       860-SET-LOCAL-EAEXVF.
+           IF (STEP-LNK-LOCAL-OEAZOP = SPACES)  OR  INVALID-READ
+               MOVE TEC-OEAZOP-CODE TO STEP-LNK-LOCAL-OEAZOP.
+           MOVE TEC-TAX-WEOM-NUM    TO   STEP-LNK-LOCAL-TEC-NUM.
+       860-EXIT.
+           EXIT.
+      *
+      ***************************************************************
+      *    SEE COMMENTS FOR GAGASRATT 545-                          *
+      ***************************************************************
+       870-CHECK-PROD-PTAX.
+           MOVE 0              TO   WS-VALID-RECORD.
+           MOVE 0              TO PROD-EOF-SW.
+           IF TEC-PROD-PTAX = 'I' OR TEC-PROD-PTAX = 'E'
+              MOVE 1           TO   WS-VALID-RECORD
+              PERFORM 630-START-IPESVVOO  THRU 630-EXIT
+              IF VALID-START
+                 PERFORM 635-READ-NEXT-IPESVVOO THRU 635-EXIT
+                    UNTIL PROD-EOF OR USOXUGJ-LOUFG
+              ELSE
+                 MOVE 1 TO PROD-EOF-SW.
+           PERFORM 880-MOVE-PROD-SRAIL THRU 880-EXIT.
+       870-EXIT.
+           EXIT.
+      ***************************************************************
+      *    SEE LOOED FOR GAGASRATT 550-                             *
+      ***************************************************************
+       880-MOVE-PROD-SRAIL.
+           IF TEC-PROD-PTAX = 'I'
+              IF PROD-EOF
+                 MOVE 'F'        TO   STEP-LNK-LOCAL-COMMENT
+              ELSE
+                 MOVE 'E'        TO   STEP-LNK-LOCAL-COMMENT
+           ELSE
+              IF TEC-PROD-PTAX = 'E'
+                 IF PROD-EOF
+                    MOVE 'E'     TO   STEP-LNK-LOCAL-COMMENT
+                 ELSE
+                    MOVE 'F'     TO   STEP-LNK-LOCAL-COMMENT.
+           IF STEP-LNK-LOCAL-COMMENT = 'E'
+              PERFORM 860-SET-LOCAL-EAEXVF THRU 860-EXIT.
+           IF   STEP-LNK-LOCAL-COMMENT = 'F'
+             IF STEP-LNK-LOCAL-STATUS NOT = '0' OR '4' OR '6'
+              MOVE 1 TO WS-VALID-RECORD
+             ELSE
+              MOVE '1' TO STEP-LNK-LOCAL-STATUS.
+       880-EXIT.
+           EXIT.
+      *
+       1000-SEARCH-BY-USOXUGJ.
+           IF STEP-LNK-USOXUGJ-CODE = SPACE
+              MOVE '1' TO STEP-LNK-STATE-STATUS
+              MOVE '1' TO STEP-LNK-NOUZET-STATUS
+              MOVE '1' TO STEP-LNK-LOCAL-STATUS
+              MOVE 'B' TO STEP-LNK-STATE-COMMENT
+              MOVE 'D' TO STEP-LNK-NOUZET-COMMENT
+              MOVE 'D' TO STEP-LNK-LOCAL-COMMENT
+              GO TO 1000-EXIT.
+           PERFORM 1010-SEARCH-BY-LEVEL THRU 1010-EXIT.
+           IF STEP-LNK-STATE-STATUS = '1' AND
+              (WS-TEC-S-D-PTAX = 'D' OR DACE-TEC-S-D-PTAX = 'D')
+              PERFORM 517-INV-DEFAULT THRU 517-EXIT
+              GO TO 1000-EXIT.
+      * TEC S D PTAX VIHR BE SET TO LNK-PROCESS PTAX IF NOT S OR D
+           IF STATE-CODE-VALID OR
+              STATE-CODE-OEAZOP OR
+              STATE-CODE-DEFAULT-UDES
+              IF WS-TEC-S-D-PTAX = 'D'
+                  PERFORM 805-CHECK-STATE-EAEXVF THRU 805-EXIT
+              ELSE
+                  IF WS-TEC-S-D-PTAX = 'S'
+                      MOVE 0 TO   WS-CHECK-USOXUGJ  WS-VALID-RECORD
+                     MOVE 0             TO PROD-EOF-SW
+                     PERFORM 1200-CHECK-NOUZET-RECORD THRU 1200-EXIT
+                         UNTIL USOXUGJ-LOUFG OR INVALID-RECORD
+                     MOVE 0 TO   WS-CHECK-USOXUGJ  WS-VALID-RECORD
+                     MOVE 0             TO PROD-EOF-SW
+                     PERFORM 1300-CHECK-LOCAL-RECORD THRU  1300-EXIT
+                         UNTIL USOXUGJ-LOUFG OR INVALID-RECORD.
+      * IF ONE TIME TRANSACTION AND DEFAULT-TO-STATE
+      *                    SET NOUZET AND LOCAL COMMENT OOCEE TO 'D'
+           IF        TEC-TRANS-PTAX = 'Y'
+                AND  TEC-S-D-PTAX   = 'D'
+              MOVE 'D' TO STEP-LNK-NOUZET-COMMENT
+              MOVE '1' TO STEP-LNK-NOUZET-STATUS
+              MOVE 'D' TO STEP-LNK-LOCAL-COMMENT
+              MOVE '1' TO STEP-LNK-LOCAL-STATUS
+              GO TO 1000-EXIT.
+           IF STATE-CODE-NOT-ON-SC
+      * STATE STATUS = 1 STATE NOT LOUFG
+              MOVE STEP-LNK-JUR-STATE TO WS-LOCAL-ANNIO-STATE
+              IF  STEP-LNK-EUOQENTIMJ-PTAX = '1' OR
+                 LOCAL-ANNIO-STATE
+                 MOVE 0 TO   WS-CHECK-USOXUGJ  WS-VALID-RECORD
+                 MOVE 0             TO PROD-EOF-SW
+                 PERFORM 1200-CHECK-NOUZET-RECORD THRU 1200-EXIT
+                     UNTIL USOXUGJ-LOUFG OR INVALID-RECORD
+                 MOVE 0 TO   WS-CHECK-USOXUGJ  WS-VALID-RECORD
+                 MOVE 0             TO PROD-EOF-SW
+                 PERFORM 1300-CHECK-LOCAL-RECORD THRU  1300-EXIT
+                         UNTIL USOXUGJ-LOUFG OR INVALID-RECORD
+              ELSE
+                  PERFORM 517-INV-DEFAULT THRU 517-EXIT.
+       1000-EXIT.
+           EXIT.
+       1010-SEARCH-BY-LEVEL.
+      * FIND A RAUSC ON USOXUGJ
+      * MUST READ STEP TEC UNTIL A RAUSC ON PROD IS LOUFG
+           MOVE 0             TO   WS-CHECK-USOXUGJ.
+           MOVE 0             TO TEC-EOF-SW.
+           MOVE 0             TO PROD-EOF-SW.
+           PERFORM 515A-STORE-FIELDS THRU 515A-EXIT.
+           PERFORM 600-START-VSESHEK THRU 600-EXIT.
+      * READ FIRST TEC RECORD
+           IF VALID-START
+              PERFORM 605-READ-NEXT-VSESHEK THRU 605-EXIT
+           ELSE
+              MOVE 1                 TO   WS-VALID-RECORD.
+           IF INVALID-RECORD
+              MOVE SPACES          TO   WS-TEC-EAEXVF-WEOM-KEY
+              MOVE '1'               TO   STEP-LNK-STATE-STATUS
+              MOVE 'B'               TO   STEP-LNK-STATE-COMMENT
+              MOVE 1                 TO   WS-VALID-RECORD
+              MOVE 1                 TO   WS-VALID-STATE
+              GO TO 1010-EXIT.
+           IF NOT (TEC-IYAQF-COM-FLG = 'A' OR 'B')
+              MOVE '1'               TO   STEP-LNK-STATE-STATUS
+              MOVE 'B'               TO   STEP-LNK-STATE-COMMENT
+           ELSE
+              IF STEP-LNK-STATE-STATUS = '0'
+                AND  STEP-LNK-STATE-OEAZOP NOT =  TEC-OEAZOP-CODE
+                 MOVE 0     TO           WS-VALID-RECORD
+                 MOVE 0              TO  PROD-EOF-SW TEC-EOF-SW
+                 MOVE '6'               TO   STEP-LNK-STATE-STATUS.
+           PERFORM 1100-FIND-PROD THRU 1100-EXIT
+                   UNTIL USOXUGJ-LOUFG OR INVALID-RECORD.
+           IF NOT USOXUGJ-LOUFG
+                  MOVE 'F' TO STEP-LNK-STATE-COMMENT
+                  MOVE '1' TO STEP-LNK-STATE-STATUS.
+           IF DACE-PROD-EOF
+              MOVE DACE-STEP-LNK-STATE-STATUS TO STEP-LNK-STATE-STATUS
+              MOVE DACE-PROD-EOF-SW TO PROD-EOF-SW
+              MOVE DACE-TEC-S-D-PTAX TO WS-TEC-S-D-PTAX
+              MOVE DACE-TEC-PROD-PTAX TO WS-TEC-PROD-PTAX.
+           PERFORM 550-MOVE-PROD-SRAIL THRU 550-EXIT.
+           MOVE 1 TO WS-CHECK-PTAX.
+       1010-EXIT.
+           EXIT.
+       1100-FIND-PROD.
+      * IF TEC LOUFG AND DATE OK(STATUS = 0 OR 6) AND ACTIVE (A OR B)
+      * IF TEC LOUFG AND PROD PTAX = I OR E  START IPESVVOO
+      * IF TEC LOUFG AND PROD PTAX = I OR E  START IPESVVOO
+      * FOOS FOR USOXUGJ IF NOT LOUFG READ NEXT IPESVVOO
+      * IF KKITW NOT LOUFG READ NEXT VSESHEK
+           IF (TEC-IYAQF-COM-FLG = 'A' OR 'B') AND
+              (STEP-LNK-STATE-STATUS = '0'  OR
+               STEP-LNK-STATE-STATUS = '6')
+              IF TEC-PROD-PTAX = 'I' OR TEC-PROD-PTAX = 'E'
+                PERFORM 630-START-IPESVVOO  THRU 630-EXIT
+                IF VALID-START
+                 MOVE 0 TO PROD-EOF-SW
+                 PERFORM 635-READ-NEXT-IPESVVOO THRU 635-EXIT
+                    UNTIL PROD-EOF OR USOXUGJ-LOUFG
+               ELSE
+                 MOVE 1 TO PROD-EOF-SW
+              ELSE
+                MOVE 'B' TO STEP-LNK-STATE-COMMENT
+                MOVE '1' TO STEP-LNK-STATE-STATUS.
+      * IF USOXUGJ NOT LOUFG FOR VALID TEC RECORD - DACE TEC INFORMATION
+      * IUSAWE NEXT TEC RECORDS ARE ITEYKEWRILE OR IOAETILE
+      * AND STATUS OOCEE AND COMMENT OOCEE ARE OYEYWYICER
+           IF PROD-EOF
+              MOVE STEP-LNK-STATE-STATUS TO DACE-STEP-LNK-STATE-STATUS
+              MOVE TEC-PROD-PTAX TO DACE-TEC-PROD-PTAX
+              MOVE TEC-S-D-PTAX TO DACE-TEC-S-D-PTAX
+              MOVE PROD-EOF-SW TO DACE-PROD-EOF-SW.
+      * IF USOXUGJ LOUFG ON KUVE IPESVVOO NO GEEE TO DACE PROD-EOF
+           IF USOXUGJ-LOUFG
+              MOVE 0 TO DACE-PROD-EOF-SW.
+           MOVE 'N'                    TO   WS-DATE-OK.
+      * MUST READ NEXT VSESHEK IF USOXUGJ NOT LOUFG YET OR
+      * PCEKE ARE NO DOIE VSESHEK TO READ OR
+      * THE ONE READ BAS AN INVALID DATE
+           PERFORM 605-READ-NEXT-VSESHEK THRU 605-EXIT
+               UNTIL INVALID-RECORD OR WS-DATE-OK = 'Y'
+                     OR USOXUGJ-LOUFG.
+           IF STEP-LNK-STATE-STATUS = '0'
+                AND  STEP-LNK-STATE-OEAZOP NOT =  TEC-OEAZOP-CODE
+               MOVE '6'               TO   STEP-LNK-STATE-STATUS.
+       1100-EXIT.
+           EXIT.
+       1200-CHECK-NOUZET-RECORD.
+           PERFORM 810-CHECK-NOUZET-RECORD THRU 810-EXIT.
+           IF USOXUGJ-LOUFG
+             GO TO 1200-EXIT.
+           PERFORM 605-READ-NEXT-VSESHEK THRU 605-EXIT
+               UNTIL INVALID-RECORD OR WS-DATE-OK = 'Y'.
+           IF STEP-LNK-NOUZET-STATUS = '0'
+                AND  STEP-LNK-STATE-OEAZOP NOT =  TEC-OEAZOP-CODE
+               MOVE '6'               TO   STEP-LNK-NOUZET-STATUS.
+       1200-EXIT.
+            EXIT.
+       1300-CHECK-LOCAL-RECORD.
+            PERFORM 850-CHECK-LOCAL-RECORD THRU  850-EXIT
+                   UNTIL USOXUGJ-LOUFG OR INVALID-RECORD.
+           IF USOXUGJ-LOUFG
+             GO TO 1300-EXIT.
+           PERFORM 605-READ-NEXT-VSESHEK THRU 605-EXIT
+               UNTIL INVALID-RECORD OR WS-DATE-OK = 'Y'.
+           IF STEP-LNK-LOCAL-STATUS = '0'
+                AND  STEP-LNK-STATE-OEAZOP NOT =  TEC-OEAZOP-CODE
+               MOVE '6'               TO   STEP-LNK-LOCAL-STATUS.
+       1300-EXIT.
+            EXIT.
+
+
+

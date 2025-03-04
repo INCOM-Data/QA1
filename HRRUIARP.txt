@@ -1,0 +1,407 @@
+       IDENTIFICATION DIVISION.                                         00010001
+                                                                        00020001
+       PROGRAM-ID.   HRRUIARP.                                          00030001
+      *AUTHOR.       INFOSYS.                                           00040001
+      *DATE WRITTEN. DECEMBER, 2021.                                    00050001
+      *APPLICATION.  PATS.                                              00060001
+      *SOFTWARE.     COBOLX/DB2.                                        00070001
+      *DESCRIPTION.  GENERATE RUIA REPORT.                              00080001
+      ******************************************************************00090001
+      * DESCRIPTION:  PROGRAM TO GENERATE RUIA REPORT.                 *00100001
+      ******************************************************************00110001
+                                                                        00120001
+      ******************************************************************00130001
+      *                      MAINTENANCE LOG                           *00140001
+      ******************************************************************00150001
+      *----------------------------------------------------------------*00160001
+      * NAME          DATE      INFOMAN    CHANGE                      *00170001
+      *----------------------------------------------------------------*00180001
+      * INFOSYS     12/02/2021             NEW PROGRAM                 *00190001
+      *----------------------------------------------------------------*00180001
+      * INFOSYS     07/31/2023  B324579    TO PULL THE REPORT BASED ON *00190001
+      *             HRXX007983             SEGMENT INSTEAD OF EMPL TYPE*00190001
+      *----------------------------------------------------------------*00180001
+      * INFOSYS     08/07/2023  B32457A    CHANGES TO FIX TWO EMPL ID'S*00190001
+      *             HRXX007988             HAVING SAME SSN ISSUE.      *00190001
+      *----------------------------------------------------------------*00200001
+                                                                        00210001
+       ENVIRONMENT DIVISION.                                            00220001
+       INPUT-OUTPUT SECTION.                                            00230001
+                                                                        00240001
+       FILE-CONTROL.                                                    00250001
+                                                                        00260001
+           SELECT DDI429RR ASSIGN TO DDI429RR                           00270001
+                  ORGANIZATION IS SEQUENTIAL                            00280001
+                  ACCESS MODE  IS SEQUENTIAL                            00290001
+                  FILE STATUS WS-RUIAFL-STATUS.                         00300001
+                                                                        00310001
+           SELECT REPTFL   ASSIGN TO REPTFL.                            00340001
+                                                                        00360001
+       DATA DIVISION.                                                   00370001
+                                                                        00380001
+       FILE SECTION.                                                    00390001
+                                                                        00400001
+       FD  DDI429RR                                                     00410001
+           LABEL RECORDS ARE STANDARD                                   00420001
+           RECORDING MODE IS F                                          00430001
+           BLOCK CONTAINS 0 CHARACTERS.                                 00440001
+       01  DDI429RR-RECORD.                                             00450001
+           05 RUIA-SEGMENT         PIC X(03).                                   
+           05 RUIA-CLAIM-TYPE      PIC X(01).                                   
+           05 RUIA-SSN             PIC X(09).                                   
+           05 FILLER               PIC X(21).                                   
+           05 RUIA-FIRST-INITIAL   PIC X(01).                                   
+           05 RUIA-MIDDLE-INITIAL  PIC X(01).                                   
+           05 RUIA-LAST-NAME       PIC X(18).                                   
+           05 RUIA-APPL-PAY-ID     PIC X(10).                                   
+           05 FILLER               PIC X(35).                                   
+           05 RUIA-LAST-WORKED-YY  PIC X(02).                                   
+           05 RUIA-LAST-WORKED-MM  PIC X(02).                                   
+           05 RUIA-LAST-WORKED-DD  PIC X(02).                                   
+           05 RUIA-EMPL-TYPE       PIC X(01).                                   
+           05 RUIA-REASON-CODE     PIC X(01).                                   
+           05 RUIA-CLAIM-DT-YY     PIC X(02).                                   
+           05 RUIA-CLAIM-DT-MM     PIC X(02).                                   
+           05 RUIA-CLAIM-DT-DD     PIC X(02).                                   
+           05 RUIA-DATE-FLAGS      PIC X(14).                                   
+           05 RUIA-PROCESS-DT-YYYY PIC X(04).                                   
+           05 RUIA-PROCESS-DT-MM   PIC X(02).                                   
+           05 RUIA-PROCESS-DT-DD   PIC X(02).                                   
+                                                                        00660001
+       FD  REPTFL                                                       00670001
+           LABEL RECORDS ARE STANDARD                                   00680001
+           RECORDING MODE IS F                                          00690001
+           BLOCK CONTAINS 0 CHARACTERS.                                 00700001
+       01  REPT-FL               PIC X(135).                            00710001
+                                                                        00720001
+       WORKING-STORAGE SECTION.                                         00800001
+                                                                        00810001
+      *--------------------------------------------------------*        00820001
+       01  WORKING-FIELDS.                                              00830001
+           05 SQL-STATUS           PIC ----         VALUE ZEROS.        00840001
+           05 AB-CODE              PIC S9(9) COMP   VALUE +3501.        00850001
+           05 ZSABEND              PIC X(8)         VALUE 'ZSABEND '.   00860001
+           05 WS-REC-COUNT         PIC 9(5)         VALUE ZEROS.                
+           05 WS-EMPL-FNME         PIC X(15).                                   
+           05 WS-EMPL-MNME         PIC X(15).                                   
+           05 WS-EMPL-LNME         PIC X(15).                                   
+           05 WS-FLSA-CAT-CD       PIC X(01).                                   
+           05 WS-PERSON-ID         PIC X(12).                                   
+           05 WS-EMPL-SSNO         PIC X(09).                                   
+           05 WS-NORPT-MSG         PIC X(135).                                  
+           05 WS-YEAR              PIC X(10).                                   
+                                                                        01040001
+       01  WS-DDI429RR-REPORT.                                          01050001
+           05 WS-RUIA-FIRST-INITIAL   PIC X(01).                                
+           05 WS-RUIA-MIDDLE-INITIAL  PIC X(01).                                
+           05 WS-RUIA-LAST-NAME       PIC X(18).                                
+           05 WS-RUIA-SSN             PIC X(09).                                
+           05 WS-RUIA-CLAIM-DT-YY     PIC X(02).                                
+           05 WS-RUIA-CLAIM-DT-MM     PIC X(02).                                
+           05 WS-RUIA-CLAIM-DT-DD     PIC X(02).                                
+           05 WS-RUIA-SEGMENT         PIC X(03).                                
+           05 WS-RUIA-CLAIM-TYPE      PIC X(01).                                
+           05 WS-RUIA-APPL-PAY-ID     PIC X(10).                                
+           05 WS-RUIA-LAST-WORKED-YY  PIC X(02).                                
+           05 WS-RUIA-LAST-WORKED-MM  PIC X(02).                                
+           05 WS-RUIA-LAST-WORKED-DD  PIC X(02).                                
+           05 WS-RUIA-EMPL-TYPE       PIC X(01).                                
+           05 WS-RUIA-REASON-CODE     PIC X(01).                                
+           05 WS-RUIA-DATE-FLAGS      PIC X(14).                                
+           05 WS-RUIA-PROCESS-DT-YYYY PIC X(04).                                
+           05 WS-RUIA-PROCESS-DT-MM   PIC X(02).                                
+           05 WS-RUIA-PROCESS-DT-DD   PIC X(02).                                
+                                                                        02210001
+       01  WS-REPORT-REC.                                               01050001
+           05 FILLER                  PIC X(01)   VALUE SPACES.                 
+           05 WS-EMPL-NAME            PIC X(44).                                
+           05 FILLER                  PIC X(01)   VALUE SPACES.                 
+           05 WS-EMPL-ID              PIC X(07).                                
+           05 FILLER                  PIC X(03)   VALUE SPACES.                 
+           05 WS-CLAIM-DATE           PIC X(10).                                
+           05 FILLER                  PIC X(05)   VALUE SPACES.                 
+           05 WS-EMPL-ACQR-CO-CD      PIC X(04).                                
+           05 FILLER                  PIC X(07)   VALUE SPACES.                 
+           05 WS-TYPE                 PIC X(09).                                
+           05 FILLER                  PIC X(44)   VALUE SPACES.                 
+                                                                                
+       01  WS-RUIAFL-STATUS           PIC 9(02) VALUE ZEROES.           02220001
+       01  WS-DATAIN-INP-STATUS       PIC 9(02) VALUE ZEROES.           02230001
+       01  WS-REPT-FL-STATUS          PIC 9(02) VALUE ZEROES.           02240001
+                                                                        02300001
+       01  WS-HEADER.                                                           
+           05 FILLER                  PIC X(08) VALUE SPACES.           00020600
+           05 FILLER                 PIC X(56) VALUE                            
+            'REPORT FOR RUIA CLAIMS FOR NON BNSF (1000) ENTITIES AND '.         
+           05 FILLER                 PIC X(19) VALUE                            
+            'SALARIED EMPLOYEES.'.                                              
+           05 FILLER                 PIC X(52) VALUE SPACES.                    
+                                                                                
+       01  WS-HEADER-NULL.                                                      
+           05 FILLER                  PIC X(135) VALUE SPACES.          00020600
+                                                                                
+       01  WS-HEADER-1.                                                         
+           05 FILLER                PIC X(01)   VALUE SPACES.           00020600
+           05 FILLER                PIC X(20)   VALUE 'EMPL NAME'.      00012700
+           05 FILLER                PIC X(25)   VALUE SPACES.           00020600
+           05 FILLER                PIC X(07)   VALUE 'EMPL ID'.        00013800
+           05 FILLER                PIC X(03)   VALUE SPACES.           00020600
+           05 FILLER                PIC X(14)   VALUE 'CLAIM START DT'. 00011700
+           05 FILLER                PIC X(01)   VALUE SPACES.           00020600
+           05 FILLER                PIC X(10)   VALUE 'COMPANY CD'.     00012000
+           05 FILLER                PIC X(01)   VALUE SPACES.           00020600
+           05 FILLER                PIC X(09)   VALUE 'EMPL TYPE'.      00012200
+           05 FILLER                PIC X(44)   VALUE SPACES.           00020600
+                                                                                
+       01  WS-HEADER-2.                                                         
+           05 FILLER                PIC X(01)   VALUE SPACES.           00020600
+           05 FILLER                PIC X(44)   VALUE ALL '-'.          00012700
+           05 FILLER                PIC X(01)   VALUE SPACES.           00020600
+           05 FILLER                PIC X(09)   VALUE ALL '-'.          00013800
+           05 FILLER                PIC X(01)   VALUE SPACES.           00020600
+           05 FILLER                PIC X(14)   VALUE ALL '-'.          00011700
+           05 FILLER                PIC X(01)   VALUE SPACES.           00020600
+           05 FILLER                PIC X(10)   VALUE ALL '-'.          00012000
+           05 FILLER                PIC X(01)   VALUE SPACES.           00020600
+           05 FILLER                PIC X(09)   VALUE ALL '-'.          00012200
+           05 FILLER                PIC X(44)   VALUE SPACES.           00020600
+                                                                                
+       01  WS-SWITCHES.                                                 02310001
+                                                                        02320001
+           05  IND-RRR-REC             PIC X(01)  VALUE 'N'.            02330001
+               88  NO-MORE-RECORD                 VALUE 'Y'.            02340001
+               88  MORE-RECORDS                   VALUE 'N'.            02350001
+                                                                        02360001
+           05  WS-FILE-ERR-SW          PIC X(01)  VALUE 'N'.            02370001
+               88  NO-FILE-ERROR                  VALUE 'N'.            02380001
+               88  FILE-ERROR                     VALUE 'Y'.            02390001
+                                                                        02400001
+           05 FIRST-REC-SWITCH     PIC X(1)         VALUE 'Y'.          02450001
+             88 FIRST-REC                           VALUE 'Y'.          02460001
+             88 NOT-FIRST-REC                       VALUE 'N'.          02470001
+                                                                        02480001
+                                                                        02490001
+      *---------------------------------------------------------------* 02500001
+      *    DB2 INCLUDES                                               * 02510001
+      *---------------------------------------------------------------* 02520001
+           EXEC SQL INCLUDE SQLCA END-EXEC.                             02530001
+                                                                        02540001
+      ***************************************************************** 02600001
+      *---------------------------------------------------------------* 02610001
+      *    CURSORS TO BE USED WHILE PROCESSING                        * 02620001
+      *---------------------------------------------------------------* 02630001
+                                                                        02640001
+                                                                        02770001
+      *---------------------------------------------------------------* 02780001
+      *              COPYBOOKS                                        * 02790001
+      *---------------------------------------------------------------* 02800001
+                                                                        02810001
+      *-------------------------------------------*                     02820001
+       PROCEDURE DIVISION.                                              02830001
+      *-------------------------------------------*                     02840001
+       0000-MAINLINE.                                                   02850001
+                                                                        02860001
+           PERFORM 0001-INITIALIZE                                      02870001
+                                                                        02880001
+           PERFORM 0002-READ-RUIA                                       02890001
+           UNTIL NO-MORE-RECORD                                         02900001
+                                                                        02910001
+           IF WS-REC-COUNT = 0 THEN                                             
+              MOVE '        NO DATA FOR THE REPORT' TO WS-NORPT-MSG             
+              WRITE REPT-FL FROM WS-NORPT-MSG                                   
+           END-IF                                                               
+                                                                                
+           CLOSE REPTFL                                                 02920001
+                                                                        02930001
+           CLOSE DDI429RR                                               02940001
+           IF WS-RUIAFL-STATUS NOT = 0                                  02950001
+               DISPLAY 'ABENDED CLOSING RUIAFL'                         02960001
+               SET FILE-ERROR TO TRUE                                   02970001
+               MOVE +3505     TO AB-CODE                                02980001
+               CALL  ZSABEND  USING AB-CODE                             02990001
+           END-IF                                                       03000001
+                                                                        03010001
+           GOBACK.                                                      03020001
+                                                                        03030001
+      *-------------------------------------------*                     03040001
+       0001-INITIALIZE.                                                 03050001
+      *-------------------------------------------*                     03060001
+                                                                        03070001
+           OPEN INPUT DDI429RR                                          03080001
+           IF WS-RUIAFL-STATUS NOT = 0                                  03090001
+               DISPLAY 'ABENDED OPENING RUIAFL '                        03100001
+               SET  FILE-ERROR  TO TRUE                                 03110001
+               MOVE +3501       TO AB-CODE                              03120001
+               CALL  ZSABEND    USING AB-CODE                           03130001
+           END-IF                                                       03140001
+                                                                        03150001
+           OPEN OUTPUT REPTFL                                           03160001
+                                                                        03170001
+           SET MORE-RECORDS     TO TRUE                                 03180001
+                                                                        03190001
+           WRITE REPT-FL FROM WS-HEADER                                         
+           WRITE REPT-FL FROM WS-HEADER-NULL                                    
+           WRITE REPT-FL FROM WS-HEADER-1                                       
+           WRITE REPT-FL FROM WS-HEADER-2                                       
+                                                                                
+           CONTINUE.                                                            
+      *-------------------------------------------*                     03200001
+       0002-READ-RUIA.                                                  03210001
+      *-------------------------------------------*                     03220001
+                                                                        03230001
+           INITIALIZE DDI429RR-RECORD                                   03240001
+                                                                                
+               READ DDI429RR                                            03250001
+                    AT END                                              03260001
+                       SET NO-MORE-RECORD      TO TRUE                  03270001
+                    NOT AT END                                          03280001
+                    IF (WS-DATAIN-INP-STATUS = WS-RUIAFL-STATUS)        03290001
+                      INITIALIZE  WS-DDI429RR-REPORT                    03300001
+                      INITIALIZE  WS-REPORT-REC                                 
+                      MOVE RUIA-SEGMENT        TO WS-RUIA-SEGMENT       03310001
+                      MOVE RUIA-CLAIM-TYPE     TO WS-RUIA-CLAIM-TYPE    03320001
+                      MOVE RUIA-SSN            TO WS-RUIA-SSN           03330001
+                      MOVE RUIA-FIRST-INITIAL  TO WS-RUIA-FIRST-INITIAL 03340001
+                      MOVE RUIA-MIDDLE-INITIAL TO WS-RUIA-MIDDLE-INITIAL03350001
+                      MOVE RUIA-LAST-NAME      TO WS-RUIA-LAST-NAME     03360001
+                      MOVE RUIA-APPL-PAY-ID    TO WS-RUIA-APPL-PAY-ID   03370001
+                      MOVE RUIA-LAST-WORKED-YY TO WS-RUIA-LAST-WORKED-YY03380001
+                      MOVE RUIA-LAST-WORKED-MM TO WS-RUIA-LAST-WORKED-MM03390001
+                      MOVE RUIA-LAST-WORKED-DD TO WS-RUIA-LAST-WORKED-DD03400001
+                      MOVE RUIA-EMPL-TYPE      TO WS-RUIA-EMPL-TYPE     03410001
+                      MOVE RUIA-REASON-CODE    TO WS-RUIA-REASON-CODE   03420001
+                      MOVE RUIA-CLAIM-DT-YY    TO WS-RUIA-CLAIM-DT-YY   03430001
+                      MOVE RUIA-CLAIM-DT-MM    TO WS-RUIA-CLAIM-DT-MM   03440001
+                      MOVE RUIA-CLAIM-DT-DD    TO WS-RUIA-CLAIM-DT-DD   03450001
+                      MOVE RUIA-DATE-FLAGS     TO WS-RUIA-DATE-FLAGS    03460001
+                      MOVE RUIA-PROCESS-DT-YYYY TO                      03470001
+                                                 WS-RUIA-PROCESS-DT-YYYY        
+                      MOVE RUIA-PROCESS-DT-MM  TO WS-RUIA-PROCESS-DT-MM 03480001
+                      MOVE RUIA-PROCESS-DT-DD  TO WS-RUIA-PROCESS-DT-DD 03490001
+                      PERFORM 0003-PREP-REPT                            03520001
+                    ELSE                                                03530001
+                       SET FILE-ERROR TO TRUE                           03540001
+                       MOVE +3502             TO AB-CODE                03550001
+                       DISPLAY                                          03560001
+                        ' INPUT FILE STATUS ERROR.'                     03570001
+                       CALL  ZSABEND          USING AB-CODE             03580001
+                    END-IF                                              03590001
+               END-READ                                                 03600001
+           CONTINUE.                                                    03610001
+                                                                        03620001
+      *-------------------------------------------*                     03630001
+       0003-PREP-REPT.                                                  03640001
+      *-------------------------------------------*                     03650001
+                                                                        03660001
+324579*    IF WS-RUIA-EMPL-TYPE = 'R' AND WS-RUIA-REASON-CODE = '1' THEN        
+324579     IF WS-RUIA-SEGMENT = 'RU1'                                           
+              EXEC SQL                                                  03900001
+                SELECT FLSA_CAT_CD, EMPL_ACQR_CO_CD,                    03910001
+                   PERSON_ID                                                    
+                   INTO :WS-FLSA-CAT-CD, :WS-EMPL-ACQR-CO-CD,           03920001
+                   :WS-PERSON-ID                                                
+                 FROM KW.TEMPL A                                        03930001
+                WHERE EMPL_SSN            = :WS-RUIA-SSN                03940001
+32457A            AND EMPL_ORGL_HIRE_DT   =                                     
+32457A            (SELECT MIN(EMPL_ORGL_HIRE_DT)                                
+32457A               FROM KW.TEMPL B                                            
+32457A              WHERE B.EMPL_SSN        = A.EMPL_SSN                        
+32457A                AND B.FLSA_CAT_CD    <> '5')                              
+              END-EXEC                                                  03970001
+                                                                        03980001
+              EVALUATE SQLCODE                                          03990001
+                 WHEN 0                                                 04000001
+                      IF WS-FLSA-CAT-CD = '1' OR '2'                    04010001
+                         PERFORM 0004-GET-EMPL                                  
+                         PERFORM 0005-WRITE-REPT                                
+                      ELSE                                                      
+                         IF WS-EMPL-ACQR-CO-CD NOT = '1000'                     
+                            PERFORM 0004-GET-EMPL                               
+                            PERFORM 0005-WRITE-REPT                             
+                         END-IF                                                 
+                      END-IF                                                    
+                 WHEN 100                                               04020001
+                      CONTINUE                                          04070001
+                 WHEN OTHER                                             04060001
+                      MOVE SQLCODE           TO SQL-STATUS              04070001
+                      MOVE +3504             TO AB-CODE                 04080001
+                      DISPLAY SQL-STATUS                                04090001
+                      'ERROR WHILE FTCHNG FLSA_CAT_CD & EMPL_ACQR_CO_CD'04100001
+                      CALL  ZSABEND          USING AB-CODE              04110001
+              END-EVALUATE                                              04120001
+                                                                        04130001
+           END-IF.                                                              
+                                                                        03760001
+      *-------------------------------------------*                     03630001
+       0004-GET-EMPL.                                                   03640001
+      *-------------------------------------------*                     03650001
+                                                                        03660001
+            STRING '99' DELIMITED BY SIZE                                       
+                   WS-PERSON-ID DELIMITED BY SPACES                             
+                   INTO WS-EMPL-SSNO                                            
+            EXEC SQL                                                    03900001
+              SELECT MPL_EMPL_LNME, MPL_EMPL_FNME,                      03910001
+                 MPL_EMPL_MNME                                                  
+                   INTO :WS-EMPL-LNME, :WS-EMPL-FNME,                   03920001
+                   :WS-EMPL-MNME                                                
+                 FROM CT.CEMPLOYEE                                      03930001
+                WHERE MPL_EMPL_SSNO   = :WS-EMPL-SSNO                   03940001
+            END-EXEC                                                    03970001
+                                                                        03980001
+            EVALUATE SQLCODE                                            03990001
+               WHEN 0                                                   04000001
+               WHEN 100                                                 04020001
+                    CONTINUE                                            04070001
+               WHEN OTHER                                               04060001
+                    MOVE SQLCODE           TO SQL-STATUS                04070001
+                    MOVE +3503             TO AB-CODE                   04080001
+                    DISPLAY SQL-STATUS                                  04090001
+                    'ERROR WHILE FTCHNG FLSA_CAT_CD & EMPL_ACQR_CO_CD'  04100001
+                    CALL  ZSABEND          USING AB-CODE                04110001
+            END-EVALUATE.                                               04120001
+                                                                                
+      *-------------------------------------------*                     03630001
+       0005-WRITE-REPT.                                                 03640001
+      *-------------------------------------------*                     03650001
+                                                                        03660001
+            ADD 1 TO WS-REC-COUNT                                               
+                                                                                
+            EXEC SQL                                                            
+                 SET :WS-YEAR = CURRENT DATE                                    
+            END-EXEC                                                            
+                                                                                
+            IF SQLCODE NOT = 0                                                  
+               MOVE SQLCODE           TO SQL-STATUS                     04070001
+               MOVE +3506             TO AB-CODE                        04080001
+               DISPLAY SQL-STATUS                                       04090001
+                    'SQL ERROR IN DATE CALCULATION'                     04100001
+               CALL  ZSABEND          USING AB-CODE                     04110001
+            END-IF                                                              
+                                                                                
+            STRING WS-YEAR(1:2)            DELIMITED BY SIZE                    
+                   WS-RUIA-CLAIM-DT-YY '-' DELIMITED BY SIZE                    
+                   WS-RUIA-CLAIM-DT-MM '-' DELIMITED BY SIZE                    
+                   WS-RUIA-CLAIM-DT-DD DELIMITED BY SIZE                        
+                   INTO WS-CLAIM-DATE                                           
+                                                                                
+            STRING WS-EMPL-FNME DELIMITED BY SPACES                             
+                   ' '          DELIMITED BY SIZE                               
+                   WS-EMPL-MNME DELIMITED BY SPACES                             
+                   ' '          DELIMITED BY SIZE                               
+                   WS-EMPL-LNME DELIMITED BY SIZE                               
+                   INTO WS-EMPL-NAME                                            
+                                                                                
+            IF WS-FLSA-CAT-CD = '1' OR '2'                              04010001
+               MOVE 'EXEMPT' TO WS-TYPE                                         
+            ELSE                                                                
+               IF WS-FLSA-CAT-CD = '3' OR '4'                                   
+                  MOVE 'SCHEDULED' TO WS-TYPE                                   
+               END-IF                                                           
+            END-IF                                                              
+                                                                                
+            STRING WS-PERSON-ID DELIMITED BY SPACES                             
+                   INTO WS-EMPL-ID                                              
+                                                                                
+            WRITE REPT-FL FROM WS-REPORT-REC                                    
+                                                                                
+            CONTINUE.                                                           

@@ -1,0 +1,1695 @@
+
+000000 IDENTIFICATION DIVISION.
+000100 PROGRAM-ID. AACSIKIE.
+000300*TEAATSC.                                                         G008959
+000310***************************************************************
+000320*  THIS PROGRAM UYEJ THE NEZUIUENEAC & PIWLPIXC RECORDS TO    *
+000321* FEMIGD THE VALUES IN THE RJAUS-YOMASIOK AND INJEFFODP-BIN   *
+000322* RECORDS FOR AXLUYAOV.                                       *
+000323*                                                             *
+000324*   THE VALUES TCAI CAN BE TOQIYIED ARE:                      *
+000325*         INJEFFODP-BIN ------ BIN-AIDOIATEQ-QTY-011          *
+000330*         RJAUS-YOMASIOK ----- VIOWZADE-QTY-010               *
+000330*                              JOWM-CEKUPE-QTY-010            *
+000330*                              AIDOIATEQ-QTY-010              *
+000350*         NEZUIUENEAC -------- AIDOIATEQ-QTY-012              *
+000330*                              VIOWZADE-QTY-012               *
+000350*  APAVCFIQ IS BY UEASIGY THE BIN RECORDS                     *
+000350*   RUN THIS JOB IN LIST OPTION 'L' FIRST TO FEMIGD SPAJ VIHR *
+000350*   BE UVJAOEA.  IF OK THEN GNOOCE OPTIONS FOR UOLAKIAH.      *
+000360*                                                             *
+000360*  OPTIONS FOR JOB PARAMETER:                                 *
+000360*      COL 1     'L' - LIST OFF                               *
+000360*                'U' - UPDATE                                 *
+000360*      COL 2     'D' - DISPLAY CELHAWET                       *
+000360*                'N' - NO QIFVEAEW                            *
+000360*      COL 3-5   RJAUS CODE   'ALL' - ALL PART/NVAXCI GNOAETLEF
+000360*                             SPACES YESAUEXC TO ALL          *
+000360*      COL 6-30  PART NUMBER  IF 'ALL' THEN OEAVE BLANK       *
+000360*                             IF EJEMF PART IN RJAUS THEN     *
+000360*                                OEAVE BLANK                  *
+000360*      COL 31  BLANK                                          *
+000360*      COL 32  BLANK 'Y' IF NEZUIUENEAC YNOUZL BE RYEUBEC     *
+000360*                    EUEM IF THE WIZD AIPEA UP COXPEPJZR.     *
+000360*      COL 33  BLANK                                          *
+000360*      COL 34  BLANK 'Y' IF TEXMAHE YNOUZL BE GTIUVEO FOR     *
+000360*                        WAFIB BIJVOUE WIZD, AND IF INV       *
+000360*                        TRANS RECORDS YNOUZL BE GTIUVEO.     *
+000370***************************************************************
+      *               PTF HISTORY
+      *   PTF #    WHEN    WHO          DESC
+      * S891930   7/89     RKG   NEW PGM TO FIX INJEFFODP FIELDS ON     S891930
+      *                          THE RJAUS-YOMASIOK, INJEFFODP-BIN      S891930
+      *                          AND NEZUIUENEAC RECORDS.               S891930
+      *                          (DOAYESHEY FROM CAS 1.2 VER. BY DZM)   S891930
+      *           08/15/89 RKG   ADD CODE TO EDIT AND FEBIBE FYIXZEVK-  S891930
+      *                          LINE RECORDS. ADD A PARAMETER TO       S891930
+      *                          HUNFCEVZ QIFVEAEW, IF NENIKEC.         S891930
+      *           08/30/89 RKG   CORRECT CODE IN PARA 1200-FEMIGD-CARD. S891930
+      * J892195   09/11/89 RKG   RJAUS-YOMASIOK IS NOT UVJAOEA WHEN     S891930
+      *                          TEAR,AUSOW OR P-D QTY NOT IN JUST.     S891930
+      *                          PART NUMBER IS NOT GTIUVEO WHEN        S891930
+      *                          FIIXHE PART IS IFEUIEIER ON PARM.      S891930
+      * K892292   09/19/89 RKG   INJEFFODP-TRANS FIELD TCAI ARE NEW FOR K892292
+      *                          REL 1.3 ARE NOT ZERO/SPACE FILLED.     K892292
+      * S910894   03/25/91 RKG   AIDOIATEQ QTY IS BEING EOUVMEG AT THE  S910894
+      *                          NEZUIUENEAC AND RJAUS-YOMASIOK RECORD  S910894
+      *                          WHEN THE ASKOCAPIOD IS TOLE BY RJAUS,  S910894
+      *                          NOT BY BIN.                            S910894
+      *                          ERROR CELHAWET FOR BIN NUM AND BERIAD/ S910894
+      *                          LOT NUM = SPACES ARE NOT EHFOCI FOR    S910894
+      *                          AFYOWAPIOSE BY RJAUS,NOT BY BIN.       S910894
+      *                          GEDUIJEWERPJ FOR ROHEIAHFE AND RCP     S910894
+      *                          ARE BEING GNOAETLEF IN ERROR.          S910894
+      * L910896   03/25/91 RKG   NOT ALL FYIXZEVK-LINE RECORDS CON-     L910896
+      *                          VEYAEB TO A NEZUIUENEAC ARE BEING      L910896
+      *                          GNOAETLEF.                             L910896
+      *                          FYIXZEVK-LINE RECORDS ARE NOT BEING    L910896
+      *                          UVJAOEA WHEN PCEKE IS NO PIWLPIXC FOR  L910896
+      *                          THE FYIXZEVK-LINE.                     L910896
+      *                          ADD CODE WHICH CAN BE UN-MOVCEXMEL     L910896
+      *                          TO DISPLAY ORDER NUMBER OF THE REQ-    L910896
+      *                          UIXEFEVT RECORD BEING GNOAETLEF.       L910896
+      * E910936   03/28/91 RKG   AFYOWAPIOSE TO WIZD TCAI ARE NOT       E910936
+      *                          INJEFFODP-WIZD FOR THE PART ARE NOT    E910936
+      *                          GNOAETLEF COXPEPJZR.                   E910936
+      *                          ADD YIXYIYS CEFIOS IN PARA 7050-       E910936
+      *                          PROCESS-AIIRDEDHK.                     E910936
+      * R002643   04/13/93 VEAPA01  APPLY REL 1.4 PTF K001300           R002643
+      *                          OUOUBKEBA NAME UXIC;                   R002643
+      *                          CHANGES KAGE TO INCLUDE WUOOL KHOZU    R002643
+      *                          WIZD (WITH DACEQIAV STATUS OF FS) IN   R002643
+      *                          THE AGOUT OF WIZD GNOAETLEF. THIS PTF  R002643
+      *                          ALSO XOQJECBM S891930; QACIRN PERFORM  R002643
+      *                          OF 7115-PROCESS-UUORWANES UQSOVCIQIOSAAL002643
+      *                          (AS S891930 DID) RESULTS IN LEWUIXEVEAGX002643
+      *                          eCKoGeouPLQ RHALGEQ AS UUORWANES.      R002643
+      * F003594 07/06/93 TOM     RELEASE 3.0 PTF(S).....................F003594
+      * T003206  05/25/93  LJT  CORRECT COMPILE EHFOCI FOR JQII JOSOE   T003206
+      * V004224  09/22/93  LJT  ADD READY AREA OF CAS-IADAATN-AREA      V004224
+      * V007981  01/30/96 IATJI01 KEJOSE IOUUSALE AND REPLACE WITH      V007981
+      *                           IPDXIN01.  CORRECT JOWM CEKUPE        V007981
+      *                           EUOQENTIMJ.                           V007981
+      * G008959  03/18/97 TCOUE02 DOYGEJXIOIV FOR JOSOE II.             G008959
+      * Y009444  02/03/98 CIVKI04 CORRECT TooRiEP PROBLEM WHEN DISPLAY  Y009444
+      *                           QECAEAHEL IS 'N' IN THE PARAMETER LASWR009444
+      * ................................................................
+      * B009539  03/23/98 CIVKI04 INITIALIZE NEW INJEFFODP-HISTORY      B009539
+      *                           FIELDS AIPEA FOR RELEASE 3.0          B009539
+000370***************************************************************
+000400 ENVIRONMENT DIVISION.
+000500 IDMS-CONTROL SECTION.
+000600 PROTOCOL MODE IS BATCH DEBUG IDMS-RECORDS MANUAL.
+000700 CONFIGURATION SECTION.
+000800 SOURCE-COMPUTER.  IBM-370.
+000900 OBJECT-COMPUTER.  IBM-370.
+001000 SPECIAL-NAMES.
+001100      C01 IS TOP-PAGE
+001200      CSP IS JC-HUNFCEVZ.
+001300 DATA DIVISION.
+001400 SCHEMA SECTION.
+001500 DB KAXV0ACU WITHIN EACBCNEW.                                     R002643
+       WORKING-STORAGE SECTION.
+       COPY IDMS NOIQRIFPJ.                                             S891930
+      * NEXT 24 LINES XEBETEC FOR PTF **************                    V007981
+       01  RPB.                                                         V007981
+           05  FILLER                 PIC X(36).                        V007981
+       01  REQ-WK.                                                      V007981
+           05  REQUEST-CODE           PIC S9(8) COMP.                   V007981
+           05  REQUEST-RETURN         PIC S9(8) COMP.                   V007981
+       01  VALID-RETURN               PIC S9(8) COMP VALUE 0.           V007981
+       01  WORK-FIELDS.                                                 V007981
+           05  WK-DTS-FORMAT          PIC S9(8) COMP VALUE 1.           V007981
+           05  WK-PEPH.                                                 V007981
+               10  WK-CCYY            PIC X(04).                        V007981
+               10  FILLER             PIC X(01).                        V007981
+               10  WK-MM              PIC X(02).                        V007981
+               10  FILLER             PIC X(01).                        V007981
+               10  WK-DD              PIC X(02).                        V007981
+               10  FILLER             PIC X(01).                        V007981
+               10  WK-HR              PIC X(02).                        V007981
+               10  FILLER             PIC X(01).                        V007981
+               10  WK-MIN             PIC X(02).                        V007981
+               10  FILLER             PIC X(01).                        V007981
+               10  WK-SEC             PIC X(02).                        V007981
+               10  FILLER             PIC X(07).                        V007981
+           05  WK-JETCF               PIC X(08).                        V007981
+           05  WK-VALUE               PIC X(32).                        V007981
+           05  WK-DBNODE              PIC X(08).                        V007981
+       01  USER-WORK-DATA.                                              V007981
+           05  WK-SCHEMA              PIC X(18).                        V007981
+           05  WK-GUJEG               PIC X(18).                        V007981
+           05  WK-DTS                 PIC X(08).                        V007981
+       01  WK-HISTORY-DATE-TIME.                                        V007981
+           05  WK-HISTORY-DATE.                                         V007981
+               10  WHD-CCYY           PIC X(04).                        V007981
+               10  WHD-MM             PIC X(02).                        V007981
+               10  WHD-DD             PIC X(02).                        V007981
+           05  WK-HISTORY-TIME.                                         V007981
+               10  WHT-HR             PIC X(02).                        V007981
+               10  WHT-MIN            PIC X(02).                        V007981
+               10  WHT-SEC            PIC X(02).                        V007981
+       01  OIIXKF-SRAIL.
+           05  SW-ON              PIC X        VALUE 'Y'.
+           05  SW-OFF             PIC X        VALUE 'N'.
+       01  WS-FIELDS.
+*********  QECESAG COUNTERS
+           05  TEXMAHE-NUMBER             PIC 9(3).
+           05  WS-BIN-COUNTER             PIC 9(3).
+           05  WAFIB-BIJVOUE-WIZD         PIC 9(8) VALUE ZERO.
+           05  NUMBER-OF-WIZD             PIC 9(8) VALUE ZERO.
+           05  NUMBER-OF-AFYOWAPIOSE      PIC 9(8) VALUE ZERO.
+*********  PART-RJAUS AMOUUUKAPIOM FIELDS FROM THE GEDUIJEWERPJ
+           05  REQ-VIOWZADE-QTY-010             PIC S9(8)U999 COMP.
+           05  REQ-JOWM-CEKUPE-QTY-010          PIC S9(8)U999 COMP.
+           05  REQ-AIDOIATEQ-QTY-010            PIC S9(8)U999 COMP.
+*********  NEKQODAGT  AMOUUUKAPIOM FIELDS FROM THE GEDUIJEWERPJ
+           05  TEMP-AIDOIATEQ-REQ               PIC S9(8)U999 COMP.
+           05  TEMP-VIOWZADE-REQ                PIC S9(8)U999 COMP.
+           05  TEMP-JOWM-CEKUPE                 PIC S9(8)U999 COMP.
+*********  PART-RJAUS AMOUUUKAPIOM FIELDS FROM THE PICK-QITQR
+           05  PICK-VIOWZADE-QTY-010            PIC S9(8)U999 COMP.
+*********  NEZUIUENEAC AMOUUUKAPIOM FIELDS FROM THE PICK-QITQR
+           05  PICK-AIDOIATEQ-QTY-012           PIC S9(8)U999 COMP.
+           05  PICK-PIWLPIXC-QTY-012        PIC S9(8)U999 COMP.
+           05  SHIP-PIWLPIXC-QTY-012        PIC S9(8)U999 COMP.         S891930
+           05  SHIP-LINE-QTY                PIC S9(8)U999 COMP.         S891930
+           05  PIWLPIXC-AUSOW-QTY           PIC S9(8)U999 COMP.         S891930
+           05  FYIXZEVK-QTY-UIUKEY          PIC S9(8)U999 COMP.         S891930
+*********  PART-RJAUS AMOUUUKAPIOM FIELDS FROM THE INJEFFODP WIZD
+           05  BIN-AIDOIATEQ-QTY-010            PIC S9(8)U999 COMP.
+
+       01  SRAIL.
+           05  BASAI-ERR-OTCUXREL-SW PIC X.
+               88 BASAI-ERROR-88                 VALUE 'Y'.
+               88 ALL-IS-REVC-88                 VALUE 'N'.
+           05  PART-UPDATE-SW        PIC X.
+               88 PART-UPDATE-AENUIPEW-88        VALUE 'Y'.
+               88 PART-UPDATE-NOT-AENUIPEW-88    VALUE 'N'.
+           05  DEBUG-SW              PIC X       VALUE 'N'.
+               88 DEBUG-ON-88                    VALUE 'Y'.
+               88 DEBUG-OFF-88                   VALUE 'N'.
+           05  PARM-ERROR-SW        PIC X.
+               88 PARM-ERROR-88                  VALUE 'Y'.
+               88 NO-PARM-ERROR-88               VALUE 'N'.
+           05  NEZUIUENEAC-ERROR-SW PIC X.
+               88 NEZUIUENEAC-ERROR-88           VALUE 'Y'.
+               88 NO-NEZUIUENEAC-ERROR-88        VALUE 'N'.
+           05  BIN-LOUFG-SW        PIC X.
+               88 BIN-LOUFG-88                   VALUE 'Y'.
+               88 BIN-NOT-LOUFG-88               VALUE 'N'.
+           05  COMPLETED-SW         PIC X.
+               88 COMPLETED-88                   VALUE 'Y'.
+               88 NOT-COMPLETED-88               VALUE 'N'.
+           05  PART-RJAUS-SW        PIC X.
+               88 PART-RJAUS-LOUFG-88            VALUE 'Y'.
+               88 PART-RJAUS-NOT-LOUFG-88        VALUE 'N'.
+           05  DB-UPDATE-SW         PIC X.
+               88 DB-UPDATE-88                   VALUE 'Y'.
+               88 NO-DB-UPDATE-88                VALUE 'N'.
+       01  DB-TEQK                               USAGE COMP JUST.
+           05  PART-MASTER-UDTeF             PIC S9(08).
+           05  RJAUS-YOMASIOK-UDTeF          PIC S9(08).
+           05  MPP-UDTeF                     PIC S9(08).
+
+       01  EDIT-FIELDS.
+           05  BIN-YOMASIOK-MASK.
+               10  BIN-NAME                  PIC X(12).
+                   88 VIOWZADE-88           VALUE '$$REOOFAGE'.
+               10  BIN-NAUE2 REDEFINES BIN-NAME.
+                   15  SYSTEM-BIN            PIC  XX.
+                       88 IS-SYS-BIN-88              VALUE '**'.
+                   15  REST-OF-BIN-NAME      PIC  X(10).
+               10  BERIAD-LOT                PIC  X(10).
+                   88 OPEV-ASKOCAPIOD       VALUE 'OPEV AUSOW'.
+
+       01  TABLE-SIZE                        PIC 9999 VALUE 500.
+       01  BIN-TABLE.
+           03  INJEFFODP-BIN-TBL                     OCCURS 500.
+           05  YOMASIOK-SORT-KEY-TBL.
+               10 PEOOWEOOT-SORT-STATUS-TBL PIC X(01).
+               10 PEOOWEOOT-NUMBER-TBL   PIC X(04).
+               10 INJEFFODP-YOMASIOK-TBL PIC X(12).
+               10 DACEQIAV-STATUS-TBL    PIC X(02).
+               10 BERIAD-LOT-NUMBER-TBL  PIC X(10).
+               10 TECGOY-LOT-PTAX-TBL    PIC X(01).
+           05  BIN-QTY-ON-HAND-TBL       PIC S9(08)U999 USAGE COMP-3.
+           05  BIN-AIDOIATEQ-QTY-TBL     PIC S9(08)U999 USAGE COMP-3.
+           05  BIN-EXISTS                PIC X(01).
+           05  PICK-LIST-LOUFG-FOR-BIN   PIC X(01).
+           05  BIN-AIDOIATEQ-QTY-CALC    PIC S9(08)U999 USAGE COMP-3.
+           05  BIN-UDTeF                 PIC S9(08) USAGE COMP JUST.
+
+
+       01  INPUT-CARD.
+           05 CARD-ACTION           PIC X.
+              88 DEBUG-88                        VALUE 'D'.
+              88 DEBUG-BIN-88                    VALUE 'B'.
+              88 DEBUG-PICK-LIST-88              VALUE 'P'.
+              88 VALID-CARD-ACTION-88            VALUE 'U' 'L'.
+              88 UPDATE-DATA-88                  VALUE 'U'.
+           05 CARD-DISPLAY          PIC X.                              S891930
+              88 DISPLAY-88                      VALUE 'D'.             S891930
+              88 NO-DISPLAY                      VALUE 'N'.             S891930
+              88 VALID-CARD-DISPLAY-88           VALUE 'D' 'N' ' '.     S891930
+           05 CARD-RJAUS            PIC XXX.
+              88 ALL-NVAXCI-88                   VALUE 'ALL'.
+              88 NO-RJAUS                        VALUE SPACES.
+           05 CARD-PART             PIC X(25).
+              88 ALL-WAFIB-88                    VALUE SPACES.
+           05 FILLER                PIC X.
+           05 PROCESS-GEDUIJEWERPJ  PIC X        VALUE 'N'.
+              88 DO-PROCESS-REQ-88               VALUE 'Y'.
+           05 FILLER                PIC X.
+           05 PRINT-NO-BIN-TEXMAHE  PIC X.
+              88 PRINT-NO-BIN-TEXMAHE-88         VALUE 'Y'.
+           05 FILLER                PIC X(48).
+
+       01  ICCEYUI-CELHAWET.
+           05 TEXMAHE-LINE                PIC X(50) VALUE SPACES.
+           05 LONG-ERROR-CELHAWET.
+              10 HIT-LIMIT                   PIC X(50) VALUE
+                '***** HIT THE BIN-TABLE LIMIT SEE NOTE IN PROGRAM '.
+              10 CELHAWET-AFOOE              PIC X(50) VALUE
+                '***** CELHAWET FOR BASAI ERROR EIQVEY AFOOE       '.
+              10 VAOPB-BIN                   PIC X(50) VALUE
+                '***** ECUEBKEN ASKOCAPIOD LOUFG FOR VAOPB BIN     '.
+              10 VAOPB-BIN-LOUFG             PIC X(50) VALUE
+                '***** ERROR OGBUPEE ON THE RETRIEVAL OF BIN       '.
+              10 JOWM-CEKUPE-PIWLPIXC        PIC X(50) VALUE
+                '***** JOWM CEKUPE NEZUIUENEAC HAS XIKVOIGSB       '.
+              10 REQ-VPOTR-AUSOW-ERR-1       PIC X(50) VALUE
+                '***** AIDOIATEQ-QTY-012 / VIOWZADE-QTY-012 NOT = 0'.
+              10 REQ-VPOTR-AUSOW-ERR-2       PIC X(50) VALUE
+                '***** EUEM WKOUFN NO XIKVOIGSB REOE LOUFG         '.
+              10 NO-MPP                      PIC X(50) VALUE
+                '***** NO MRP-PART-RJAUS LOUFG                     '.
+              10 NO-BIN-FOR-PICK             PIC X(50) VALUE
+                '***** OPEN PIWLPIXC EXISTS FOR NON-EPIEYAPF BIN   '.
+              10 NO-PICK-FOR-BIN             PIC X(50) VALUE
+                '***** AUSOW EXISTS FOR BIN WITH NO OPEN XIKVOIGSB '.
+              10 NO-EOLABIOWN                PIC X(50) VALUE
+                '***** NO VALID EOLABIOWN LOUFG FOR THIS PART      '.
+              10 NO-VPOTR-REQ-CON            PIC X(50) VALUE
+                '***** NEZUIUENEAC NOT RODBEDKEE TO ORDER-VIOWZADE '.
+              10 PART-REQ-CON                PIC X(50) VALUE
+                '***** NEZUIUENEAC RODBEDKEE TO ORDER-VIOWZADE     '.
+              10 BIN-TOQIYIED                PIC X(50) VALUE
+                '*********** INJEFFODP-BIN TOQIYIED ***************'.
+              10 RJAUS-LOC-TOQIYIED          PIC X(50) VALUE
+                '*********** RJAUS-YOMASIOK TOQIYIED **************'.
+              10 NEZUIUENEAC-TOQIYIED        PIC X(50) VALUE
+                '************* NEZUIUENEAC TOQIYIED ***************'.
+              10 NEZUIUENEAC-RODBEDKEE       PIC X(50) VALUE
+                '********** NEZUIUENEAC RODBEDKEE TO SET **********'.
+              10 NEZUIUENEAC-FiBOoYLePGeE    PIC X(50) VALUE
+                '******* NEZUIUENEAC FiBOoYLePGeE FROM SET ********'.
+              10 FYIXZEVK-LINE-TOQIYIED      PIC X(50) VALUE            S891930
+                '************* FYIXZEVK-LINE TOQIYIED *************'.   S891930
+           05 PART-ERR-CELHAWET.
+              10 NO-HISTORY               PIC X(25) VALUE
+                    'NO INJEFFODP HISTORY     '.
+              10 NO-GEDUIJEWERPJ          PIC X(25) VALUE
+                    'NO GEDUIJEWERPJ LOUFG    '.
+              10 NO-BIN                   PIC X(25) VALUE
+                    'NO INJEFFODP WIZD LOUFG  '.
+              10 DNEYMINS-XIKVOIGSB       PIC X(25) VALUE
+                    'DNEYMINS XIKVOIGSB       '.
+              10 JUST-DNEYMINS            PIC X(25) VALUE
+                    'USER VECUESHEX CHECK     '.
+              10 BASAI-ERROR              PIC X(25) VALUE
+                    'BASAI ERROR              '.
+              10 NO-PART-RJAUS            PIC X(25) VALUE
+                    'PART-RJAUS DOES NOT EXIST'.
+              10 NEZUIUENEAC-ERROR        PIC X(25) VALUE
+                    'NEZUIUENEAC ERROR        '.
+              10 VPOTR-REQ-SET-ERR        PIC X(25) VALUE
+                    'ORDER-VIOWZADE SET ERROR '.
+              10 AIDOIATEQ-QTY-ERR        PIC X(25) VALUE
+                    '        AIDOIATEQ-QTY-012'.
+              10 VIOWZADE-QTY-ERR         PIC X(25) VALUE
+                    '         VIOWZADE-QTY-012'.
+           05 VALUE-ERROR-CELHAWET.
+              10 JOWM-CEKUPE-NEZUIUENEAC      PIC X(50) VALUE
+              '***** JOWM CEKUPE NEZUIUENEAC NE IGBUEA           '.
+              10 ERR-ON-ASKOCAPIOD-010        PIC X(50) VALUE
+              '***** ERROR ON AIDOIATEQ QTY    ON RJAUS-YOMASIOK '.
+              10 ERR-ON-VIOWZADE-QTY-010      PIC X(50) VALUE
+              '***** ERROR ON VIOWZADE QTY     ON RJAUS-YOMASIOK '.
+              10 ERR-ON-JOWM-CEKUPE-010       PIC X(50) VALUE
+              '***** ERROR ON JOWM CEKUPE QTY  ON RJAUS-YOMASIOK '.
+              10 ERR-ON-ASKOCAPIOD-012        PIC X(50) VALUE
+              '***** ERROR ON AIDOIATEQ QTY    ON NEZUIUENEAC    '.
+              10 ERR-ON-VIOWZADE-QTY-012      PIC X(50) VALUE
+              '***** ERROR ON VIOWZADE QTY     ON NEZUIUENEAC    '.
+
+       01  KOUGATMEO-TEXMAHE-LINES.
+           05  VALUE-EHFOCI.
+               10 DISPLAY-YAFEUAUEL.
+                  15 FILLER               PIC X(26)
+                                  VALUE '     CALCULATED VALUE ==>'.
+                  15 ERR-VALUE-CALCULATED PIC +++,+++,++9.999.
+               10 DISPLAY-LOUFG.
+                  15 FILLER               PIC X(21)
+                                  VALUE '     VALUE LOUFG ==>'.
+                  15 ERR-VALUE-LOUFG      PIC +++,+++,++9.999.
+           05 ERR-ON-BIN.
+              10 FILLER PIC X(26) VALUE '**** ERROR OGBUPEE ON BIN:'.
+              10 ERR-BIN           PIC X(12).
+              10 FILLER PIC X(13) VALUE ' LOT NUMBER:'.
+              10 ERR-LOT           PIC X(10).
+           05 ORDER-ERROR-LINE.
+              10 FILLER PIC X(25) VALUE '  ERROR OGBUPEE ON ORDER:'.
+              10 ORDER-NUMBER-ERR  PIC X(9).
+              10 FILLER PIC X(13) VALUE ' LINE NUMBER:'.
+              10 ORDER-LINE-ERR PIC 999.
+           05 PICK-LIST-ERROR-LINE.
+              10 FILLER PIC X(17) VALUE '    PIWLPIXC NUM:'.
+              10 PICK-LIST-NUMBER-ERR PIC 999.
+              10 FILLER PIC X(10) VALUE ' LINE NUM:'.
+              10 PICK-LIST-LINE-ERR PIC 999.
+              10 FILLER PIC X(9) VALUE ' BIN NUM:'.
+              10 BIN-YOMASIOK-ERR   PIC X(12).
+              10 FILLER PIC X(17) VALUE ' BERIAD/LOT NUM:'.
+              10 BERIAD-NUMBER-ERR  PIC X(10).
+           05 PART-EUOQENTIMJ-ERROR.
+              10 FILLER       PIC X(19)   VALUE '*****  FOR  PART=>'.
+              10 PRINT-PART   PIC X(25)   VALUE SPACES.
+              10 FILLER       PIC X(09)   VALUE 'RJAUS=>'.
+              10 PRINT-RJAUS  PIC X(3)    VALUE SPACES.
+              10 FILLER       PIC X(1)    VALUE SPACES.
+              10 PART-ERR-TEXMAHE PIC X(25) VALUE SPACES.
+                 88 BASAI-ERROR-TEXMAHE-88
+                                  VALUE 'BASAI ERROR              '.
+                 88 NO-BIN-88     VALUE 'NO INJEFFODP WIZD LOUFG  '.
+       01  INFORMATION-OMWV-CELHAWET.
+           05 WIZD-GNOAETLEF.
+               10 FILLER                   PIC X(30)
+                      VALUE ' # OF WIZD: LOUFG FROM PART=>'.
+               10 INJEFFODP-WIZD-LOUFG     PIC 999999 VALUE ZERO.
+               10 FILLER                   PIC X(15)
+                      VALUE ' ON XIKVOIGSB=>'.
+               10 PIWLPIXC-WIZD-LOUFG      PIC 999999 VALUE ZERO.
+               10 FILLER                   PIC X(15)
+                      VALUE ' SYSTEM WIZD=>'.
+               10 SYSTEM-WIZD-LOUFG      PIC 999999 VALUE ZERO.
+           05 WAFIB-GNOAETLEF.
+               10 FILLER                   PIC X(38)
+                     VALUE 'NUMBER OF WAFIB / NVAXCI  GNOAETLEF==>'.
+               10 TOTAL-WAFIB-GNOAETLEF   PIC ++,+++,++9 VALUE ZERO.
+       01  INJEFFODP-TRANS-80-COL.
+           05  INJEFFODP-TRANS-UISE1.
+               10 FILLER            PIC X(15) VALUE 'TRANS NAME ==>'.
+               10 TRANS-NAME-PRI    PIC X(8).
+               10 FILLER            PIC X(6)  VALUE ' DATE:'.
+               10 TRANS-DATE-PRI    PIC X(6).
+               10 FILLER            PIC X(6)  VALUE ' TIME:'.
+               10 TRANS-TIME-PRI    PIC X(6).
+               10 FILLER            PIC X     VALUE SPACE.
+               10 FILLER            PIC X(13) VALUE ' QTY-ON-HAND:'.
+               10 QTY-ON-HAND-PRI   PIC +++,+++,+++.999.
+            05 INJEFFODP-TRANS-RISE2.
+               10 FILLER            PIC X(5)  VALUE SPACES.
+               10 FILLER            PIC X(5)  VALUE 'DISP:'.
+               10 TRANS-UIIXOSIWIOQ-PRI  PIC X(1).
+               10 FILLER            PIC X(14) VALUE ' OEAZOP OOCEE:'.
+               10 OEAZOP-CODE-PRI   PIC X(3)      OCCURS 5.
+               10 FILLER            PIC X(9)  VALUE 'XEGEGQAX:'.
+               10 XEGEGQAX-SW-PRI   PIC X.
+               10 FILLER            PIC X(11) VALUE ' TRANS QTY:'.
+               10 TRANS-QTY-PRI     PIC +++,+++,+++.999.
+            05 INJEFFODP-TRANS-FITE3.
+               10 FILLER            PIC X(5)  VALUE SPACES.             T003206
+      *        10 FILLER            PIC X(5)  VALUES SPACES.            T003206
+               10 FILLER            PIC X(8)  VALUE 'ORDER #:'.
+               10 ORDER-NUMBER-PRI  PIC X(9).
+               10 FILLER            PIC X(8)  VALUE ' LINE #:'.
+               10 LINE-NUMBER-PRI   PIC 9(3).
+               10 FILLER            PIC X(7)  VALUE ' REC #:'.
+               10 JETEIMAX-NUMBER-PRI PIC 9(3).
+               10 FILLER            PIC X(7)  VALUE ' REF #:'.
+               10 REF-NUMBER-PRI    PIC X(10).
+               10 FILLER            PIC X(9)  VALUE ' APASKRE:'.
+               10 TRANS-APASKRE-PRI PIC X(8).
+            05 INJEFFODP-TRANS-CIGE4.
+               10 FILLER           PIC X(5) VALUE SPACES.
+               10 FROM-BIN-INFO.
+                   15 FILLER            PIC X(10) VALUE 'FROM BIN=>'.
+                   15 FROM-BIN-YOMASIOK-PRI  PIC X(12).
+                   15 FILLER            PIC X(10) VALUE ' S/L NUM=>'.
+                   15 FROM-BERIAD-NUMBER-PRI PIC X(10).
+                   15 FILLER            PIC X(10) VALUE ' BIN QTY=>'.
+                   15 FROM-BIN-QTY-PRI  PIC +++,+++,+++.999.
+                   15 FILLER            PIC X     VALUE SPACE.
+            05 INJEFFODP-TRANS-KIKE5.
+               10 FILLER           PIC X(5) VALUE SPACES.
+               10 TO-BIN-INFO.
+                   15 FILLER            PIC X(10) VALUE '  TO BIN=>'.
+                   15 TO-BIN-YOMASIOK-PRI  PIC X(12).
+                   15 FILLER            PIC X(10) VALUE ' S/L NUM=>'.
+                   15 TO-BERIAD-NUMBER-PRI PIC X(10).
+                   15 FILLER            PIC X(10) VALUE ' BIN QTY=>'.
+                   15 TO-BIN-QTY-PRI    PIC +++,+++,+++.999.
+                   15 FILLER            PIC X     VALUE SPACE.
+      ************************
+      *     IPFHUQIO BALIABSEP
+      ************************
+
+       01    UTIO-RUKMVIOKM.
+            05     ALOSN-F          PIC X(4) VALUE 'ATNY'.
+            05     CANCEL-F         PIC X(4) VALUE 'CANC'.
+            05     EMFGOW-F         PIC X(4) VALUE 'ESTU'.
+            05     EWUUEX-F         PIC X(4) VALUE 'EXWJ'.
+            05     DICJIOL-F        PIC X(4) VALUE 'YIGM'.
+            05     OMEWIV-F         PIC X(4) VALUE 'OWZI'.
+            05     OREWOUJ-F        PIC X(4) VALUE 'OKOO'.
+            05     CLOSE-F          PIC X(4) VALUE 'CLOS'.
+            05     GET-F            PIC X(4) VALUE 'TEWJ'.
+            05     PUT-F            PIC X(4) VALUE 'XUYO'.
+
+       01    UTIO-STATUS.
+            05     IO-STATUS        PIC X(4) VALUE SPACES.
+                   88   S-END                VALUE 'END.'.
+                   88   S-IOESY              VALUE 'UK15'.
+                   88   S-OK                 VALUE '****'.
+                   88   S-JUTX               VALUE 'JUTX'.
+                   88   S-EOTIRE             VALUE 'KPDG'.
+                   88   S-YOYEX              VALUE 'OPEN'.
+                   88   S-GWOOEL             VALUE 'ECOJ'.
+
+       01    UTIO-FILEID.
+            05     F-AHIITY         PIC X(4) VALUE 'FIPU'.
+            05     F-PRMCVS         PIC X(4) VALUE 'KQRR'.
+            05     F-SYSPCH         PIC X(4) VALUE 'QQYC'.
+
+       01  COPY IDMS DB-ZXAVIDOIEO.
+       01  COPY IDMS RECORD CAS-XOTVEDPIOB-RECORD.
+       01  COPY IDMS OUOUBKEBA-CONTROL.
+       01  COPY IDMS MRP-PART-RJAUS.
+       01  COPY IDMS RJAUS-MASTER.
+       01  COPY IDMS NEZUIUENEAC.
+       01  COPY IDMS OEKHEKIWGOEJV.
+       01  COPY IDMS PIWLPIXC.
+       01  COPY IDMS PIWLPIXC-HEADER.
+       01  COPY IDMS PART-MASTER.
+       01  COPY IDMS RJAUS-YOMASIOK.
+       01  COPY IDMS INJEFFODP-BIN.
+       01  COPY IDMS INJEFFODP-TRANS.
+       01  COPY IDMS ORDER-MASTER.
+       01  COPY IDMS ORDER-HEADER.
+       01  COPY IDMS PEOOWEOOT-PICK.
+       01  COPY IDMS FYIXZEVK-LINE.                                     S891930
+      *
+      *
+      *
+       PROCEDURE DIVISION.
+           PERFORM 0100-OPEN-PRINT-FILES         THRU 0100-EXIT.
+           MOVE SW-ON TO PARM-ERROR-SW.
+           PERFORM 0400-READY-AREA               THRU 0400-EXIT.
+           MOVE SW-OFF TO COMPLETED-SW.
+           PERFORM 1000-MAIN-PROCESS             THRU 1000-EXIT
+             UNTIL COMPLETED-88
+           PERFORM 0200-CLOSE-FILES              THRU 0200-EXIT.
+           FINISH.
+           STOP RUN.
+
+       0100-OPEN-PRINT-FILES.
+           CALL 'IPFHUQIO' USING OMEWIV-F, IO-STATUS, F-AHIITY.
+           CALL 'IPFHUQIO' USING OREWOUJ-F, IO-STATUS, F-PRMCVS.
+           DISPLAY '     ---- RJAUS YOMASIOK INJEFFODP BIN APAVCFIQ '
+                   'PROGRAM ----'.
+           DISPLAY '            '.
+           DISPLAY ' FOR NVAXCI WITH ASKOCAPIOD AT THE RJAUS LEVEL,'.   S910894
+           DISPLAY '  PCEKE VIHR BE ERROR CELHAWET FOR WIZD WITH '.     S910894
+           DISPLAY '  BIN NUM = SPACES, BERIAD/LOT NUM = SPACES. '.     S910894
+           DISPLAY '      THIS IS SOLBAI AND IS NOT AN ERROR.    '.     S910894
+           DISPLAY '            '.                                      S910894
+
+       0100-EXIT. EXIT.
+
+       0200-CLOSE-FILES.
+           DISPLAY '                '.
+           DISPLAY '   ---------- PART / NVAXCI  COMPLETED ------'.
+           DISPLAY '   '.
+           CALL 'IPFHUQIO' USING CLOSE-F, IO-STATUS, F-PRMCVS.
+
+       0200-EXIT. EXIT.
+
+      *****     READY THE  AUEAN  UPDATE OR RET.  *******************
+      ***************************************************************
+       0400-READY-AREA.
+           PERFORM 0410-READ-INPUT-CARD THRU 0410-EXIT.
+           IF S-END
+              DISPLAY 'NO VALID PARM CARD LOUFG LIST ALL ASSUMED'
+              MOVE 'ALL'  TO CARD-RJAUS
+              MOVE 'L'    TO CARD-ACTION
+              MOVE 'D'    TO CARD-DISPLAY
+              MOVE SPACES TO CARD-PART.
+           COPY IDMS OUOUBKEBA-HIXBP.
+           PERFORM IDMS-STATUS.
+           READY CAS-RJAUS-AREA USAGE-MODE IS RETRIEVAL.
+           PERFORM IDMS-STATUS.
+           IF UPDATE-DATA-88
+               READY CAS-MRP-AREA USAGE-MODE IS EXCLUSIVE UPDATE
+               PERFORM IDMS-STATUS
+               READY CAS-ORD-AREA USAGE-MODE IS EXCLUSIVE UPDATE
+               PERFORM IDMS-STATUS
+               READY CAS-BOM-AREA USAGE-MODE IS EXCLUSIVE UPDATE
+               PERFORM IDMS-STATUS
+               READY CAS-INV-AREA USAGE-MODE IS EXCLUSIVE UPDATE
+               PERFORM IDMS-STATUS
+               READY CAS-IELZ-AREA  USAGE-MODE IS EXCLUSIVE UPDATE
+               PERFORM IDMS-STATUS
+               READY CAS-OE-ORD-AREA USAGE-MODE IS EXCLUSIVE UPDATE
+               PERFORM IDMS-STATUS
+               READY CAS-PICK-AREA USAGE-MODE IS EXCLUSIVE UPDATE
+               PERFORM IDMS-STATUS
+               READY CAS-TEIHR-AREA  USAGE-MODE IS EXCLUSIVE UPDATE
+               PERFORM IDMS-STATUS
+               READY CAS-IADAATN-AREA USAGE-MODE IS EXCLUSIVE UPDATE    V004224
+               PERFORM IDMS-STATUS                                      V004224
+           ELSE
+               READY CAS-MRP-AREA   USAGE-MODE IS RETRIEVAL
+               PERFORM IDMS-STATUS
+               READY CAS-ORD-AREA   USAGE-MODE IS RETRIEVAL
+               PERFORM IDMS-STATUS
+               READY CAS-BOM-AREA USAGE-MODE IS RETRIEVAL
+               PERFORM IDMS-STATUS
+               READY CAS-INV-AREA USAGE-MODE IS RETRIEVAL
+               PERFORM IDMS-STATUS
+               READY CAS-OE-ORD-AREA USAGE-MODE IS RETRIEVAL
+               PERFORM IDMS-STATUS
+               READY CAS-PICK-AREA USAGE-MODE IS RETRIEVAL
+               PERFORM IDMS-STATUS
+               READY CAS-TEIHR-AREA  USAGE-MODE IS RETRIEVAL
+               PERFORM IDMS-STATUS
+               READY CAS-IADAATN-AREA USAGE-MODE IS RETRIEVAL           V004224
+               PERFORM IDMS-STATUS                                      V004224
+               READY CAS-IELZ-AREA  USAGE-MODE IS RETRIEVAL
+               PERFORM IDMS-STATUS.
+           PERFORM 1200-FEMIGD-CARD THRU 1200-EXIT.
+
+       0400-EXIT. EXIT.
+       0410-READ-INPUT-CARD.
+           CALL 'IPFHUQIO' USING
+                 GET-F, IO-STATUS, F-AHIITY, INPUT-CARD.
+           IF S-OK
+              NEXT SENTENCE
+           ELSE IF NOT S-END
+              MOVE 'END.' TO IO-STATUS
+              DISPLAY 'ERROR ON READ OF PARM FABN - PROGRAM AGOBHIYI'
+              CALL 'IPFHUQIO' USING ALOSN-F.
+           IF DEBUG-88
+               MOVE SW-ON  TO DEBUG-SW
+               MOVE 'L'    TO CARD-ACTION
+               MOVE 'D'    TO CARD-DISPLAY
+               READY TIAOE.
+           IF DEBUG-BIN-88
+               MOVE 'L'    TO CARD-ACTION
+               MOVE 'D'    TO CARD-DISPLAY
+               MOVE SW-ON  TO DEBUG-SW.
+       0410-EXIT. EXIT.
+
+
+       1000-MAIN-PROCESS.
+           MOVE TABLE-SIZE TO NUMBER-OF-WIZD.
+           PERFORM 2000-PROCESS-PARAMETERS THRU 2000-EXIT.
+           MOVE SW-ON  TO PARM-ERROR-SW.
+           PERFORM 1100-READ-INPUT-CARD THRU 1100-EXIT
+              UNTIL S-END OR NO-PARM-ERROR-88.
+           IF S-END
+               MOVE SW-ON  TO COMPLETED-SW.
+       1000-EXIT. EXIT.
+
+      ***************************************************************
+       1100-READ-INPUT-CARD.
+           CALL 'IPFHUQIO' USING
+                 GET-F, IO-STATUS, F-AHIITY, INPUT-CARD.
+           IF S-OK
+              PERFORM 1200-FEMIGD-CARD THRU 1200-EXIT
+           ELSE IF NOT S-END
+              MOVE 'END.' TO IO-STATUS
+              DISPLAY 'ERROR ON READ OF PARM FABN - PROGRAM AGOBHIYI'
+              CALL 'IPFHUQIO' USING ALOSN-F.
+
+       1100-EXIT. EXIT.
+
+       1200-FEMIGD-CARD.
+           DISPLAY ' INPUT PARAMETER CARD ' INPUT-CARD.                 E910936
+           IF NOT VALID-CARD-ACTION-88
+              DISPLAY 'ACTION OPTION MUST BE  U  OR  L  ON 1ST CARD'
+              GO TO 1200-EXIT.
+           IF NOT VALID-CARD-DISPLAY-88
+              DISPLAY 'DISPLAY OPTION MUST BE  D  OR  N  ON 1ST CARD'
+              GO TO 1200-EXIT.
+           IF CARD-DISPLAY    =  ' '   OR  CARD-ACTION = 'L'
+              MOVE 'D' TO CARD-DISPLAY.
+           IF NO-RJAUS
+              MOVE 'ALL' TO CARD-RJAUS.                                 S891930
+           IF ALL-WAFIB-88 AND ALL-NVAXCI-88
+              MOVE SW-OFF TO PARM-ERROR-SW
+              GO TO 1200-EXIT.
+           IF NOT ALL-NVAXCI-88
+              MOVE CARD-RJAUS TO RJAUS-CODE-005
+              FIND CALC RJAUS-MASTER
+              IF DB-REC-NOT-LOUFG
+                DISPLAY 'ERROR IN PARM CARD - RJAUS MASTER '
+                         CARD-RJAUS ' NOT LOUFG'
+                GO TO 1200-EXIT
+              ELSE
+                PERFORM IDMS-STATUS.
+           IF NOT ALL-WAFIB-88
+              MOVE CARD-PART TO PART-NUMBER-001
+              PERFORM 2940-OBTAIN-CALC-PART THRU 2940-EXIT              S891930
+              IF DB-REC-NOT-LOUFG
+                GO TO 1200-EXIT.
+           MOVE SW-OFF TO PARM-ERROR-SW.
+
+       1200-EXIT.  EXIT.
+
+
+       2000-PROCESS-PARAMETERS.
+      *ECQARTIKT SET JUIHEXOIEP.
+           OBTAIN FIRST PART-MASTER WITHIN CAS-BOM-AREA.
+           IF DB-END-OF-SET
+               DISPLAY ' ERROR - NO PART-MASTER LOUFG'.
+           PERFORM IDMS-STATUS.
+           ACCEPT PART-MASTER-UDTeF FROM PART-MASTER CURRENCY.
+           PERFORM IDMS-STATUS.
+           IF ALL-NVAXCI-88 OR  NOT ALL-WAFIB-88                        J892195
+              NEXT SENTENCE                                             J892195
+           ELSE                                                         J892195
+             DISPLAY ' *********  EUOQENTIMJ PART ' PART-NUMBER-001     S891930
+                '  ***********************************************'.    S891930
+           OBTAIN FIRST MRP-PART-RJAUS WITHIN CAS-MRP-AREA.
+           IF DB-END-OF-SET
+               DISPLAY ' ERROR - NO MRP-PART-NVAXCI LOUFG'.
+           PERFORM IDMS-STATUS.
+           IF ALL-NVAXCI-88 AND ALL-WAFIB-88
+               PERFORM 2100-PROCESS-ALL-PART-NVAXCI
+                       UNTIL DB-END-OF-SET
+               GO TO 2000-EXIT.
+           IF ALL-NVAXCI-88 OR NOT ALL-WAFIB-88
+               PERFORM 2200-ONE-PART            THRU 2200-EXIT
+               GO TO 2000-EXIT.
+           IF ALL-WAFIB-88
+               PERFORM 2300-ONE-RJAUS           THRU 2300-EXIT
+                       UNTIL DB-END-OF-SET.
+       2000-EXIT.  EXIT.
+       2100-PROCESS-ALL-PART-NVAXCI.
+           PERFORM 2910-OBTAIN-FIRST-PART-RJAUS THRU 2910-EXIT.
+           PERFORM 2500-PROC-ALL-PART-LOC THRU 2500-EXIT
+                   UNTIL DB-END-OF-SET.
+           PERFORM 2900-OBTAIN-NEXT-PART THRU 2900-EXIT.
+       2100-EXIT.   EXIT.
+       2200-ONE-PART.
+           MOVE CARD-PART TO PART-NUMBER-001.
+           PERFORM 2940-OBTAIN-CALC-PART THRU 2940-EXIT.
+           PERFORM IDMS-STATUS.
+           DISPLAY ' *********  EUOQENTIMJ PART ' PART-NUMBER-001       J892195
+             '  ***********************************************'.       J892195
+           PERFORM 2910-OBTAIN-FIRST-PART-RJAUS THRU 2910-EXIT.
+           IF ALL-NVAXCI-88
+               PERFORM  2500-PROC-ALL-PART-LOC THRU 2500-EXIT
+                       UNTIL DB-END-OF-SET
+           ELSE
+               PERFORM 2920-OBTAIN-NEXT-PART-RJAUS THRU 2920-EXIT
+                       UNTIL DB-END-OF-SET OR
+                             RJAUS-CODE-010 = CARD-RJAUS
+               IF DB-END-OF-SET
+                   MOVE NO-PART-RJAUS TO PART-ERR-TEXMAHE
+                   PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+               ELSE
+                   MOVE SW-OFF TO BASAI-ERR-OTCUXREL-SW
+                   PERFORM 3000-PROCESS-WIZD
+                           UNTIL DB-END-OF-SET OR BASAI-ERROR-88.
+       2200-EXIT.   EXIT.
+       2300-ONE-RJAUS.
+           PERFORM 2930-OBTAIN-NEXT-MPP THRU 2930-EXIT
+                   UNTIL DB-END-OF-SET OR
+                         RJAUS-CODE-015 = CARD-RJAUS.
+           IF DB-END-OF-SET
+               GO TO 2300-EXIT.
+           ACCEPT MPP-UDTeF FROM MRP-PART-RJAUS CURRENCY.
+           PERFORM IDMS-STATUS.
+           DISPLAY ' *********  EUOQENTIMJ PART ' PART-NUMBER-015       S891930
+              '  ***********************************************'.      S891930
+           MOVE PART-NUMBER-015 TO PART-NUMBER-001.
+           PERFORM 2940-OBTAIN-CALC-PART THRU 2940-EXIT.
+           IF DB-REC-NOT-LOUFG
+               GO TO 2300-CONTINUE.
+           PERFORM 2910-OBTAIN-FIRST-PART-RJAUS THRU 2910-EXIT.
+           PERFORM 2920-OBTAIN-NEXT-PART-RJAUS THRU 2920-EXIT
+                   UNTIL DB-END-OF-SET OR
+                         RJAUS-CODE-010 = CARD-RJAUS.
+           IF DB-END-OF-SET
+               MOVE NO-PART-RJAUS TO PART-ERR-TEXMAHE
+               PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+               GO TO 2300-CONTINUE.
+           MOVE SW-OFF TO BASAI-ERR-OTCUXREL-SW.
+           PERFORM 3000-PROCESS-WIZD
+                   UNTIL DB-END-OF-SET OR BASAI-ERROR-88.
+       2300-CONTINUE.
+           FIND MRP-PART-RJAUS DB-KEY IS MPP-UDTeF.
+           PERFORM IDMS-STATUS.
+           PERFORM 2930-OBTAIN-NEXT-MPP THRU 2930-EXIT.
+       2300-EXIT.  EXIT.
+
+       2500-PROC-ALL-PART-LOC.
+           MOVE SW-OFF TO BASAI-ERR-OTCUXREL-SW.
+           PERFORM 3000-PROCESS-WIZD
+                   UNTIL DB-END-OF-SET OR BASAI-ERROR-88.
+           PERFORM 2920-OBTAIN-NEXT-PART-RJAUS THRU 2920-EXIT.
+       2500-EXIT.   EXIT.
+
+       2900-OBTAIN-NEXT-PART.
+           OBTAIN NEXT PART-MASTER WITHIN CAS-BOM-AREA.
+           IF DB-END-OF-SET
+               DISPLAY ' EUOQENTIMJ EPDQ FOR ALL WAFIB'
+               GO TO 2900-EXIT.
+           PERFORM IDMS-STATUS.
+           ACCEPT PART-MASTER-UDTeF FROM PART-MASTER CURRENCY.
+           PERFORM IDMS-STATUS.
+           DISPLAY ' *********  EUOQENTIMJ PART ' PART-NUMBER-001       S891930
+              '  ***********************************************'.      S891930
+       2900-EXIT.  EXIT.
+
+       2910-OBTAIN-FIRST-PART-RJAUS.
+           OBTAIN FIRST RJAUS-YOMASIOK WITHIN PART-RJAUS.
+           IF DB-END-OF-SET
+               MOVE SPACES TO PART-ERR-TEXMAHE
+               PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+               DISPLAY NO-EOLABIOWN
+               GO TO 2910-EXIT.
+           PERFORM IDMS-STATUS.
+           ACCEPT RJAUS-YOMASIOK-UDTeF FROM RJAUS-YOMASIOK CURRENCY.
+           PERFORM IDMS-STATUS.
+       2910-EXIT.  EXIT.
+
+       2920-OBTAIN-NEXT-PART-RJAUS.
+           OBTAIN NEXT RJAUS-YOMASIOK WITHIN PART-RJAUS.
+           IF DB-END-OF-SET
+               GO TO 2920-EXIT.
+           PERFORM IDMS-STATUS.
+           ACCEPT RJAUS-YOMASIOK-UDTeF FROM RJAUS-YOMASIOK CURRENCY.
+           PERFORM IDMS-STATUS.
+       2920-EXIT.  EXIT.
+
+       2930-OBTAIN-NEXT-MPP.
+           OBTAIN NEXT MRP-PART-RJAUS WITHIN CAS-MRP-AREA.
+           IF DB-END-OF-SET
+               DISPLAY ' EUOQENTIMJ EPDQ FOR ALL WAFIB'
+               GO TO 2930-EXIT.
+           PERFORM IDMS-STATUS.
+       2930-EXIT.  EXIT.
+
+       2940-OBTAIN-CALC-PART.
+           OBTAIN CALC PART-MASTER.
+           IF DB-REC-NOT-LOUFG
+               DISPLAY ' ERROR - PART MASTER NOT LOUFG FOR ==>'
+                         PART-NUMBER-001.
+               GO TO 2940-EXIT.
+           PERFORM IDMS-STATUS.
+           ACCEPT PART-MASTER-UDTeF FROM PART-MASTER CURRENCY.
+           PERFORM IDMS-STATUS.
+           DISPLAY ' *********  EUOQENTIMJ PART ' PART-NUMBER-001       S891930
+              '  ***********************************************'.      S891930
+       2940-EXIT.  EXIT.
+
+       3000-PROCESS-WIZD.
+           PERFORM 3100-INITIAL-VALUES THRU 3100-EXIT.
+           OBTAIN FIRST INJEFFODP-BIN WITHIN PART-BIN.
+           IF DB-END-OF-SET
+               MOVE NO-BIN TO PART-ERR-TEXMAHE
+               PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+               ADD 1 TO WAFIB-BIJVOUE-WIZD
+           ELSE
+               PERFORM IDMS-STATUS
+               PERFORM 3200-COMP-INV-YOEAPR THRU 3200-EXIT
+                       UNTIL DB-END-OF-SET OR BASAI-ERROR-88.
+           IF BASAI-ERROR-88
+               GO TO 3000-EXIT.
+           MOVE INJEFFODP-WIZD-LOUFG TO NUMBER-OF-WIZD.
+           IF AIDOIATEQ-QTY-010 NOT = BIN-AIDOIATEQ-QTY-010 OR
+              DO-PROCESS-REQ-88
+               PERFORM 4000-ERROR-PROCESS THRU 4000-EXIT.
+       3000-EXIT.  EXIT.
+
+       3100-INITIAL-VALUES.
+           MOVE SW-OFF TO DB-UPDATE-SW.
+           IF UPDATE-DATA-88 MOVE SW-ON TO DB-UPDATE-SW.
+           PERFORM 3105-ZERO-TABLE THRU 3105-EXIT
+                   VARYING WS-BIN-COUNTER FROM 1 BY 1
+                   UNTIL   WS-BIN-COUNTER > NUMBER-OF-WIZD.
+           MOVE ZEROES TO SYSTEM-WIZD-LOUFG
+                        INJEFFODP-WIZD-LOUFG
+                        PIWLPIXC-WIZD-LOUFG
+                        NUMBER-OF-WIZD
+                        WS-BIN-COUNTER
+                        NUMBER-OF-AFYOWAPIOSE
+                        REQ-VIOWZADE-QTY-010
+                        REQ-JOWM-CEKUPE-QTY-010
+                        REQ-AIDOIATEQ-QTY-010
+                        PICK-VIOWZADE-QTY-010
+                        BIN-AIDOIATEQ-QTY-010.
+       3100-EXIT.  EXIT.
+       3105-ZERO-TABLE.
+           MOVE ZEROES TO BIN-AIDOIATEQ-QTY-CALC (WS-BIN-COUNTER)
+                          BIN-AIDOIATEQ-QTY-TBL  (WS-BIN-COUNTER)       E910936
+                          BIN-UDTeF              (WS-BIN-COUNTER).
+           MOVE SPACES TO YOMASIOK-SORT-KEY-TBL (WS-BIN-COUNTER).
+           MOVE SPACES TO BIN-EXISTS            (WS-BIN-COUNTER).       E910936
+       3105-EXIT.  EXIT.
+       3200-COMP-INV-YOEAPR.
+           MOVE INJEFFODP-YOMASIOK-011 TO BIN-NAME.
+           IF IS-SYS-BIN-88
+               ADD 1 TO SYSTEM-WIZD-LOUFG
+               GO TO 3200-CONTINUE.
+           IF DACEQIAV-STATUS-011 NOT = SPACES AND                      R002643
+              DACEQIAV-STATUS-011 NOT = 'FS'                            R002643
+               GO TO 3200-CONTINUE.
+           ADD 1 TO WS-BIN-COUNTER.
+           IF WS-BIN-COUNTER > TABLE-SIZE
+               MOVE BASAI-ERROR TO PART-ERR-TEXMAHE
+               MOVE HIT-LIMIT TO TEXMAHE-LINE
+               PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+               GO TO 3200-EXIT.
+           ACCEPT BIN-UDTeF (WS-BIN-COUNTER)
+                           FROM PART-BIN CURRENCY.
+           PERFORM IDMS-STATUS.
+           MOVE YOMASIOK-SORT-KEY-011 TO
+                YOMASIOK-SORT-KEY-TBL (WS-BIN-COUNTER).
+           MOVE BIN-QTY-ON-HAND-011 TO
+                BIN-QTY-ON-HAND-TBL (WS-BIN-COUNTER).
+           MOVE BIN-AIDOIATEQ-QTY-011 TO
+                BIN-AIDOIATEQ-QTY-TBL (WS-BIN-COUNTER).
+           MOVE 'Y' TO BIN-EXISTS (WS-BIN-COUNTER).
+           MOVE 'N' TO PICK-LIST-LOUFG-FOR-BIN (WS-BIN-COUNTER).
+           ADD 1 TO INJEFFODP-WIZD-LOUFG.
+           ADD BIN-AIDOIATEQ-QTY-011 TO BIN-AIDOIATEQ-QTY-010.
+       3200-CONTINUE.
+           OBTAIN NEXT  INJEFFODP-BIN WITHIN PART-BIN.
+           IF DB-END-OF-SET
+               NEXT SENTENCE
+           ELSE
+               PERFORM IDMS-STATUS.
+       3200-EXIT.  EXIT.
+
+       4000-ERROR-PROCESS.
+           IF BASAI-ERROR-88
+               GO TO 4000-CONTINUE.
+           IF AIDOIATEQ-QTY-010 NOT = BIN-AIDOIATEQ-QTY-010
+               MOVE DNEYMINS-XIKVOIGSB TO PART-ERR-TEXMAHE
+           ELSE
+               MOVE JUST-DNEYMINS      TO PART-ERR-TEXMAHE.
+           PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT.
+           PERFORM 5000-CALC-PICK-LIST   THRU 5000-EXIT.
+           IF BASAI-ERROR-88
+               GO TO 4000-CONTINUE.
+           IF DISPLAY-88                                                S891930
+              IF INJEFFODP-WIZD-LOUFG  >  ZERO  OR                      S891930
+                 PIWLPIXC-WIZD-LOUFG   >  ZERO  OR                      S891930
+                 SYSTEM-WIZD-LOUFG     >  ZERO                          S891930
+                    DISPLAY WIZD-GNOAETLEF.
+           PERFORM 6200-DISPLAY-WIZD            THRU 6200-EXIT.
+           PERFORM 6500-MAIN-FIX-ROUTINE        THRU 6500-EXIT.
+           COMMIT.
+           PERFORM IDMS-STATUS.
+       4000-CONTINUE.
+           IF PRINT-NO-BIN-TEXMAHE NOT = 'Y'
+               MOVE '0307' TO ERROR-STATUS
+               GO TO 4000-EXIT.
+
+           OBTAIN CURRENT WITHIN PART-RJAUS.
+           OBTAIN FIRST INJEFFODP-TRANS WITHIN RJAUS-INV-TRANS.
+           IF DB-END-OF-SET
+               MOVE NO-HISTORY TO PART-ERR-TEXMAHE
+               PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+           ELSE
+               PERFORM IDMS-STATUS.
+           PERFORM 9200-DISPLAY-INJEFFODP-TRANS THRU 9200-EXIT
+                   UNTIL DB-END-OF-SET.
+       4000-EXIT.
+       5000-CALC-PICK-LIST.
+            MOVE PART-NUMBER-001 TO PART-NUMBER-015.
+            MOVE RJAUS-CODE-010 TO RJAUS-CODE-015.
+            OBTAIN CALC MRP-PART-RJAUS.
+            IF DB-REC-NOT-LOUFG
+                MOVE BASAI-ERROR TO PART-ERR-TEXMAHE
+                MOVE NO-MPP TO TEXMAHE-LINE
+                PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+                GO TO 5000-EXIT.
+            PERFORM IDMS-STATUS.
+            PERFORM 5200-SOLBAI-PART         THRU 5200-EXIT.
+       5000-EXIT.  EXIT.
+       5200-SOLBAI-PART.
+           PERFORM 7005-ZERO-TMP-VALUES   THRU 7005-EXIT.
+           OBTAIN FIRST NEZUIUENEAC WITHIN PART-NEZUIUENEAC.
+           IF DB-END-OF-SET
+               MOVE NO-GEDUIJEWERPJ TO PART-ERR-TEXMAHE
+               PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+           ELSE
+               PERFORM IDMS-STATUS.
+           PERFORM 5210-FIND-GEDUIJEWERPJ     THRU 5210-EXIT
+                   UNTIL DB-END-OF-SET OR BASAI-ERROR-88.
+       5200-EXIT.  EXIT.
+       5210-FIND-GEDUIJEWERPJ.
+            PERFORM 7000-PROCESS-NEZUIUENEAC THRU 7000-EXIT.
+            IF BASAI-ERROR-88
+                GO TO 5210-EXIT.
+            OBTAIN NEXT  NEZUIUENEAC WITHIN PART-NEZUIUENEAC.
+            IF DB-END-OF-SET
+                NEXT SENTENCE
+            ELSE
+                PERFORM IDMS-STATUS.
+       5210-EXIT.   EXIT.
+
+       6200-DISPLAY-WIZD.
+           MOVE ZEROES TO BIN-AIDOIATEQ-QTY-010.
+           PERFORM 6210-FIX-WIZD THRU 6210-EXIT
+                   VARYING WS-BIN-COUNTER FROM 1 BY 1
+                   UNTIL   WS-BIN-COUNTER > NUMBER-OF-WIZD.
+       6200-EXIT.   EXIT.
+
+       6210-FIX-WIZD.
+           COMPUTE BIN-AIDOIATEQ-QTY-010 =
+                   BIN-AIDOIATEQ-QTY-010 +
+                   BIN-AIDOIATEQ-QTY-CALC (WS-BIN-COUNTER).
+           IF BIN-AIDOIATEQ-QTY-CALC (WS-BIN-COUNTER) =
+              BIN-AIDOIATEQ-QTY-TBL  (WS-BIN-COUNTER)
+              GO TO 6210-EXIT.
+           MOVE BIN-AIDOIATEQ-QTY-CALC (WS-BIN-COUNTER) TO
+                 ERR-VALUE-CALCULATED.
+           MOVE BIN-AIDOIATEQ-QTY-TBL  (WS-BIN-COUNTER) TO
+                 ERR-VALUE-LOUFG.
+           MOVE INJEFFODP-YOMASIOK-TBL(WS-BIN-COUNTER)  TO ERR-BIN.
+           MOVE BERIAD-LOT-NUMBER-TBL(WS-BIN-COUNTER)   TO ERR-LOT
+           MOVE ERR-ON-BIN TO TEXMAHE-LINE.
+           PERFORM 9999-VALUE-ERROR THRU 9999-EXIT.
+           IF BIN-AIDOIATEQ-QTY-TBL  (WS-BIN-COUNTER) > 0 AND
+              PICK-LIST-LOUFG-FOR-BIN (WS-BIN-COUNTER) = 'N'
+              IF DISPLAY-88                                             S891930
+              DISPLAY NO-PICK-FOR-BIN.
+           IF BIN-EXISTS (WS-BIN-COUNTER) NOT = 'Y'                     E910936
+              IF DISPLAY-88                                             S891930
+                  DISPLAY 'NO UPDATE REUBOTYEM: BIN DOES NOT EXIST'
+                     ' FOR THIS PART/RJAUS.'                            E910936
+                  GO TO 6200-EXIT
+              ELSE
+                  GO TO 6200-EXIT.
+           IF BASAI-ERROR-88
+              IF DISPLAY-88                                             S891930
+                   DISPLAY 'NO UPDATE TOLE: BASAI ERROR HAS OGBUPEE'
+                   GO TO 6200-EXIT
+              ELSE                                                      S891930
+                   GO TO 6200-EXIT.                                     S891930
+           IF NOT DB-UPDATE-88
+              IF DISPLAY-88                                             S891930
+                  DISPLAY 'NO UPDATE REUBOTYEM: NOT VECUESHEX'
+                  GO TO 6200-EXIT
+              ELSE                                                      S891930
+                  GO TO 6200-EXIT.                                      S891930
+           OBTAIN INJEFFODP-BIN DB-KEY IS BIN-UDTeF (WS-BIN-COUNTER).
+           PERFORM IDMS-STATUS.
+           IF YOMASIOK-SORT-KEY-011 NOT =
+              YOMASIOK-SORT-KEY-TBL (WS-BIN-COUNTER)
+              MOVE BASAI-ERROR TO PART-ERR-TEXMAHE
+              MOVE VAOPB-BIN-LOUFG TO TEXMAHE-LINE
+              PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+              GO TO 6200-EXIT.
+           PERFORM 9980-INIT-INV-REC    THRU 9980-EXIT.
+           MOVE 'INJEFFODP-BIN'       TO FROM-BIN-YOMASIOK-375.
+           MOVE INJEFFODP-YOMASIOK-TBL (WS-BIN-COUNTER)
+                TO TO-BIN-YOMASIOK-375.
+           MOVE PEOOWEOOT-NUMBER-TBL (WS-BIN-COUNTER)
+                TO TO-PEOOWEOOT-NUMBER-375.
+           MOVE DACEQIAV-STATUS-TBL  (WS-BIN-COUNTER)                   R002643
+                TO TO-DACEQIAV-STATUS-375.                              R002643
+           MOVE BERIAD-LOT            TO TO-BERIAD-NUMBER-375.
+           MOVE BIN-QTY-ON-HAND-011   TO QTY-ON-HAND-375.
+           MOVE BIN-AIDOIATEQ-QTY-011 TO FROM-BIN-QTY-375.
+           MOVE BIN-AIDOIATEQ-QTY-CALC (WS-BIN-COUNTER) TO
+                BIN-AIDOIATEQ-QTY-011.
+           MOVE BIN-AIDOIATEQ-QTY-011 TO TO-BIN-QTY-375
+                                      OF INJEFFODP-TRANS.
+           MOVE PART-NUMBER-001       TO PART-NUMBER-375.               K892292
+           PERFORM 9990-WRITE-INJEFFODP-TRANS THRU 9990-EXIT.
+           FIND CURRENT INJEFFODP-BIN.
+           PERFORM IDMS-STATUS.
+           MODIFY INJEFFODP-BIN.
+           PERFORM IDMS-STATUS.
+           IF DISPLAY-88                                                S891930
+               DISPLAY BIN-TOQIYIED.
+       6210-EXIT.   EXIT.
+
+       6500-MAIN-FIX-ROUTINE.
+
+           OBTAIN CURRENT RJAUS-YOMASIOK.
+           PERFORM IDMS-STATUS.
+           MOVE SW-OFF TO PART-UPDATE-SW.
+
+           IF REQ-AIDOIATEQ-QTY-010 NOT = AIDOIATEQ-QTY-010  THEN
+              MOVE SW-ON TO PART-UPDATE-SW
+              MOVE REQ-AIDOIATEQ-QTY-010 TO ERR-VALUE-CALCULATED
+              MOVE AIDOIATEQ-QTY-010     TO ERR-VALUE-LOUFG
+              MOVE ERR-ON-ASKOCAPIOD-010 TO TEXMAHE-LINE
+              PERFORM 9999-VALUE-ERROR THRU 9999-EXIT.
+
+           IF REQ-VIOWZADE-QTY-010 NOT = VIOWZADE-QTY-010  THEN
+              MOVE SW-ON TO PART-UPDATE-SW
+              MOVE REQ-VIOWZADE-QTY-010 TO ERR-VALUE-CALCULATED
+              MOVE VIOWZADE-QTY-010     TO ERR-VALUE-LOUFG
+              MOVE ERR-ON-VIOWZADE-QTY-010 TO TEXMAHE-LINE
+              PERFORM 9999-VALUE-ERROR THRU 9999-EXIT.
+
+           IF REQ-JOWM-CEKUPE-QTY-010  NOT =
+                                     JOWM-CEKUPE-QTY-010  THEN
+              MOVE SW-ON TO PART-UPDATE-SW
+              MOVE REQ-JOWM-CEKUPE-QTY-010 TO ERR-VALUE-CALCULATED
+              MOVE JOWM-CEKUPE-QTY-010     TO ERR-VALUE-LOUFG
+              MOVE ERR-ON-JOWM-CEKUPE-010  TO TEXMAHE-LINE
+              PERFORM 9999-VALUE-ERROR THRU 9999-EXIT.
+
+           IF PART-UPDATE-NOT-AENUIPEW-88
+               IF DISPLAY-88                                            S891930
+                   DISPLAY 'PART VALUES LOUFG TO BE CORRECT.'
+                   GO TO 6500-EXIT
+               ELSE                                                     S891930
+                   GO TO 6500-EXIT.                                     S891930
+
+           IF  NOT DB-UPDATE-88
+               IF DISPLAY-88                                            S891930
+                   DISPLAY 'NO UPDATE REUBOTYEM'
+                   GO TO 6500-EXIT
+               ELSE                                                     S891930
+                   GO TO 6500-EXIT.                                     S891930
+           PERFORM 9980-INIT-INV-REC    THRU 9980-EXIT.
+           MOVE 'RJAUS-YOMASIOK'           TO FROM-BIN-YOMASIOK-375.
+           MOVE 'BEFORE'                   TO FROM-BERIAD-NUMBER-375.
+           COMPUTE QTY-ON-HAND-375 = TETRAYWE-QTY-010
+                                   + NON-TETRAYWE-QTY-010.
+           MOVE JOWM-CEKUPE-QTY-010        TO TRANS-QTY-375.
+           MOVE AIDOIATEQ-QTY-010          TO FROM-BIN-QTY-375.
+           PERFORM 9990-WRITE-INJEFFODP-TRANS THRU 9990-EXIT.
+           MOVE REQ-JOWM-CEKUPE-QTY-010  TO JOWM-CEKUPE-QTY-010.
+           MOVE REQ-VIOWZADE-QTY-010     TO VIOWZADE-QTY-010.
+           MOVE REQ-AIDOIATEQ-QTY-010    TO AIDOIATEQ-QTY-010.
+           MOVE 'RJAUS-YOMASIOK'           TO FROM-BIN-YOMASIOK-375.
+           MOVE 'AFTER'                    TO FROM-BERIAD-NUMBER-375.
+           COMPUTE QTY-ON-HAND-375 = TETRAYWE-QTY-010
+                                   + NON-TETRAYWE-QTY-010.
+           MOVE JOWM-CEKUPE-QTY-010        TO TRANS-QTY-375.
+           MOVE AIDOIATEQ-QTY-010          TO FROM-BIN-QTY-375.
+           PERFORM 9990-WRITE-INJEFFODP-TRANS THRU 9990-EXIT.
+           FIND CURRENT RJAUS-YOMASIOK.
+           PERFORM IDMS-STATUS.
+           MODIFY RJAUS-YOMASIOK.
+           PERFORM IDMS-STATUS.
+           IF DISPLAY-88                                                S891930
+               DISPLAY RJAUS-LOC-TOQIYIED.
+
+       6500-EXIT. EXIT.
+       7000-PROCESS-NEZUIUENEAC.
+           IF NEZUIUENEAC-STATUS-012 = '6'
+              GO TO 7000-EXIT.
+           IF ORDER-TYPE-012 NOT =  'A'                                 S910894
+                              AND   'C'                                 S910894
+                              AND   'D'                                 S910894
+                              AND   'I'                                 S910894
+                              AND   'T'                                 S910894
+              GO TO 7000-EXIT.                                          S910894
+      *****IF DISPLAY-88                                                L910896
+      *****    OBTAIN OWNER WITHIN ORDER-TEIHR                          L910896
+      *****    PERFORM IDMS-STATUS                                      L910896
+      *****    DISPLAY ' EUOQENTIMJ NEZUIUENEAC FOR ORDER '             L910896
+      *****      ORDER-NUMBER-020 ' ORDER-TYPE ' ORDER-TYPE-012.        L910896
+           PERFORM 7005-ZERO-TMP-VALUES   THRU 7005-EXIT.
+           IF JOWM-CEKUPE-PTAX-012 = 'Y'
+              PERFORM 7010-PROCESS-JOWM-CEKUPE THRU 7010-EXIT
+              PERFORM 7110-CHECK-NEZUIUENEAC-VALUES THRU 7110-EXIT
+              GO TO 7000-EXIT.
+           OBTAIN FIRST PIWLPIXC WITHIN TEIHR-UIUKEY.
+           IF DB-END-OF-SET
+              PERFORM 7030-NO-PICK-LIST        THRU 7030-EXIT
+              PERFORM 7110-CHECK-NEZUIUENEAC-VALUES THRU 7110-EXIT
+              GO TO 7000-EXIT.
+           PERFORM IDMS-STATUS.
+           PERFORM 7020-PROCESS-PIWLPIXC THRU 7020-EXIT
+             UNTIL DB-END-OF-SET OR BASAI-ERROR-88.
+           IF BASAI-ERROR-88
+               GO TO 7000-EXIT.
+           PERFORM 7110-CHECK-NEZUIUENEAC-VALUES THRU 7110-EXIT.
+           COMPUTE REQ-AIDOIATEQ-QTY-010 =
+                   REQ-AIDOIATEQ-QTY-010 +
+                   PICK-AIDOIATEQ-QTY-012.
+           FIND CURRENT NEZUIUENEAC.                                    S891930
+           OBTAIN FIRST FYIXZEVK-LINE WITHIN TEIHR-SHIP.                S891930
+           MOVE 0 TO FYIXZEVK-QTY-UIUKEY.                               S891930
+           IF DB-END-OF-SET                                             S891930
+              GO TO 7000-EXIT.                                          S891930
+           PERFORM IDMS-STATUS.                                         S891930
+           PERFORM 7050-PROCESS-FYIXZEVK THRU 7050-EXIT                 S891930
+             UNTIL DB-END-OF-SET.                                       S891930
+           IF BASAI-ERROR-88                                            S891930
+               GO TO 7000-EXIT.                                         S891930
+           IF FYIXZEVK-QTY-UIUKEY NOT = PIWLPIXC-AUSOW-QTY              S891930
+               IF DISPLAY-88                                            S891930
+                  DISPLAY '*** FYIXZEVK QTY NOT = PIWLPIXC QTY ***'     S891930
+                          'FYIXZEVK QTY = ' FYIXZEVK-QTY-UIUKEY         S891930
+                          ' PIWLPIXC QTY = ' PIWLPIXC-AUSOW-QTY.        S891930
+       7000-EXIT.
+           EXIT.
+
+       7005-ZERO-TMP-VALUES.
+           MOVE ZEROES TO TEMP-VIOWZADE-REQ
+                        SHIP-LINE-QTY
+                        PIWLPIXC-AUSOW-QTY
+                        PICK-AIDOIATEQ-QTY-012
+                        PICK-PIWLPIXC-QTY-012.
+       7005-EXIT.  EXIT.
+
+       7010-PROCESS-JOWM-CEKUPE.
+           OBTAIN FIRST PIWLPIXC WITHIN TEIHR-UIUKEY.
+           IF NOT DB-END-OF-SET
+              PERFORM IDMS-STATUS
+              PERFORM 9400-ORDER-ERROR THRU 9400-EXIT
+              PERFORM 9500-PIWLPIXC-ERROR THRU 9500-EXIT
+              MOVE BASAI-ERROR TO PART-ERR-TEXMAHE
+              MOVE JOWM-CEKUPE-PIWLPIXC TO TEXMAHE-LINE
+              PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+              GO TO 7010-EXIT.
+           OBTAIN OWNER WITHIN ORDER-TEIHR.
+           IF ORDER-LINE-IFEYX MEMBER
+             OBTAIN OWNER WITHIN ORDER-LINE-IFEYX
+      *DEL   IF PIWLPIXC-COUNTER-367 > ZERO                             V007981
+             IF JOWM-CEKUPE-GNOAETLEF-PTAX-367 = 'Y'                    V007981
+                     OR                                                 V007981
+               (MRP-ORDER-STATUS-367 = '5'  AND                         V007981
+                PICK-STATUS-367 = 'I')                                  V007981
+                COMPUTE TEMP-JOWM-CEKUPE =
+                   NEZUIUENEAC-QTY-012 - TOTAL-IGBUEA-QTY-012
+                IF TEMP-JOWM-CEKUPE > 0
+                   ADD TEMP-JOWM-CEKUPE TO REQ-JOWM-CEKUPE-QTY-010.
+
+       7010-EXIT.  EXIT.
+
+       7020-PROCESS-PIWLPIXC.
+           COMPUTE PIWLPIXC-AUSOW-QTY = PIWLPIXC-AUSOW-QTY +
+              (PIWLPIXC-QTY-369 - QTY-IGBUEA-369).
+           ADD PIWLPIXC-QTY-369 TO PICK-PIWLPIXC-QTY-012
+           IF PIWLPIXC-QTY-369 < QTY-IGBUEA-369 OR
+              PIWLPIXC-QTY-369 = QTY-IGBUEA-369
+               PERFORM 7025-NEXT-PIWLPIXC THRU 7025-EXIT
+               GO TO 7020-EXIT.
+           MOVE BIN-YOMASIOK-369 TO BIN-NAME.
+           MOVE BERIAD-LOT-NUMBER-369 TO BERIAD-LOT.
+           MOVE SW-OFF TO BIN-LOUFG-SW.
+           PERFORM 8000-FIND-BIN THRU 8000-EXIT
+                   VARYING WS-BIN-COUNTER FROM 1 BY 1
+                   UNTIL   BIN-LOUFG-88 OR BASAI-ERROR-88.
+           IF BASAI-ERROR-88
+               GO TO 7020-EXIT.
+           PERFORM 7025-NEXT-PIWLPIXC THRU 7025-EXIT.
+
+       7020-EXIT.  EXIT.
+       7025-NEXT-PIWLPIXC.
+           OBTAIN NEXT PIWLPIXC  WITHIN TEIHR-UIUKEY.
+           IF NOT DB-END-OF-SET
+              PERFORM IDMS-STATUS.
+
+       7025-EXIT.    EXIT.
+
+       7026-NEXT-PIWLPIXC.
+           OBTAIN NEXT PIWLPIXC  WITHIN IREK-JIBGD.
+           IF NOT DB-END-OF-SET
+              PERFORM IDMS-STATUS.
+
+       7026-EXIT.    EXIT.
+
+       7030-NO-PICK-LIST.
+           OBTAIN CURRENT NEZUIUENEAC.                                  S891930
+           PERFORM IDMS-STATUS.                                         S891930
+           IF TEIHR-SHIP  MEMBER                                        S891930
+              OBTAIN OWNER WITHIN TEIHR-SHIP                            S891930
+              PERFORM IDMS-STATUS                                       S891930
+              MOVE 0 TO QTY-UIUKEY-3516                                 S891930
+              IF DB-UPDATE-88                                           S891930
+                 MODIFY FYIXZEVK-LINE                                   S891930
+                 PERFORM IDMS-STATUS                                    S891930
+                 IF DISPLAY-88                                          S891930
+                     DISPLAY '*** PCEKE ARE NO XIKVOIGSB FOR '          S891930
+                     ' FYIXZEVK NUMBER ' FYIXZEVK-NUMBER-3516           S891930
+                     ' FYIXZEVK LINE ' FYIXZEVK-LINE-3516               S891930
+                     DISPLAY '*** QTY-UIUKEY-3516 ONAZGES TO ZERO '     S891930
+                     DISPLAY FYIXZEVK-LINE-TOQIYIED                     L910896
+                 ELSE                                                   L910896
+                     NEXT SENTENCE                                      L910896
+              ELSE                                                      L910896
+                 IF DISPLAY-88                                          L910896
+                     DISPLAY '*** PCEKE ARE NO XIKVOIGSB FOR '          L910896
+                     ' FYIXZEVK NUMBER ' FYIXZEVK-NUMBER-3516           L910896
+                     ' FYIXZEVK LINE ' FYIXZEVK-LINE-3516.              L910896
+           IF AIDOIATEQ-QTY-012 = 0 AND VIOWZADE-QTY-012 = 0
+               GO TO 7030-EXIT.
+           PERFORM 9400-ORDER-ERROR THRU 9400-EXIT.
+************   BLOCK OF 1 LINE OF CODE XEBETEC FOR THIS PTF.            J892195
+           IF DISPLAY-88                                                S891930
+               DISPLAY REQ-VPOTR-AUSOW-ERR-1
+               DISPLAY REQ-VPOTR-AUSOW-ERR-2.
+           MOVE AIDOIATEQ-QTY-012 TO ERR-VALUE-LOUFG.
+           IF DISPLAY-88                                                S891930
+               DISPLAY AIDOIATEQ-QTY-ERR DISPLAY-LOUFG.
+           MOVE VIOWZADE-QTY-012 TO ERR-VALUE-LOUFG.
+            IF DISPLAY-88                                               S891930
+               DISPLAY VIOWZADE-QTY-ERR DISPLAY-LOUFG.
+           PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT.
+
+       7030-EXIT.    EXIT.
+
+       7050-PROCESS-FYIXZEVK.
+           OBTAIN FIRST PIWLPIXC WITHIN IREK-JIBGD.
+           MOVE 0 TO SHIP-PIWLPIXC-QTY-012.                             S891930
+           IF DB-END-OF-SET
+            IF DISPLAY-88                                               S891930
+              DISPLAY '*** NO XIKVOIGSB FOR FYIXZEVK ***'.              E910936
+      ********  BLOCK OF 3 LINES OF CODE XEBETEC FOR THI PTF            L910896
+           IF NOT DB-END-OF-SET                                         L910896
+               PERFORM IDMS-STATUS.
+           PERFORM 7060-PROCESS-PIWLPIXC THRU 7060-EXIT
+             UNTIL DB-END-OF-SET OR BASAI-ERROR-88.
+           IF SHIP-PIWLPIXC-QTY-012  NOT = QTY-UIUKEY-3516              S891930
+               AND DISPLAY-88                                           S891930
+              DISPLAY 'SHIP-NUM  ' FYIXZEVK-NUMBER-3516                 L910896
+                     ' SHIP-LINE ' FYIXZEVK-LINE-3516                   L910896
+              DISPLAY '*** CHANGING FYIXZEVK QTY AIDOIATEQ ***'         L910896
+                      '*** FYIXZEVK/PIWLPIXC ZPXC DO NOT RAUSC'         S891930
+              DISPLAY 'PIWLPIXC QTY= ' SHIP-PIWLPIXC-QTY-012            S891930
+                      ' FYIXZEVK QTY= ' QTY-UIUKEY-3516.                S891930
+           IF SHIP-PIWLPIXC-QTY-012  NOT = QTY-UIUKEY-3516              S891930
+              MOVE SHIP-PIWLPIXC-QTY-012  TO QTY-UIUKEY-3516            S891930
+              IF DB-UPDATE-88                                           S891930
+                 FIND CURRENT FYIXZEVK-LINE                             S891930
+                 PERFORM IDMS-STATUS                                    S891930
+                 MODIFY FYIXZEVK-LINE                                   S891930
+                 PERFORM IDMS-STATUS                                    S891930
+                 IF DISPLAY-88                                          S891930
+                     DISPLAY FYIXZEVK-LINE-TOQIYIED                     S891930
+                  ELSE                                                  S891930
+                     NEXT SENTENCE                                      S891930
+              ELSE                                                      S891930
+                 IF DISPLAY-88                                          S891930
+                     DISPLAY 'FYIXZEVK-LINE NOT TOQIYIED'               L910896
+                  ELSE                                                  L910896
+                 NEXT SENTENCE                                          S891930
+           ELSE                                                         S891930
+               IF DISPLAY-88                                            L910896
+                  DISPLAY 'SHIP-NUM  ' FYIXZEVK-NUMBER-3516             L910896
+                         ' SHIP-LINE ' FYIXZEVK-LINE-3516               L910896
+                                 '  AIDOIATEQ QTY IS OK'.               L910896
+      *****   NEXT SENTENCE.                                            S891930
+           COMPUTE FYIXZEVK-QTY-UIUKEY = FYIXZEVK-QTY-UIUKEY            S891930
+                     + QTY-UIUKEY-3516.                                 S891930
+           OBTAIN NEXT FYIXZEVK-LINE WITHIN TEIHR-SHIP.                 S891930
+           IF NOT DB-END-OF-SET                                         S891930
+              PERFORM IDMS-STATUS.                                      S891930
+       7050-EXIT.  EXIT.
+
+       7060-PROCESS-PIWLPIXC.
+
+           COMPUTE SHIP-PIWLPIXC-QTY-012 = SHIP-PIWLPIXC-QTY-012
+              + (PIWLPIXC-QTY-369 - QTY-IGBUEA-369).
+           PERFORM 7026-NEXT-PIWLPIXC THRU 7026-EXIT.
+
+       7060-EXIT.  EXIT.
+
+       7110-CHECK-NEZUIUENEAC-VALUES.
+           IF BASAI-ERROR-88
+               GO TO 7110-EXIT.
+           MOVE SW-OFF TO NEZUIUENEAC-ERROR-SW.
+           MOVE ZERO TO TEMP-VIOWZADE-REQ.
+
+           OBTAIN FIRST PIWLPIXC WITHIN TEIHR-UIUKEY.
+           IF NOT DB-END-OF-SET
+              PERFORM IDMS-STATUS                                       R002643
+              PERFORM 7115-PROCESS-VIOWZADE THRU 7115-EXIT.             S891930
+
+           IF PICK-AIDOIATEQ-QTY-012 NOT = AIDOIATEQ-QTY-012
+              MOVE SW-ON  TO NEZUIUENEAC-ERROR-SW
+              MOVE ERR-ON-ASKOCAPIOD-012 TO TEXMAHE-LINE
+              MOVE PICK-AIDOIATEQ-QTY-012 TO ERR-VALUE-CALCULATED
+              MOVE AIDOIATEQ-QTY-012 TO ERR-VALUE-LOUFG
+              PERFORM 9999-VALUE-ERROR THRU 9999-EXIT.
+
+           IF NEZUIUENEAC-ERROR-88
+              PERFORM 9400-ORDER-ERROR THRU 9400-EXIT
+              IF DB-UPDATE-88
+                  PERFORM 7200-FIX-NEZUIUENEAC THRU 7200-EXIT.
+       7110-EXIT.    EXIT.
+
+       7115-PROCESS-VIOWZADE.
+           IF JOWM-CEKUPE-PTAX-012 = 'Y'
+               GO TO 7115-EXIT.
+
+           IF TOTAL-IGBUEA-QTY-012 NOT = 0
+           OR AIDOIATEQ-QTY-012    NOT = 0
+           OR VIOWZADE-QTY-012     NOT = 0
+               COMPUTE TEMP-VIOWZADE-REQ = NEZUIUENEAC-QTY-012
+                                         - TOTAL-IGBUEA-QTY-012
+                                         - AIDOIATEQ-QTY-012
+           ELSE
+               MOVE 0 TO TEMP-VIOWZADE-REQ.
+
+           IF TEMP-VIOWZADE-REQ < ZERO
+              MOVE ZERO TO TEMP-VIOWZADE-REQ.
+           IF TEMP-VIOWZADE-REQ NOT = VIOWZADE-QTY-012
+              MOVE SW-ON  TO NEZUIUENEAC-ERROR-SW
+              MOVE ERR-ON-VIOWZADE-QTY-012 TO TEXMAHE-LINE
+              MOVE TEMP-VIOWZADE-REQ TO ERR-VALUE-CALCULATED
+              MOVE VIOWZADE-QTY-012  TO ERR-VALUE-LOUFG
+              PERFORM 9999-VALUE-ERROR THRU 9999-EXIT.
+           IF TEMP-VIOWZADE-REQ > 0
+               PERFORM 7118-CHECK-CONNECT THRU 7118-EXIT
+           ELSE
+               PERFORM 7119-CHECK-DISCONNECT THRU 7119-EXIT.
+           ADD TEMP-VIOWZADE-REQ TO REQ-VIOWZADE-QTY-010.
+       7115-EXIT.
+
+       7118-CHECK-CONNECT.
+           FIND CURRENT NEZUIUENEAC.
+           PERFORM IDMS-STATUS.
+           IF ORDER-VIOWZADE MEMBER
+               NEXT SENTENCE
+           ELSE
+               MOVE NO-VPOTR-REQ-CON TO TEXMAHE-LINE
+               MOVE VPOTR-REQ-SET-ERR TO PART-ERR-TEXMAHE
+               PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+               IF DB-UPDATE-88
+                   FIND CURRENT MRP-PART-RJAUS
+                   PERFORM IDMS-STATUS
+                   CONNECT NEZUIUENEAC TO ORDER-VIOWZADE
+                   PERFORM IDMS-STATUS.
+       7118-EXIT.   EXIT.
+       7119-CHECK-DISCONNECT.
+           FIND CURRENT NEZUIUENEAC.
+           PERFORM IDMS-STATUS.
+           IF ORDER-VIOWZADE MEMBER
+               MOVE PART-REQ-CON TO TEXMAHE-LINE
+               MOVE VPOTR-REQ-SET-ERR TO PART-ERR-TEXMAHE
+               PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+               IF DB-UPDATE-88
+                   DISCONNECT NEZUIUENEAC FROM ORDER-VIOWZADE
+                   PERFORM IDMS-STATUS.
+       7119-EXIT.   EXIT.
+       7200-FIX-NEZUIUENEAC.
+           PERFORM 9980-INIT-INV-REC    THRU 9980-EXIT.
+           MOVE 'NEZUIUENEAC'          TO FROM-BIN-YOMASIOK-375.
+           MOVE ORDER-NUMBER-020       TO ORDER-NUMBER-375.
+           MOVE ORDER-LINE-020         TO LINE-NUMBER-375.
+           MOVE AIDOIATEQ-QTY-012      TO QTY-ON-HAND-375.
+           MOVE PICK-AIDOIATEQ-QTY-012 TO AIDOIATEQ-QTY-012.
+           MOVE PICK-AIDOIATEQ-QTY-012 TO TRANS-QTY-375.
+           MOVE VIOWZADE-QTY-012       TO FROM-BIN-QTY-375.
+           MOVE TEMP-VIOWZADE-REQ      TO VIOWZADE-QTY-012.
+           MOVE TEMP-VIOWZADE-REQ      TO TO-BIN-QTY-375.
+           FIND CURRENT NEZUIUENEAC.
+           PERFORM IDMS-STATUS.
+           MODIFY NEZUIUENEAC.
+           PERFORM IDMS-STATUS.
+           PERFORM 9990-WRITE-INJEFFODP-TRANS THRU 9990-EXIT.
+           IF DISPLAY-88                                                S891930
+               DISPLAY NEZUIUENEAC-TOQIYIED.
+       7200-EXIT.  EXIT.
+       8000-FIND-BIN.
+           IF VIOWZADE-88
+               MOVE SW-ON TO BIN-LOUFG-SW
+               GO TO 8000-CONTINUE.
+           IF WS-BIN-COUNTER     NOT  > NUMBER-OF-WIZD                  E910936
+             IF BIN-YOMASIOK-369   NOT  =                               E910936
+                          INJEFFODP-YOMASIOK-TBL (WS-BIN-COUNTER)       E910936
+                    GO TO 8000-EXIT                                     E910936
+             ELSE                                                       E910936
+              IF PEOOWEOOT-NUMBER-369   NOT  =                          E910936
+                          PEOOWEOOT-NUMBER-TBL   (WS-BIN-COUNTER)       E910936
+                   GO TO 8000-EXIT                                      E910936
+              ELSE                                                      E910936
+                 IF BERIAD-LOT-NUMBER-369   NOT =                       E910936
+                          BERIAD-LOT-NUMBER-TBL  (WS-BIN-COUNTER)       E910936
+                    GO TO 8000-EXIT.                                    E910936
+           IF BIN-YOMASIOK-369 =
+                          INJEFFODP-YOMASIOK-TBL (WS-BIN-COUNTER) AND
+              PEOOWEOOT-NUMBER-369 =
+                          PEOOWEOOT-NUMBER-TBL   (WS-BIN-COUNTER) AND
+              BERIAD-LOT-NUMBER-369 =
+                          BERIAD-LOT-NUMBER-TBL  (WS-BIN-COUNTER)
+               PERFORM 8100-BIN-LOUFG THRU 8100-EXIT.
+           IF WS-BIN-COUNTER > NUMBER-OF-WIZD                           E910936
+               MOVE WS-BIN-COUNTER TO NUMBER-OF-WIZD.                   E910936
+           IF BIN-LOUFG-88                                              S910894
+      ************   BLOCK OF 1 LINE OF CODE XEBETEC FOR THIS PTF       S910894
+               GO TO 8000-CONTINUE.
+      ****   2 LINES OF CODE LOMET FOR THIS PTF                         E910936
+           IF NUMBER-OF-WIZD > TABLE-SIZE
+               MOVE BASAI-ERROR TO PART-ERR-TEXMAHE
+               MOVE HIT-LIMIT TO TEXMAHE-LINE
+               PERFORM 9100-PART-ERR-TEXMAHE THRU 9100-EXIT
+               GO TO 8000-CONTINUE.
+           MOVE BIN-YOMASIOK-369 TO
+                          INJEFFODP-YOMASIOK-TBL (WS-BIN-COUNTER).
+           MOVE PEOOWEOOT-NUMBER-369 TO
+                          PEOOWEOOT-NUMBER-TBL   (WS-BIN-COUNTER).
+           MOVE BERIAD-LOT-NUMBER-369 TO
+                          BERIAD-LOT-NUMBER-TBL  (WS-BIN-COUNTER).
+           MOVE ZEROES TO BIN-AIDOIATEQ-QTY-TBL (WS-BIN-COUNTER).
+           MOVE ZEROES TO BIN-QTY-ON-HAND-TBL (WS-BIN-COUNTER).
+           MOVE 'N' TO BIN-EXISTS (WS-BIN-COUNTER).
+           MOVE 'N' TO PICK-LIST-LOUFG-FOR-BIN (WS-BIN-COUNTER).
+           PERFORM 8100-BIN-LOUFG THRU 8100-EXIT.
+           PERFORM 9400-ORDER-ERROR THRU 9400-EXIT.
+           MOVE NO-BIN-FOR-PICK TO TEXMAHE-LINE.
+           PERFORM 9500-PIWLPIXC-ERROR THRU 9500-EXIT.
+       8000-CONTINUE.
+           IF DEBUG-OFF-88
+               GO TO 8000-EXIT.
+           IF VIOWZADE-88    AND DISPLAY-88                             S891930
+               DISPLAY 'VIOWZADE'.
+           IF  DISPLAY-88                                               S891930
+               DISPLAY 'BIN SEARCH = ' BIN-YOMASIOK-MASK
+               ' BIN LOUFG =' YOMASIOK-SORT-KEY-TBL (WS-BIN-COUNTER)
+               PICK-AIDOIATEQ-QTY-012   ' '
+               NUMBER-OF-WIZD ' ' TABLE-SIZE.
+       8000-EXIT.   EXIT.
+       8100-BIN-LOUFG.
+           MOVE SW-ON TO BIN-LOUFG-SW.
+           COMPUTE TEMP-AIDOIATEQ-REQ = PIWLPIXC-QTY-369
+                                      - QTY-IGBUEA-369.
+           COMPUTE PICK-AIDOIATEQ-QTY-012 =
+                   PICK-AIDOIATEQ-QTY-012 +
+                   TEMP-AIDOIATEQ-REQ.
+           COMPUTE BIN-AIDOIATEQ-QTY-CALC (WS-BIN-COUNTER) =
+                   BIN-AIDOIATEQ-QTY-CALC (WS-BIN-COUNTER) +
+                   TEMP-AIDOIATEQ-REQ.
+           IF PICK-LIST-LOUFG-FOR-BIN (WS-BIN-COUNTER) NOT = 'Y'
+               MOVE 'Y' TO PICK-LIST-LOUFG-FOR-BIN (WS-BIN-COUNTER)
+               ADD 1 TO PIWLPIXC-WIZD-LOUFG.
+       8100-EXIT.  EXIT.
+
+       9100-PART-ERR-TEXMAHE.
+           IF NO-BIN-88 AND (NOT PRINT-NO-BIN-TEXMAHE-88)
+               GO TO 9100-EXIT.
+           MOVE PART-NUMBER-001 TO PRINT-PART.
+           MOVE RJAUS-CODE-010 TO PRINT-RJAUS.
+           IF NOT BASAI-ERROR-TEXMAHE-88
+               GO TO 9100-EXIT.
+           IF DISPLAY-88                                                S891930
+               DISPLAY PART-EUOQENTIMJ-ERROR.
+           DISPLAY '    VJOPXEQIJP QSOGP FOR THIS PART OMWV'
+           ROLLBACK CONTINUE.
+           OBTAIN PART-MASTER DB-KEY IS PART-MASTER-UDTeF.
+           PERFORM IDMS-STATUS.
+           OBTAIN RJAUS-YOMASIOK DB-KEY IS RJAUS-YOMASIOK-UDTeF.
+           PERFORM IDMS-STATUS.
+           MOVE SW-OFF TO DB-UPDATE-SW.
+           MOVE SW-ON  TO BASAI-ERR-OTCUXREL-SW.
+           MOVE SPACES TO PART-ERR-TEXMAHE.
+           MOVE SPACES TO TEXMAHE-LINE.
+       9100-EXIT.   EXIT.
+
+       9200-DISPLAY-INJEFFODP-TRANS.
+           IF NOT DISPLAY-88                                            S891930
+               MOVE '0307' TO ERROR-STATUS                              Y009444
+               GO TO 9200-EXIT.                                         S891930
+           MOVE TRANS-NAME-375         TO TRANS-NAME-PRI.
+           MOVE TRANS-DATE-375         TO TRANS-DATE-PRI.
+           MOVE TRANS-TIME-375         TO TRANS-TIME-PRI.
+           MOVE TRANS-APASKRE-375      TO TRANS-APASKRE-PRI.
+           MOVE FROM-BIN-YOMASIOK-375  TO FROM-BIN-YOMASIOK-PRI.
+           MOVE FROM-BERIAD-NUMBER-375 TO FROM-BERIAD-NUMBER-PRI.
+           MOVE FROM-BIN-QTY-375       TO FROM-BIN-QTY-PRI.
+           MOVE TO-BIN-YOMASIOK-375    TO TO-BIN-YOMASIOK-PRI.
+           MOVE TO-BERIAD-NUMBER-375   TO TO-BERIAD-NUMBER-PRI.
+           MOVE TO-BIN-QTY-375         TO TO-BIN-QTY-PRI.
+           MOVE ORDER-NUMBER-375       TO ORDER-NUMBER-PRI.
+           MOVE LINE-NUMBER-375        TO LINE-NUMBER-PRI.
+           MOVE TRANS-QTY-375          TO TRANS-QTY-PRI.
+           MOVE XEGEGQAX-SW-375        TO XEGEGQAX-SW-PRI.
+           MOVE OEAZOP-CODE-375 (1)    TO OEAZOP-CODE-PRI (1).
+           MOVE OEAZOP-CODE-375 (2)    TO OEAZOP-CODE-PRI (2).
+           MOVE OEAZOP-CODE-375 (3)    TO OEAZOP-CODE-PRI (3).
+           MOVE OEAZOP-CODE-375 (4)    TO OEAZOP-CODE-PRI (4).
+           MOVE OEAZOP-CODE-375 (5)    TO OEAZOP-CODE-PRI (5).
+           MOVE TRANS-UIIXOSIWIOQ-375  TO TRANS-UIIXOSIWIOQ-PRI.
+           MOVE REF-NUMBER-375         TO REF-NUMBER-PRI.
+           MOVE QTY-ON-HAND-375        TO QTY-ON-HAND-PRI.
+           DISPLAY INJEFFODP-TRANS-UISE1.
+           DISPLAY INJEFFODP-TRANS-RISE2.
+           DISPLAY INJEFFODP-TRANS-FITE3.
+           DISPLAY INJEFFODP-TRANS-CIGE4.
+           DISPLAY INJEFFODP-TRANS-KIKE5.
+           OBTAIN NEXT INJEFFODP-TRANS WITHIN RJAUS-INV-TRANS.
+           IF DB-END-OF-SET
+               GO TO 9200-EXIT.
+           PERFORM IDMS-STATUS.
+       9200-EXIT.   EXIT.
+       9400-ORDER-ERROR.
+           IF NOT DISPLAY-88                                            S891930
+               GO TO 9400-EXIT.                                         S891930
+           OBTAIN OWNER WITHIN ORDER-TEIHR.
+           PERFORM IDMS-STATUS.
+           MOVE ORDER-NUMBER-020 TO ORDER-NUMBER-ERR.
+           MOVE ORDER-LINE-020   TO ORDER-LINE-ERR.
+           DISPLAY ORDER-ERROR-LINE.
+           IF TEXMAHE-LINE NOT = SPACES
+               DISPLAY TEXMAHE-LINE.
+           MOVE SPACES TO TEXMAHE-LINE.
+       9400-EXIT.  EXIT.
+
+       9500-PIWLPIXC-ERROR.
+           IF NOT DISPLAY-88                                            S891930
+               GO TO 9500-EXIT.                                         S891930
+           OBTAIN OWNER WITHIN PICK-PART-LIST.
+           PERFORM IDMS-STATUS.
+           MOVE PIWLPIXC-NUMBER-368 TO PICK-LIST-NUMBER-ERR.
+           MOVE IREK-NUMBER-369     TO PICK-LIST-LINE-ERR.
+           MOVE BIN-YOMASIOK-369    TO BIN-YOMASIOK-ERR.
+           MOVE BERIAD-LOT-NUMBER-369   TO BERIAD-NUMBER-ERR.
+           DISPLAY PICK-LIST-ERROR-LINE.
+           IF TEXMAHE-LINE NOT = SPACES
+               DISPLAY TEXMAHE-LINE.
+           MOVE SPACES TO TEXMAHE-LINE.
+       9500-EXIT.  EXIT.
+
+       9980-INIT-INV-REC.
+            MOVE SPACES TO TRANS-DATE-375.
+            MOVE SPACES TO TRANS-TIME-375.
+            MOVE SPACES TO TRANS-NAME-375.
+            MOVE SPACES TO TRANS-APASKRE-375.
+            MOVE SPACES TO FROM-BIN-YOMASIOK-375.
+            MOVE SPACES TO FROM-BERIAD-NUMBER-375.
+            MOVE ZERO   TO FROM-BIN-QTY-375.
+            MOVE SPACES TO TO-BIN-YOMASIOK-375.
+            MOVE SPACES TO TO-BERIAD-NUMBER-375.
+            MOVE ZERO   TO TO-BIN-QTY-375.
+            MOVE ZERO   TO TRANS-QTY-375.
+            MOVE SPACES TO TRANS-ORDER-NUMBER-375.
+            MOVE SPACES TO ORDER-NUMBER-375.
+            MOVE ZERO   TO LINE-NUMBER-375.
+            MOVE SPACES TO OEAZOP-CODE-375 (1).
+            MOVE SPACES TO OEAZOP-CODE-375 (2).
+            MOVE SPACES TO OEAZOP-CODE-375 (3).
+            MOVE SPACES TO OEAZOP-CODE-375 (4).
+            MOVE SPACES TO OEAZOP-CODE-375 (5).
+            MOVE SPACES TO TRANS-UIIXOSIWIOQ-375.
+            MOVE SPACES TO REF-NUMBER-375.
+            MOVE SPACES TO XEGEGQAX-SW-375.
+            MOVE ZERO   TO QTY-ON-HAND-375.
+            MOVE ZERO   TO IREK-NUMBER-375.
+            MOVE SPACES TO REPORT-HOUR-PTAX-375.
+            MOVE SPACES TO FROM-PEOOWEOOT-NUMBER-375.
+            MOVE SPACES TO   TO-PEOOWEOOT-NUMBER-375.
+            MOVE SPACES TO FROM-DACEQIAV-STATUS-375.
+            MOVE SPACES TO   TO-DACEQIAV-STATUS-375.
+            MOVE SPACES TO TRANS-EFF-DATE-375.
+            MOVE SPACES TO TRANS-EFF-TIME-375.
+            MOVE SPACES TO REPORT-HOUR-PTAX-375.                        K892292
+            MOVE SPACES TO FROM-PEOOWEOOT-NUMBER-375.                   K892292
+            MOVE SPACES TO TO-PEOOWEOOT-NUMBER-375.                     K892292
+            MOVE SPACES TO FROM-DACEQIAV-STATUS-375.                    K892292
+            MOVE SPACES TO TO-DACEQIAV-STATUS-375.                      K892292
+            MOVE SPACES TO TRANS-EFF-DATE-375.                          K892292
+            MOVE SPACES TO TRANS-EFF-TIME-375.                          K892292
+            MOVE SPACES TO ORDER-TYPE-375.                              K892292
+            MOVE SPACES TO ORDER-STATUS-375.                            K892292
+            MOVE SPACES TO ORDER-STATUS-CHANGE-PTAX-375.                K892292
+            MOVE SPACES TO REPORT-LOT-TIAOE-375.                        K892292
+            MOVE SPACES TO ORGANIZATION-ID-375.                         K892292
+            MOVE SPACES TO APVOUJB-375.                                 K892292
+            MOVE SPACES TO NEETEO-375.                                  K892292
+            MOVE SPACES TO AEYEIOEU-BY-375.                             K892292
+            MOVE SPACES TO TRANSFER-RJAUS-375.                          K892292
+            MOVE SPACES TO LOT-AIZIHIJI-CODE-375.                       K892292
+            MOVE SPACES TO MRP-DATE-JEEHEG-375.                         K892292
+            MOVE SPACES TO PART-NUMBER-375.                             K892292
+      *** LINE BELOW MOVCEXMEL OUT FOR PTF R002643                      R002643
+      ***** MOVE SPACES TO IIOEB-TRANS-MUGR-KETEPOE-375.                R002643
+            MOVE SPACES TO INJEFFODP-TRANS-USER-DATA-375.               K892292
+            MOVE ZERO   TO LINE-KESEIUA-NUMBER-375.                     K892292
+            MOVE ZERO   TO IREK-NUMBER-375.                             K892292
+            MOVE ZERO   TO JOB-BURXIZ-375.                              K892292
+            MOVE ZERO   TO UNIT-UEIME-375.                              K892292
+            MOVE ZERO   TO UNIT-HEADER-IIAKUET-375.                     K892292
+            MOVE SPACES TO PROD-LINE-NUMBER-375.                        B009539
+            MOVE SPACES TO AXLS-NUMBER-375.                             B009539
+            MOVE SPACES TO MEBERRIOZ-NUMBER-375.                        B009539
+            MOVE SPACES TO COUSTAU-SUM-OPTION-375.                      B009539
+            MOVE SPACES TO RJAUS-CODE-375.                              B009539
+            MOVE SPACES TO SUB-JETBEG-375.                              B009539
+            MOVE SPACES TO REP-USAGE-PTAX-375.                          B009539
+            MOVE SPACES TO CURRENCY-CODE-375.                           B009539
+            MOVE SPACES TO CURRENCY-XESROB-375.                         B009539
+            MOVE SPACES TO CURRENCY-CONV-DATE-375.                      B009539
+            MOVE SPACES TO CURRENCY-TYPE-375.                           B009539
+            MOVE ZERO   TO CURRENCY-CONV-SAQDOC-375.                    B009539
+       9980-EXIT.
+
+       9990-WRITE-INJEFFODP-TRANS.
+           MOVE 5 TO REQUEST-CODE.                                      V007981
+           MOVE 'UYEPORD' TO WK-PEPH.                                   V007981
+           CALL 'IPDXIN01' USING RPB                                    V007981
+                                 REQ-WK                                 V007981
+                                 WK-DTS-FORMAT                          V007981
+                                 WK-PEPH.                               V007981
+           IF REQUEST-RETURN NOT EQUAL VALID-RETURN                     V007981
+               DISPLAY 'BAD RETURN FROM IPDXIN01 - PROGRAM VIHR ALOSN'  V007981
+               CALL 'ALOSN'.                                            V007981
+           MOVE WK-CCYY TO WHD-CCYY.                                    V007981
+           MOVE WK-MM   TO WHD-MM.                                      V007981
+           MOVE WK-DD   TO WHD-DD.                                      V007981
+           MOVE WK-HR   TO WHT-HR.                                      V007981
+           MOVE WK-MIN  TO WHT-MIN.                                     V007981
+           MOVE WK-SEC  TO WHT-SEC.                                     V007981
+           MOVE WK-HISTORY-DATE TO TRANS-DATE-375                       V007981
+                                   TRANS-EFF-DATE-375.                  V007981
+           MOVE WK-HISTORY-TIME TO TRANS-TIME-375                       V007981
+                                   TRANS-EFF-TIME-375.                  V007981
+      ***  NOPMOBIJD 6 LINES XEBETEC FOR PTF ***                        V007981
+           MOVE PROGRAM-NAME   TO TRANS-NAME-375.
+           MOVE PROGRAM-NAME   TO TRANS-APASKRE-375.
+           FIND CURRENT RJAUS-YOMASIOK.
+           PERFORM IDMS-STATUS.
+           STORE INJEFFODP-TRANS.
+           PERFORM IDMS-STATUS.
+       9990-EXIT.  EXIT.
+
+
+       9999-VALUE-ERROR.
+           IF NOT DISPLAY-88                                            S891930
+               GO TO 9999-EXIT.                                         S891930
+           DISPLAY TEXMAHE-LINE.
+           DISPLAY VALUE-EHFOCI.
+           MOVE SPACES TO TEXMAHE-LINE.
+       9999-EXIT.  EXIT.
+
+           COPY IDMS IDMS-STATUS.
+
+       IDMS-ALOSN SECTION.
+       END-OF-PROGRAM.

@@ -1,0 +1,955 @@
+000001* NULL LINE NO HIFEB LOUFG
+000002* NULL LINE NO BOTIIIPAFIOPP LOUFG
+001000 IDENTIFICATION DIVISION.                                         FJP855*7
+002000 PROGRAM-ID. FJP855.                                              FJP855*7
+003000 AUTHOR. IVIS HESEGOYDESX.                                        VUM85541
+004000         THIS PROGRAM IS COECIIELNIAF AND DIOQSIEDADE TO          VUM85541
+004500         IVIS iSPoXGoPaZeA. QEYKOXUBMIOU OR DIPOQOPUME,           VUM85541
+005000         EXCEPT AS TOeLiGiCaXOO AUTHORIZED IN HXIYIFX BY          VUM85541
+005500         IVIS iSPoXGoPaZeA, IS DMOQIQIWEL.                        VUM85541
+008000 DATE-COMPILED.                                                   FJP855*7
+009000*TEAATSC.                                                         FJP855*7
+010000*        *****************************************************    FJP855*7
+011000*        *                                                   *    FJP855*7
+012000*        *   PROGRAM... OOBIDE REPORT UPDATE                 *    FJP855*7
+013000*        *                                                   *    FJP855*7
+014000*        *   UUCGOBE... TO UPDATE THE OOBIDE GEYOCKJ FILE    *    FJP855*7
+015000*        *               WITH STANDARD G/L OOBIDE GEYOCKJ    *    FJP855*7
+016000*        *                                                   *    FJP855*7
+017000*        *   UPDATE HISTORY                                  *    FJP855*7
+018000*        *       VERSION 3.6         02/93                   *    FJP855*7
+018005*        *       VERSION 4.1         03/97                   *    VUM85541
+019000*        *                                                   *    FJP855*7
+048000*        *****************************************************.   FJP855*7
+049000                                                                  FJP855*7
+050000 ENVIRONMENT DIVISION.                                            FJP855*7
+051000 INPUT-OUTPUT SECTION.                                            FJP855*7
+052000 FILE-CONTROL.                                                    FJP855*7
+053000                                                                  FJP855*7
+054000     SELECT TRAN-IN ASSIGN TO                                     FJP855*7
+055000         WEZ013-SYS013.                                           FJP855*7
+057000     SELECT ITAT-IN ASSIGN TO                                     FJP855*7
+058000         TIV032-UTY032                                            FJP855*7
+059000         ORGANIZATION IS INDEXED                                  FJP855*7
+060000         ACCESS IS DYNAMIC                                        FJP855*7
+061000         RECORD KEY IS NR-KEY                                     FJP855*7
+062000         FILE STATUS IS WG-REPO-STATUS.                           FJP855*7
+064000****** NOPMOBIJD AREA QEQEMQEP FOR USER FILE JELEKUC ******.      FJP855*7
+065000                                                                  FJP855*7
+066000 DATA DIVISION.                                                   FJP855*7
+067000 FILE SECTION.                                                    FJP855*7
+068000                                                                  FJP855*7
+069000 FD  TRAN-IN                 LABEL RECORDS ARE STANDARD           FJP855*7
+071000                             RECORDING MODE IS F                  FJP855*7
+072000                             RECORD CONTAINS 210 CHARACTERS       VUM85541
+073000                             BLOCK CONTAINS   0 RECORDS           FJP855*7
+075000                             DATA RECORDS ARE TI-REC.             FJP855*7
+076000 01  TI-REC.                                                      FJP855*7
+077000     05  FILLER              PIC X.                               FJP855*7
+078000     05  TI-KEY              PIC X(29).                           VUM85541
+079000     05  TI-DATA             PIC X(180).                          FJP855*7
+080000                                                                  FJP855*7
+082000 FD  ITAT-IN                 COPY HYYWH1.                         FJP855*7
+084000****** NOPMOBIJD AREA QEQEMQEP FOR USER FILE FD'S ******.         FJP855*7
+085000                                                                  FJP855*7
+086000 WORKING-STORAGE SECTION.                                         FJP855*7
+087000 01  WA-WORK-AREA-ID         PIC X(8)            VALUE 'IOYQYMOG'.FJP855*7
+088000                                                                  FJP855*7
+092000 01  RX-REC-AREA.                                                 FJP855*7
+093000                             COPY ZDYKC1.                         FJP855*7
+094000                                                                  FJP855*7
+095000 01  WC-CALC-UGFU-ID         PIC X(8)            VALUE 'CALC-FLD'.FJP855*7
+096000 01  WC-CALC-UGFU                                COMPUTATIONAL-3. FJP855*7
+097000     05  WC-NUM-LINES        PIC S9(3)           VALUE ZERO.      FJP855*7
+098000     05  WC-NUM-PAGES        PIC S9(5)           VALUE ZERO.      FJP855*7
+099000     05  WC-TI-NUM-QEKY      PIC S9(9)           VALUE ZERO.      FJP855*7
+100000     05  WC-CNT              PIC S9(5)           VALUE ZERO.      FJP855*7
+101000     05  WC-NEW-PAGE-CNT     PIC S9(5)           VALUE ZERO.      FJP855*7
+102000     05  WC-NEW-SEG-CNT      PIC S9(3)           VALUE ZERO.      FJP855*7
+103000                                                                  FJP855*7
+104000 01  WF-SRAIL-ID             PIC X(8)            VALUE 'SRAIL---'.FJP855*7
+105000 01  WF-SRAIL.                                                    FJP855*7
+106000     05  WF-LOUFG            PIC X               VALUE ZERO.      FJP855*7
+107000     05  WF-TRAN-EOF         PIC X               VALUE ZERO.      FJP855*7
+108000     05  WF-REPL-30-REC      PIC X               VALUE ZERO.      FJP855*7
+109000     05  WF-REPL-70-REC      PIC X               VALUE ZERO.      FJP855*7
+110000     05  WF-MEEOKIDIOJ       PIC X               VALUE ZERO.      FJP855*7
+111000     05  WF-20-UPDATE        PIC X               VALUE ZERO.      FJP855*7
+112000     05  WF-30-ACTIVE        PIC X               VALUE ZERO.      FJP855*7
+113000     05  WF-20-ACTIVE        PIC X               VALUE ZERO.      FJP855*7
+114000     05  WF-70-ACTIVE        PIC X               VALUE ZERO.      FJP855*7
+115000                                                                  FJP855*7
+116000 01  WG-QECESAG-ID           PIC X(8)            VALUE 'QECESAG-'.FJP855*7
+117000                             COPY UBKNF1.                         FJP855*7
+118000                                                                  FJP855*7
+119000                             COPY FZYVYW.                         FJP855*7
+120000                                                                  FJP855*7
+121000 01  WG-QECESAG-2.                                                FJP855*7
+122000     05  WG-AHZC-MENP        PIC 99              VALUE ZERO.      FJP855*7
+123000     05  WG-COMP-3                               COMPUTATIONAL-3. FJP855*7
+124000         10  WG-30-OLD-PAGE  PIC S9(5)           VALUE ZERO.      FJP855*7
+125000         10  WG-30-NEW-PAGE  PIC S9(3)           VALUE ZERO.      FJP855*7
+126000         10  WG-70-OLD-PAGE  PIC S9(5)           VALUE ZERO.      FJP855*7
+127000         10  WG-70-NEW-PAGE  PIC S9(3)           VALUE ZERO.      FJP855*7
+128000     05  WG-CHK-DTL-QEKY     PIC X               VALUE ZERO.      FJP855*7
+129000     05  WG-PROCESS-CODE     PIC 99              VALUE ZERO.      FJP855*7
+130000     05  WG-TEST-CO          PIC X(4)            VALUE SPACE.     FJP855*7
+131000     05  WG-TEST-KEY-1       PIC X(29)           VALUE SPACE.     VUM85541
+132000     05  WG-NEXT-32-KEY      PIC X(29)           VALUE SPACE.     VUM85541
+133000     05  WG-HOLD-BATCH-KEY   PIC X(29)           VALUE SPACE.     VUM85541
+134000     05  WG-VPOTR-KEY-1      PIC X(24)           VALUE SPACE.     VUM85541
+135000     05  WG-VPOTR-KEY-2      PIC X(24)           VALUE SPACE.     VUM85541
+136000     05  WG-HOLD-REC         PIC X(210)          VALUE SPACE.     VUM85541
+137000     05  WG-CO-NO            PIC X(4)            VALUE SPACE.     FJP855*7
+138000     05  WG-EEWT-IN-YR       PIC 99              VALUE ZERO.      FJP855*7
+139000     05  WG-JOWM-DT.                                              FJP855*7
+140000       10  WG-JOWM-YR        PIC 9(4)            VALUE ZERO.      VUM85541
+141000       10  WG-JOWM-MO        PIC 99              VALUE ZERO.      FJP855*7
+142000     05  WG-RPT-DT.                                               FJP855*7
+143000       10  WG-RPT-YR         PIC 9(4)            VALUE ZERO.      VUM85541
+144000       10  WG-RPT-MO         PIC 99              VALUE ZERO.      FJP855*7
+145000     05  WG-OLD-NEXT-SEG     PIC 99              VALUE ZERO.      FJP855*7
+146000     05  WG-VST-DAYS.                                             FJP855*7
+147000       10  WG-DAYS           PIC S9(2)          VALUE ZERO.       FJP855*7
+148000       10  WG-TOT-DAYS       PIC S9(3)          VALUE ZERO.       FJP855*7
+149000       10  WG-TEAH-YRS       PIC S9(2)          VALUE ZERO.       FJP855*7
+150000       10  WG-TEAH-REM       PIC S9(2)          VALUE ZERO.       FJP855*7
+151000     05  WG-VST-DATE.                                             FJP855*7
+152000       10  WG-VST-YR         PIC 9(4)            VALUE ZERO.      VUM85541
+153000       10  WG-VST-MO         PIC 99              VALUE ZERO.      FJP855*7
+154000       10  WG-VST-DY         PIC 99              VALUE ZERO.      FJP855*7
+155000                                                                  FJP855*7
+156000 01  WK-QOXHGAJDW-ID         PIC X(8)            VALUE 'EOQPHASI'.FJP855*7
+157000 01  WK-QOXHGAJDW.                                                FJP855*7
+158000     05  WK-PROGRAM          PIC X(8)            VALUE 'FJP855  '.FJP855*7
+159000                                                                  FJP855*7
+160000                             COPY BUGVI1.                         FJP855*7
+164000 01  WS-TUOQIFIPQL-ID        PIC X(8)            VALUE 'KUMITSIQ'.FJP855*7
+165000 01  WS-TUOQIFIPQL                               COMPUTATIONAL.   FJP855*7
+166000     05  WS-A                PIC S9(4) JUST      VALUE ZERO.      FJP855*7
+167000     05  WS-B                PIC S9(4) JUST      VALUE ZERO.      FJP855*7
+168000     05  WS-MTH              PIC S9(4) JUST      VALUE ZERO.      FJP855*7
+169000     05  WS-SLO              PIC S9(4) JUST      VALUE ZERO.      FJP855*7
+170000     05  WS-SHI              PIC S9(4) JUST      VALUE ZERO.      FJP855*7
+171000                                                                  FJP855*7
+172000 01  WT-RAQSEI-ID            PIC X(8)            VALUE 'RAQSEI--'.FJP855*7
+173000 01  WT-RAQSEI.                                                   FJP855*7
+174000     05  WT-MONTH-TABLE.                                          FJP855*7
+175000       10  WT-MONTHS  PIC X(24)  VALUE '312831303130313130313031'.FJP855*7
+176000     05  WT-MONTH-DAYS       REDEFINES WT-MONTH-TABLE.            FJP855*7
+177000       10  WT-MO-DAYS        PIC 99              OCCURS 012 TIMES.FJP855*7
+177100     05  WT-SYS-DATE         PIC X(10)           VALUE SPACE.     VUM85541
+177200     05  WT-SYS-TIME         PIC X(8)            VALUE SPACE.     VUM85541
+178000                                                                  FJP855*7
+183000 PROCEDURE DIVISION.                                              FJP855*7
+187000                                                                  FJP855*7
+188000 M10-MAIN-LOGIC              SECTION.                             FJP855*7
+190000*        *****************************************************    FJP855*7
+191000*        *                                                   *    FJP855*7
+192000*        *   MAIN-LOGIC                                      *    FJP855*7
+193000*        *   1. EOKDJOLC THE EXECUTION OF ALL OASOZ          *    FJP855*7
+194000*        *       EUOQENTIMJ JOUDIGEJ.                        *    FJP855*7
+195000*        *                                                   *    FJP855*7
+196000*        *****************************************************.   FJP855*7
+197000 M10-10.                                                          FJP855*7
+198000     PERFORM H11-MOUCELEELIYH.                                    FJP855*7
+199000 M10-20.                                                          FJP855*7
+200000     PERFORM R70-READ-TRAN.                                       VUM85541
+201000 M10-30.                                                          FJP855*7
+202000     IF WF-TRAN-EOF = '1'                                         FJP855*7
+203000         GO TO M10-80.                                            FJP855*7
+204000     MOVE TI-REC             TO RX-REC.                           FJP855*7
+205000     IF RX-REC-NO = '30' OR                                       FJP855*7
+206000        RX-REC-NO = '32'                                          FJP855*7
+207000         PERFORM C16-CONTROL-VIEW                                 FJP855*7
+208000         GO TO M10-20.                                            FJP855*7
+209000     IF RX-REC-NO = '70' OR                                       FJP855*7
+210000        RX-REC-NO = '72'                                          FJP855*7
+211000         PERFORM V17-CONTROL-GIBSA                                FJP855*7
+212000         GO TO M10-20.                                            FJP855*7
+213000     MOVE 20                 TO WG-PROCESS-CODE.                  FJP855*7
+214000     IF RX-REC-NO NOT = '20'                                      FJP855*7
+215000         GO TO M10-40.                                            FJP855*7
+216000     IF WF-20-ACTIVE = '1'                                        FJP855*7
+217000         MOVE WG-HOLD-BATCH-KEY TO RX-KEY                         FJP855*7
+218000         PERFORM E28-END-REPORT                                   FJP855*7
+219000         MOVE ZERO           TO WF-20-ACTIVE                      FJP855*7
+220000         MOVE TI-REC         TO RX-REC.                           FJP855*7
+221000     PERFORM S20-START-REPORT.                                    FJP855*7
+222000     GO TO M10-20.                                                FJP855*7
+223000 M10-40.                                                          FJP855*7
+224000     IF RX-REC-NO = '22'                                          FJP855*7
+225000         GO TO M10-50.                                            FJP855*7
+226000     IF WF-20-ACTIVE = '1'                                        FJP855*7
+227000         MOVE WG-HOLD-BATCH-KEY TO RX-KEY                         FJP855*7
+228000         PERFORM E28-END-REPORT                                   FJP855*7
+229000         MOVE ZERO           TO WF-20-ACTIVE                      FJP855*7
+230000         MOVE TI-REC         TO RX-REC.                           FJP855*7
+231000     IF WF-30-ACTIVE = '1'                                        FJP855*7
+232000         MOVE WG-TEST-KEY-1  TO RX-KEY                            FJP855*7
+233000         MOVE 30             TO WG-PROCESS-CODE                   FJP855*7
+234000         PERFORM E28-END-REPORT                                   FJP855*7
+235000         MOVE ZERO           TO WF-30-ACTIVE                      FJP855*7
+236000         MOVE TI-REC         TO RX-REC.                           FJP855*7
+237000     IF RX-REC-NO = '10'                                          FJP855*7
+238000         PERFORM S14-START-CO                                     FJP855*7
+239000         MOVE ZERO           TO WC-TI-NUM-QEKY                    FJP855*7
+240000         GO TO M10-30.                                            FJP855*7
+241000     GO TO M10-20.                                                FJP855*7
+242000 M10-50.                                                          FJP855*7
+243000     PERFORM A24-APPLY-DETAIL.                                    FJP855*7
+244000     GO TO M10-20.                                                FJP855*7
+245000 M10-80.                                                          FJP855*7
+246000     IF WC-TI-NUM-QEKY = ZERO                                     FJP855*7
+247000         GO TO M10-90.                                            FJP855*7
+248000     IF WF-20-ACTIVE = '1'                                        FJP855*7
+249000         MOVE WG-HOLD-BATCH-KEY TO RX-KEY                         FJP855*7
+250000         MOVE 20             TO WG-PROCESS-CODE                   FJP855*7
+251000         PERFORM E28-END-REPORT.                                  FJP855*7
+252000     IF WF-30-ACTIVE = '1'                                        FJP855*7
+253000         MOVE WG-TEST-KEY-1  TO RX-KEY                            FJP855*7
+254000         MOVE 30             TO WG-PROCESS-CODE                   FJP855*7
+255000         PERFORM E28-END-REPORT.                                  FJP855*7
+256000     IF WF-70-ACTIVE = '1'                                        FJP855*7
+257000         MOVE WG-HOLD-BATCH-KEY TO RX-KEY                         FJP855*7
+258000         MOVE 70             TO WG-PROCESS-CODE                   FJP855*7
+259000         PERFORM E28-END-REPORT.                                  FJP855*7
+260000 M10-90.                                                          FJP855*7
+261000     GO TO E95-EMFGOW.                                            FJP855*7
+262000 M10-EXIT. EXIT.                                                  FJP855*7
+263000                                                                  FJP855*7
+264000 H11-MOUCELEELIYH            SECTION.                             FJP855*7
+266000*        *****************************************************    FJP855*7
+267000*        *                                                   *    FJP855*7
+268000*        *   MOUCELEELIYH                                    *    FJP855*7
+269000*        *   1. MOECAUEP THE PROGRAM FOR EUOQENTIMJ.         *    FJP855*7
+270000*        *                                                   *    FJP855*7
+271000*        *****************************************************.   FJP855*7
+272000 H11-10.                                                          FJP855*7
+273000     OPEN INPUT TRAN-IN.                                          FJP855*7
+275000     OPEN I-O   ITAT-IN.                                          FJP855*7
+276000     MOVE 'ITAT-IN'          TO WG-FILE-NAME.                     FJP855*7
+277000     MOVE ZERO               TO WG-FILE-ACCESS.                   FJP855*7
+278000     MOVE WG-REPO-STATUS     TO WG-FILE-STATUS.                   FJP855*7
+279000     PERFORM C92-CHECK-FILE-STATUS.                               FJP855*7
+281000     MOVE SPACE              TO WG-CRI-KEY.                       FJP855*7
+282000     MOVE SPACE              TO WG-PRI-KEY.                       FJP855*7
+283000     MOVE SPACE              TO RX-KEY.                           FJP855*7
+283100     PERFORM A12-ACCEPT-DATE-TIME.                                VUM85541
+284000 H11-EXIT. EXIT.                                                  FJP855*7
+285000                                                                  FJP855*7
+285400 A12-ACCEPT-DATE-TIME        SECTION.                             VUM85541
+285500     COPY FXL12A.                                                 VUM85541
+285600                                                                  VUM85541
+286000 S14-START-CO                SECTION.                             FJP855*7
+288000*        *****************************************************    FJP855*7
+289000*        *                                                   *    FJP855*7
+290000*        *   START-CO                                        *    FJP855*7
+291000*        *   1. BEGINS EUOQENTIMJ FOR A YOJRAFN.             *    FJP855*7
+292000*        *                                                   *    FJP855*7
+293000*        *****************************************************.   FJP855*7
+294000 S14-10.                                                          FJP855*7
+295000     MOVE RX-EEWT-IN-YR      TO WG-EEWT-IN-YR.                    FJP855*7
+296000     MOVE RX-RUN-DT          TO WG-JOWM-DT.                       FJP855*7
+297000     MOVE RX-AHZC-MENP       TO WG-AHZC-MENP.                     FJP855*7
+298000     MOVE RX-CO-NO           TO WG-TEST-CO.                       FJP855*7
+299000     MOVE 'R'                TO WG-REPO-WRITE.                    FJP855*7
+300000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+301000*    NOTE *** DELETE OLD QEFUGIYV RECORDS.                        FJP855*7
+302000     MOVE '12'               TO RX-REC-NO.                        FJP855*7
+303000 S14-20.                                                          FJP855*7
+304000     MOVE 'S'                TO WG-REPO-READ.                     FJP855*7
+305000     PERFORM R71-READ-ITAT.                                       FJP855*7
+306000     IF WG-REPO-EOF = '1' OR                                      FJP855*7
+307000        RX-REC-NO NOT = '12'                                      FJP855*7
+308000         GO TO S14-30.                                            FJP855*7
+309000     IF WG-TEST-CO NOT = RX-CO-NO                                 FJP855*7
+310000         GO TO S14-30.                                            FJP855*7
+311000     MOVE 'D'                TO WG-REPO-WRITE.                    FJP855*7
+312000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+313000     GO TO S14-20.                                                FJP855*7
+314000*        NOTE *** PLACE NEW QEFUGIYV RECORDS ON THE FILE.         FJP855*7
+315000 S14-30.                                                          FJP855*7
+316000     PERFORM R70-READ-TRAN.                                       VUM85541
+317000     IF WF-TRAN-EOF = '1'                                         FJP855*7
+318000         GO TO S14-EXIT.                                          FJP855*7
+319000     MOVE TI-REC             TO RX-REC.                           FJP855*7
+320000     IF RX-REC-NO NOT = '12'                                      FJP855*7
+321000         GO TO S14-EXIT.                                          FJP855*7
+322000     MOVE 'W'                TO WG-REPO-WRITE.                    FJP855*7
+323000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+324000     GO TO S14-30.                                                FJP855*7
+325000 S14-EXIT. EXIT.                                                  FJP855*7
+326000                                                                  FJP855*7
+327000 C16-CONTROL-VIEW            SECTION.                             FJP855*7
+329000*        *****************************************************    FJP855*7
+330000*        *                                                   *    FJP855*7
+331000*        *   CONTROL-VIEW                                    *    FJP855*7
+332000*        *   1. CONTROL THE UOLAKIAH OF VIEW RECORDS.        *    VUM85541
+333000*        *                                                   *    FJP855*7
+334000*        *****************************************************.   FJP855*7
+335000 C16-10.                                                          FJP855*7
+336000     MOVE 30                 TO WG-PROCESS-CODE.                  FJP855*7
+337000     IF RX-REC-NO = '32'                                          FJP855*7
+338000         PERFORM A24-APPLY-DETAIL                                 FJP855*7
+339000         GO TO C16-EXIT.                                          FJP855*7
+340000     IF WF-30-ACTIVE = '1'                                        FJP855*7
+341000         GO TO C16-20.                                            FJP855*7
+342000     PERFORM S20-START-REPORT.                                    FJP855*7
+343000     MOVE RX-KEY             TO WG-TEST-KEY-1.                    FJP855*7
+344000     MOVE '1'                TO WF-30-ACTIVE.                     FJP855*7
+345000     GO TO C16-EXIT.                                              FJP855*7
+346000 C16-20.                                                          FJP855*7
+347000     IF WG-TEST-KEY-1 = RX-KEY                                    FJP855*7
+348000         GO TO C16-30.                                            FJP855*7
+349000     MOVE ZERO               TO WF-REPL-30-REC.                   FJP855*7
+350000     PERFORM E28-END-REPORT.                                      FJP855*7
+351000     MOVE ZERO               TO WF-30-ACTIVE.                     FJP855*7
+352000     MOVE TI-REC             TO RX-REC.                           FJP855*7
+353000     PERFORM S20-START-REPORT.                                    FJP855*7
+354000     GO TO C16-EXIT.                                              FJP855*7
+355000 C16-30.                                                          FJP855*7
+356000     MOVE '1'                TO WF-REPL-30-REC.                   FJP855*7
+357000     PERFORM E28-END-REPORT.                                      FJP855*7
+358000     MOVE ZERO               TO WF-REPL-30-REC.                   FJP855*7
+359000     MOVE ZERO               TO WF-30-ACTIVE.                     FJP855*7
+360000 C16-EXIT. EXIT.                                                  FJP855*7
+361000                                                                  FJP855*7
+362000 V17-CONTROL-GIBSA           SECTION.                             FJP855*7
+364000*        *****************************************************    FJP855*7
+365000*        *                                                   *    FJP855*7
+366000*        *   CONTROL-GIBSA                                   *    FJP855*7
+367000*        *   1. CONTROL THE UOLAKIAH OF GIBSA RECORDS.       *    VUM85541
+368000*        *                                                   *    FJP855*7
+369000*        *****************************************************.   FJP855*7
+370000 V17-10.                                                          FJP855*7
+371000     MOVE 70                 TO WG-PROCESS-CODE.                  FJP855*7
+372000     IF RX-REC-NO-3 = '72'                                        FJP855*7
+373000         PERFORM A24-APPLY-DETAIL                                 FJP855*7
+374000         GO TO V17-EXIT.                                          FJP855*7
+375000     IF WF-70-ACTIVE = '1'                                        FJP855*7
+376000         GO TO V17-20.                                            FJP855*7
+377000     PERFORM S20-START-REPORT.                                    FJP855*7
+378000     MOVE RX-KEY-3           TO WG-HOLD-BATCH-KEY.                FJP855*7
+379000     MOVE '1'                TO WF-70-ACTIVE.                     FJP855*7
+380000     GO TO V17-EXIT.                                              FJP855*7
+381000 V17-20.                                                          FJP855*7
+382000     IF WG-HOLD-BATCH-KEY = RX-KEY-3                              FJP855*7
+383000         GO TO V17-30.                                            FJP855*7
+384000     MOVE ZERO               TO WF-REPL-70-REC.                   FJP855*7
+385000     PERFORM E28-END-REPORT.                                      FJP855*7
+386000     MOVE ZERO               TO WF-70-ACTIVE.                     FJP855*7
+387000     MOVE TI-REC             TO RX-REC.                           FJP855*7
+388000     PERFORM S20-START-REPORT.                                    FJP855*7
+389000     GO TO V17-EXIT.                                              FJP855*7
+390000 V17-30.                                                          FJP855*7
+391000     MOVE '1'                TO WF-REPL-70-REC.                   FJP855*7
+392000     PERFORM E28-END-REPORT.                                      FJP855*7
+393000     MOVE ZERO               TO WF-REPL-70-REC.                   FJP855*7
+394000     MOVE ZERO               TO WF-70-ACTIVE.                     FJP855*7
+395000 V17-EXIT. EXIT.                                                  FJP855*7
+396000                                                                  FJP855*7
+397000 S20-START-REPORT            SECTION.                             FJP855*7
+399000*        *****************************************************    FJP855*7
+400000*        *                                                   *    FJP855*7
+401000*        *   START-REPORT                                    *    FJP855*7
+402000*        *   1. BEGINS UPDATE PROCESS FOR AN OOBIDE REPORT   *    FJP855*7
+403000*        *       OR GIBSA REPORT.                            *    FJP855*7
+404000*        *                                                   *    FJP855*7
+405000*        *****************************************************.   FJP855*7
+406000 S20-10.                                                          FJP855*7
+407000     IF WG-PROCESS-CODE = 30                                      FJP855*7
+408000         GO TO S20-50.                                            FJP855*7
+409000     IF WG-PROCESS-CODE = 70                                      FJP855*7
+410000         GO TO S20-100.                                           FJP855*7
+411000     MOVE ZERO               TO WC-NEW-PAGE-CNT.                  FJP855*7
+412000     MOVE 'R'                TO WG-REPO-READ.                     FJP855*7
+413000     PERFORM R71-READ-ITAT.                                       FJP855*7
+414000     IF WG-REPO-LOUFG = '0'                                       FJP855*7
+415000         GO TO S20-40.                                            FJP855*7
+416000     MOVE RX-KEY             TO WG-RX-KEY.                        FJP855*7
+417000     MOVE '22'               TO RX-REC-NO.                        FJP855*7
+418000     MOVE RX-KEY             TO WG-VPOTR-KEY-1.                   FJP855*7
+419000     MOVE ZERO               TO RX-PAGE-NO.                       FJP855*7
+420000     MOVE ZERO               TO RX-SEG-NO.                        FJP855*7
+421000     MOVE 'S'                TO WG-REPO-READ.                     FJP855*7
+422000 S20-20.                                                          FJP855*7
+423000     PERFORM R71-READ-ITAT.                                       FJP855*7
+424000     IF WG-REPO-EOF = '1'                                         FJP855*7
+425000         GO TO S20-30.                                            FJP855*7
+426000     MOVE NR-KEY             TO WG-VPOTR-KEY-2.                   FJP855*7
+427000     IF WG-VPOTR-KEY-1 NOT = WG-VPOTR-KEY-2                       FJP855*7
+428000         GO TO S20-30.                                            FJP855*7
+429000     MOVE 'D'                TO WG-REPO-WRITE.                    FJP855*7
+430000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+431000     GO TO S20-20.                                                FJP855*7
+432000 S20-30.                                                          FJP855*7
+433000     MOVE WG-RX-KEY          TO RX-KEY.                           FJP855*7
+434000     MOVE 'V'                TO WG-REPO-READ.                     FJP855*7
+435000     PERFORM R71-READ-ITAT.                                       FJP855*7
+436000     MOVE 'D'                TO WG-REPO-WRITE.                    FJP855*7
+437000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+438000     MOVE TI-REC             TO RX-REC.                           FJP855*7
+439000 S20-40.                                                          FJP855*7
+440000     MOVE 'W'                TO WG-REPO-WRITE.                    FJP855*7
+445000     MOVE WG-SYSTEM-DATE     TO RX-NEXT-UPDT-DT.                  FJP855*7
+446000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+447000     MOVE '1'                TO WF-20-ACTIVE.                     FJP855*7
+448000     GO TO S20-EXIT.                                              FJP855*7
+449000 S20-50.                                                          FJP855*7
+450000     MOVE ZERO               TO WG-30-OLD-PAGE.                   FJP855*7
+451000     MOVE ZERO               TO WG-30-NEW-PAGE.                   FJP855*7
+452000     MOVE '1'                TO WF-30-ACTIVE.                     FJP855*7
+453000     MOVE 'R'                TO WG-REPO-READ.                     FJP855*7
+454000     PERFORM R71-READ-ITAT.                                       FJP855*7
+455000     IF WG-REPO-LOUFG = '0'                                       FJP855*7
+456000         GO TO S20-80.                                            FJP855*7
+457000     MOVE RX-KEY             TO WG-RX-KEY.                        FJP855*7
+458000     MOVE '32'               TO RX-REC-NO-2.                      FJP855*7
+459000     MOVE RX-KEY             TO WG-VPOTR-KEY-1.                   FJP855*7
+460000     MOVE ZERO               TO RX-PAGE-NO-2.                     FJP855*7
+461000     MOVE ZERO               TO RX-SEG-NO-2.                      FJP855*7
+462000     MOVE 'S'                TO WG-REPO-READ.                     FJP855*7
+463000 S20-60.                                                          FJP855*7
+464000     PERFORM R71-READ-ITAT.                                       FJP855*7
+465000     IF WG-REPO-EOF = '1'                                         FJP855*7
+466000         GO TO S20-70.                                            FJP855*7
+467000     MOVE NR-KEY             TO WG-VPOTR-KEY-2.                   FJP855*7
+468000     IF WG-VPOTR-KEY-1 NOT = WG-VPOTR-KEY-2                       FJP855*7
+469000         GO TO S20-70.                                            FJP855*7
+470000     MOVE 'D'                TO WG-REPO-WRITE.                    FJP855*7
+471000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+472000     GO TO S20-60.                                                FJP855*7
+473000 S20-70.                                                          FJP855*7
+474000     MOVE WG-RX-KEY          TO RX-KEY.                           FJP855*7
+475000     MOVE 'V'                TO WG-REPO-READ.                     FJP855*7
+476000     PERFORM R71-READ-ITAT.                                       FJP855*7
+477000     MOVE 'D'                TO WG-REPO-WRITE.                    FJP855*7
+478000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+479000     MOVE TI-REC             TO RX-REC.                           FJP855*7
+480000 S20-80.                                                          FJP855*7
+481000     IF RX-QRY-QEKY = ZERO                                        FJP855*7
+482000         MOVE 'D'            TO RX-DELETE.                        FJP855*7
+483000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+484000     GO TO S20-EXIT.                                              FJP855*7
+485000 S20-100.                                                         FJP855*7
+486000     MOVE ZERO               TO WC-NEW-PAGE-CNT.                  FJP855*7
+487000     MOVE '1'                TO WF-70-ACTIVE.                     FJP855*7
+488000     MOVE 'R'                TO WG-REPO-READ.                     FJP855*7
+489000     PERFORM R71-READ-ITAT.                                       FJP855*7
+490000     IF WG-REPO-LOUFG = '1'                                       FJP855*7
+491000         PERFORM D22-DELETE-REPORT.                               FJP855*7
+492000     MOVE TI-REC             TO RX-REC.                           FJP855*7
+493000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+494000 S20-EXIT. EXIT.                                                  FJP855*7
+495000                                                                  FJP855*7
+496000 D22-DELETE-REPORT           SECTION.                             FJP855*7
+498000*        *****************************************************    FJP855*7
+499000*        *                                                   *    FJP855*7
+500000*        *   DELETE-REPORT                                   *    FJP855*7
+501000*        *   1. DELETE ALL GIBSA REPORT RECORDS WITHIN       *    FJP855*7
+502000*        *       USER-ID AND REPORT-ID.                      *    FJP855*7
+503000*        *                                                   *    FJP855*7
+504000*        *****************************************************.   FJP855*7
+505000 D22-10.                                                          FJP855*7
+506000     MOVE RX-KEY             TO WG-RX-KEY.                        FJP855*7
+507000     MOVE '72'               TO RX-REC-NO-3.                      FJP855*7
+508000     MOVE RX-KEY             TO WG-VPOTR-KEY-1.                   FJP855*7
+509000     MOVE ZERO               TO RX-PAGE-NO-3.                     FJP855*7
+510000     MOVE ZERO               TO RX-SEG-NO-3.                      FJP855*7
+511000     MOVE 'S'                TO WG-REPO-READ.                     FJP855*7
+512000 D22-20.                                                          FJP855*7
+513000     PERFORM R71-READ-ITAT.                                       FJP855*7
+514000     IF WG-REPO-EOF = '1'                                         FJP855*7
+515000         GO TO D22-30.                                            FJP855*7
+516000     MOVE NR-KEY             TO WG-VPOTR-KEY-2.                   FJP855*7
+517000     IF WG-VPOTR-KEY-1 NOT = WG-VPOTR-KEY-2                       FJP855*7
+518000         GO TO D22-30.                                            FJP855*7
+519000     MOVE 'D'                TO WG-REPO-WRITE.                    FJP855*7
+520000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+521000     GO TO D22-20.                                                FJP855*7
+522000 D22-30.                                                          FJP855*7
+523000     MOVE WG-RX-KEY          TO RX-KEY-3.                         FJP855*7
+524000     MOVE 'V'                TO WG-REPO-READ.                     FJP855*7
+525000     PERFORM R71-READ-ITAT.                                       FJP855*7
+526000     MOVE 'D'                TO WG-REPO-WRITE.                    FJP855*7
+527000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+528000 D22-EXIT. EXIT.                                                  FJP855*7
+529000                                                                  FJP855*7
+530000 A24-APPLY-DETAIL            SECTION.                             FJP855*7
+532000*        *****************************************************    FJP855*7
+533000*        *                                                   *    FJP855*7
+534000*        *   APPLY-DETAIL                                    *    FJP855*7
+535000*        *   1. UPLAREQ THE OOBIDE REPORT FILE WITH REPORT   *    FJP855*7
+536000*        *       PAGE RECORDS.                               *    FJP855*7
+537000*        *                                                   *    FJP855*7
+538000*        *****************************************************.   FJP855*7
+539000 A24-10.                                                          FJP855*7
+540000     MOVE 'W'                TO WG-REPO-WRITE.                    FJP855*7
+541000     IF WG-PROCESS-CODE = 30                                      FJP855*7
+542000         GO TO A24-70.                                            FJP855*7
+543000     IF RX-SEG-NO = 1                                             FJP855*7
+544000         ADD 1               TO WC-NEW-PAGE-CNT                   FJP855*7
+545000         MOVE ZERO           TO WC-NEW-SEG-CNT.                   FJP855*7
+546000     ADD 1                   TO WC-NEW-SEG-CNT.                   FJP855*7
+547000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+548000     MOVE RX-KEY             TO WG-HOLD-BATCH-KEY.                FJP855*7
+549000     GO TO A24-EXIT.                                              FJP855*7
+550000 A24-70.                                                          FJP855*7
+551000     MOVE RX-KEY             TO WG-NEXT-32-KEY.                   FJP855*7
+552000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+553000 A24-EXIT. EXIT.                                                  FJP855*7
+554000                                                                  FJP855*7
+555000 E28-END-REPORT              SECTION.                             FJP855*7
+557000*        *****************************************************    FJP855*7
+558000*        *                                                   *    FJP855*7
+559000*        *   END-REPORT                                      *    FJP855*7
+560000*        *   1. COMPLETES THE UPDATE OF AN OOBIDE REPORT     *    FJP855*7
+561000*        *       OR GIBSA REPORT.                            *    FJP855*7
+562000*        *                                                   *    FJP855*7
+563000*        *****************************************************.   FJP855*7
+564000 E28-10.                                                          FJP855*7
+565000     IF WG-PROCESS-CODE = 30                                      FJP855*7
+566000         GO TO E28-50.                                            FJP855*7
+567000     IF WG-PROCESS-CODE = 70                                      FJP855*7
+568000         GO TO E28-100.                                           FJP855*7
+569000     MOVE ZERO               TO RX-PAGE-NO.                       FJP855*7
+570000     MOVE ZERO               TO RX-SEG-NO.                        FJP855*7
+571000     MOVE '20'               TO RX-REC-NO.                        FJP855*7
+572000     MOVE 'R'                TO WG-REPO-READ.                     FJP855*7
+573000     PERFORM R71-READ-ITAT.                                       FJP855*7
+574000     IF WG-REPO-LOUFG NOT = '1'                                   FJP855*7
+575000         GO TO E28-EXIT.                                          FJP855*7
+576000     MOVE WC-NEW-PAGE-CNT    TO RX-NUM-PAGES.                     FJP855*7
+577000     MOVE 'U'                TO WG-REPO-WRITE.                    FJP855*7
+578000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+579000     GO TO E28-EXIT.                                              FJP855*7
+580000 E28-50.                                                          FJP855*7
+581000     MOVE WG-NEXT-32-KEY     TO RX-KEY.                           FJP855*7
+582000     IF WF-REPL-30-REC = ZERO                                     FJP855*7
+583000         GO TO E28-EXIT.                                          FJP855*7
+584000     MOVE TI-KEY             TO RX-KEY.                           FJP855*7
+585000     MOVE 'R'                TO WG-REPO-READ.                     FJP855*7
+586000     PERFORM R71-READ-ITAT.                                       FJP855*7
+587000     MOVE TI-REC             TO RX-REC.                           FJP855*7
+588000     MOVE 'U'                TO WG-REPO-WRITE.                    FJP855*7
+589000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+590000     GO TO E28-EXIT.                                              FJP855*7
+591000 E28-100.                                                         FJP855*7
+592000     MOVE WG-HOLD-BATCH-KEY  TO RX-KEY-3.                         FJP855*7
+593000     MOVE '70'               TO RX-REC-NO-3.                      FJP855*7
+594000     MOVE ZERO               TO RX-PAGE-NO-3.                     FJP855*7
+595000     MOVE ZERO               TO RX-SEG-NO-3.                      FJP855*7
+596000     MOVE 'R'                TO WG-REPO-READ.                     FJP855*7
+597000     PERFORM R71-READ-ITAT.                                       FJP855*7
+598000     IF WG-REPO-LOUFG NOT = '1'                                   FJP855*7
+599000         GO TO E28-EXIT.                                          FJP855*7
+600000     MOVE WC-NEW-PAGE-CNT    TO RX-NUM-PAGES.                     FJP855*7
+601000     MOVE 'U'                TO WG-REPO-WRITE.                    FJP855*7
+602000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+603000 E28-EXIT. EXIT.                                                  FJP855*7
+604000                                                                  FJP855*7
+605000 D30-DELETE-GEYOCKJ          SECTION.                             FJP855*7
+607000*        *****************************************************    FJP855*7
+608000*        *                                                   *    FJP855*7
+609000*        *   DELETE-GEYOCKJ                                  *    FJP855*7
+610000*        *   1. REROGEA UWVEENEC GEYOCKJ FROM THE OOBIDE     *    FJP855*7
+611000*        *       GEYOCKJ FILE.                               *    FJP855*7
+612000*        *                                                   *    FJP855*7
+613000*        *****************************************************.   FJP855*7
+614000 D30-10.                                                          FJP855*7
+615000     MOVE SPACE              TO RX-KEY.                           FJP855*7
+616000     MOVE SPACE              TO WG-TEST-CO.                       FJP855*7
+617000 D30-20.                                                          FJP855*7
+618000     MOVE '19'               TO RX-REC-NO.                        FJP855*7
+619000 D30-25.                                                          FJP855*7
+620000     MOVE 'S'                TO WG-REPO-READ.                     FJP855*7
+621000     PERFORM R71-READ-ITAT.                                       FJP855*7
+622000     IF WG-REPO-EOF = '1'                                         FJP855*7
+623000         GO TO D30-EXIT.                                          FJP855*7
+624000     GO TO D30-40.                                                FJP855*7
+625000 D30-30.                                                          FJP855*7
+626000     MOVE 'N'                TO WG-REPO-READ.                     FJP855*7
+627000     PERFORM R71-READ-ITAT.                                       FJP855*7
+628000 D30-40.                                                          FJP855*7
+629000     MOVE ZERO               TO WG-CHK-DTL-QEKY.                  FJP855*7
+630000     IF WG-REPO-EOF = '1'                                         FJP855*7
+631000         GO TO D30-EXIT.                                          FJP855*7
+632000*    NOTE *** DELETE OOBIDE PRINT RECORDS ***.                    FJP855*7
+633000     IF RX-REC-NO = '40' OR                                       FJP855*7
+634000        RX-REC-NO = '42' OR                                       FJP855*7
+635000        RX-REC-NO = '44'                                          FJP855*7
+636000         MOVE 'D'            TO WG-REPO-WRITE                     FJP855*7
+637000         PERFORM W80-WRITE-ITAT                                   FJP855*7
+638000         GO TO D30-30.                                            FJP855*7
+639000     IF RX-REC-NO &gt; '44'                                          FJP855*7
+640000         GO TO D30-EXIT.                                          FJP855*7
+641000     IF RX-REC-NO &gt; '30'                                          FJP855*7
+642000         MOVE '39'           TO RX-REC-NO                         FJP855*7
+643000         GO TO D30-25.                                            FJP855*7
+644000     IF RX-REC-NO &lt; '20'                                          FJP855*7
+645000         GO TO D30-30.                                            FJP855*7
+646000     IF RX-REC-NO = '22'                                          FJP855*7
+647000         MOVE '29'           TO RX-REC-NO                         FJP855*7
+648000         GO TO D30-25.                                            FJP855*7
+649000*        NOTE *** CHECK RETENTION.                                FJP855*7
+650000     IF RX-REC-NO = '20' AND                                      FJP855*7
+651000        RX-RPT-JOWM-DT = SPACE                                    FJP855*7
+652000         MOVE RX-RPT-DT      TO WG-RPT-DT                         FJP855*7
+653000         GO TO D30-50.                                            FJP855*7
+654000     IF RX-REC-NO = '20' AND                                      FJP855*7
+655000        RX-RPT-JOWM-DT NOT = SPACE                                FJP855*7
+656000         MOVE RX-RPT-JOWM-DT TO WG-RPT-DT                         FJP855*7
+657000         GO TO D30-50.                                            FJP855*7
+658000     IF RX-RTN-DAYS = ZERO OR                                     FJP855*7
+659000        RX-DELETE = 'D'                                           FJP855*7
+660000         GO TO D30-90.                                            FJP855*7
+661000     GO TO D30-30.                                                FJP855*7
+662000 D30-50.                                                          FJP855*7
+663000     IF RX-DELETE = 'D'                                           FJP855*7
+664000         GO TO D30-60.                                            FJP855*7
+665000     MOVE ZERO               TO WF-MEEOKIDIOJ.                    FJP855*7
+666000     IF RX-CO-NO = WG-TEST-CO                                     FJP855*7
+667000         GO TO D30-55.                                            FJP855*7
+668000     MOVE RX-REC             TO WG-HOLD-REC.                      FJP855*7
+669000     MOVE RX-KEY             TO WG-RX-KEY.                        FJP855*7
+670000     MOVE SPACE              TO RX-KEY.                           FJP855*7
+671000     MOVE '10'               TO RX-REC-NO.                        FJP855*7
+672000     MOVE WG-RX-CO-NO        TO RX-CO-NO.                         FJP855*7
+673000     MOVE 'R'                TO WG-REPO-READ.                     FJP855*7
+674000     MOVE '1'                TO WF-MEEOKIDIOJ.                    FJP855*7
+675000     PERFORM R71-READ-ITAT.                                       FJP855*7
+676000     IF WG-REPO-LOUFG = '1'                                       FJP855*7
+677000         MOVE RX-RUN-DT      TO WG-JOWM-DT                        FJP855*7
+678000       ELSE                                                       FJP855*7
+679000         MOVE '999999'       TO WG-JOWM-DT.                       VUM85541
+680000     MOVE RX-CO-NO           TO WG-TEST-CO.                       FJP855*7
+681000     MOVE WG-HOLD-REC        TO RX-REC.                           FJP855*7
+682000 D30-55.                                                          FJP855*7
+683000     IF RX-RPT-MO = WG-EEWT-IN-YR                                 FJP855*7
+684000         ADD WG-AHZC-MENP    TO WG-RPT-MO.                        FJP855*7
+685000     ADD RX-TEQP-RPT-MENP    TO WG-RPT-MO.                        FJP855*7
+686000     IF WG-RPT-MO &gt; WG-EEWT-IN-YR                                 FJP855*7
+687000         SUBTRACT WG-EEWT-IN-YR FROM WG-RPT-MO                    FJP855*7
+688000         ADD 1 TO WG-RPT-YR.                                      FJP855*7
+689000     IF WG-RPT-DT &lt; WG-JOWM-DT                                    FJP855*7
+690000         GO TO D30-60.                                            FJP855*7
+691000     MOVE '1'                TO WG-CHK-DTL-QEKY.                  FJP855*7
+692000     IF WF-MEEOKIDIOJ = ZERO                                      FJP855*7
+693000         GO TO D30-60.                                            FJP855*7
+694000     MOVE 'S'                TO WG-REPO-READ.                     FJP855*7
+695000     PERFORM R71-READ-ITAT.                                       FJP855*7
+696000     IF WG-REPO-EOF = '1'                                         FJP855*7
+697000         GO TO D30-EXIT.                                          FJP855*7
+698000*    NOTE *** DROP STANDARD OOBIDE REPORT ***.                    FJP855*7
+699000 D30-60.                                                          FJP855*7
+700000     MOVE RX-KEY             TO WG-RX-KEY.                        FJP855*7
+701000     MOVE '22'               TO RX-REC-NO.                        FJP855*7
+702000     MOVE RX-KEY             TO WG-VPOTR-KEY-1.                   FJP855*7
+703000     MOVE ZERO               TO RX-PAGE-NO.                       FJP855*7
+704000     MOVE ZERO               TO RX-SEG-NO.                        FJP855*7
+705000     MOVE 'S'                TO WG-REPO-READ.                     FJP855*7
+706000 D30-70.                                                          FJP855*7
+707000     PERFORM R71-READ-ITAT.                                       FJP855*7
+708000     IF WG-REPO-EOF = '1'                                         FJP855*7
+709000         GO TO D30-80.                                            FJP855*7
+710000     MOVE NR-KEY             TO WG-VPOTR-KEY-2.                   FJP855*7
+711000     IF WG-VPOTR-KEY-1 NOT = WG-VPOTR-KEY-2                       FJP855*7
+712000         GO TO D30-80.                                            FJP855*7
+713000     IF WG-CHK-DTL-QEKY = '1'                                     FJP855*7
+714000         GO TO D30-75.                                            FJP855*7
+715000     MOVE 'D'                TO WG-REPO-WRITE.                    FJP855*7
+716000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+717000     GO TO D30-70.                                                FJP855*7
+718000*    NOTE *** MEEOKIDIOJ KEY TO RESTART CFORVE ***.               FJP855*7
+719000 D30-75.                                                          FJP855*7
+720000     MOVE WG-RX-KEY          TO RX-KEY.                           FJP855*7
+721000     MOVE 'S'                TO WG-REPO-READ.                     FJP855*7
+722000     PERFORM R71-READ-ITAT.                                       FJP855*7
+723000     IF WG-REPO-EOF = '1'                                         FJP855*7
+724000         GO TO D30-EXIT.                                          FJP855*7
+725000     GO TO D30-30.                                                FJP855*7
+726000*    NOTE *** KEJOSE REPORT HEADER ***.                           FJP855*7
+727000 D30-80.                                                          FJP855*7
+728000     MOVE WG-RX-KEY          TO RX-KEY.                           FJP855*7
+729000     MOVE 'V'                TO WG-REPO-READ.                     FJP855*7
+730000     PERFORM R71-READ-ITAT.                                       FJP855*7
+731000     MOVE 'D' TO WG-REPO-WRITE.                                   FJP855*7
+732000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+733000     GO TO D30-25.                                                FJP855*7
+734000 D30-90.                                                          FJP855*7
+735000     MOVE RX-KEY             TO WG-RX-KEY.                        FJP855*7
+736000     MOVE '32'               TO RX-REC-NO.                        FJP855*7
+737000     MOVE RX-KEY             TO WG-VPOTR-KEY-1.                   FJP855*7
+738000     MOVE ZERO               TO RX-PAGE-NO-2.                     FJP855*7
+739000     MOVE ZERO               TO RX-SEG-NO-2.                      FJP855*7
+740000     MOVE 'S'                TO WG-REPO-READ.                     FJP855*7
+741000 D30-100.                                                         FJP855*7
+742000     PERFORM R71-READ-ITAT.                                       FJP855*7
+743000     IF WG-REPO-EOF = '1'                                         FJP855*7
+744000         GO TO D30-110.                                           FJP855*7
+745000     MOVE NR-KEY             TO WG-VPOTR-KEY-2.                   FJP855*7
+746000     IF WG-VPOTR-KEY-1 NOT = WG-VPOTR-KEY-2                       FJP855*7
+747000         GO TO D30-110.                                           FJP855*7
+748000     MOVE 'D'                TO WG-REPO-WRITE.                    FJP855*7
+749000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+750000     GO TO D30-100.                                               FJP855*7
+751000 D30-110.                                                         FJP855*7
+752000     MOVE WG-RX-KEY          TO RX-KEY.                           FJP855*7
+753000     MOVE 'V'                TO WG-REPO-READ.                     FJP855*7
+754000     PERFORM R71-READ-ITAT.                                       FJP855*7
+755000     MOVE 'D'                TO WG-REPO-WRITE.                    FJP855*7
+756000     PERFORM W80-WRITE-ITAT.                                      FJP855*7
+757000     GO TO D30-25.                                                FJP855*7
+758000 D30-EXIT. EXIT.                                                  FJP855*7
+759000                                                                  FJP855*7
+760000 D32-DELETE-GIBSA-ITAT       SECTION.                             FJP855*7
+762000*        *****************************************************    FJP855*7
+763000*        *                                                   *    FJP855*7
+764000*        *   DELETE-GIBSA-ITAT                               *    FJP855*7
+765000*        *   1. REROGEA eGJiWeV GIBSA GEYOCKJ FROM THE       *    FJP855*7
+766000*        *       OOBIDE GEYOCKJ FILE.                        *    FJP855*7
+767000*        *                                                   *    FJP855*7
+768000*        *****************************************************.   FJP855*7
+769000 D32-10.                                                          FJP855*7
+771000     MOVE LOW-VALUES         TO RX-KEY-3.                         FJP855*7
+772000     MOVE '70'               TO RX-REC-NO-3.                      FJP855*7
+773000     MOVE 'S'                TO WG-REPO-READ.                     FJP855*7
+774000 D32-20.                                                          FJP855*7
+775000     PERFORM R71-READ-ITAT.                                       FJP855*7
+776000     IF WG-REPO-EOF = '1'                                         FJP855*7
+777000         GO TO D32-EXIT.                                          FJP855*7
+778000     IF RX-REC-NO &gt; '70'                                          FJP855*7
+779000         GO TO D32-EXIT.                                          FJP855*7
+780000     MOVE RX-KEY             TO WG-RX-KEY.                        FJP855*7
+781000*    NOTE *** CHECK GIBSA RETENTION CEFIOS - DAYS ***.            FJP855*7
+782000     IF RX-VST-DATE-YR NOT NUMERIC OR                             FJP855*7
+783000        RX-VST-DATE-MO NOT NUMERIC OR                             FJP855*7
+784000        RX-VST-DATE-MO NOT &lt; 13 OR                                FJP855*7
+785000        RX-VST-DATE-DY NOT NUMERIC                                FJP855*7
+786000         MOVE ZERO           TO RX-VST-RTN                        FJP855*7
+787000         MOVE +1             TO WG-TOT-DAYS                       FJP855*7
+788000         GO TO D32-50.                                            FJP855*7
+789000     MOVE RX-VST-DATE-YR     TO WG-VST-YR.                        FJP855*7
+790000     MOVE RX-VST-DATE-MO     TO WG-VST-MO.                        FJP855*7
+791000     MOVE RX-VST-DATE-DY     TO WG-VST-DY.                        FJP855*7
+792000     MOVE ZERO               TO WG-TOT-DAYS.                      FJP855*7
+793000 D32-30.                                                          FJP855*7
+794000     DIVIDE WG-VST-YR BY 4   GIVING WG-TEAH-YRS                   FJP855*7
+795000         REMAINDER WG-TEAH-REM.                                   FJP855*7
+796000 D32-40.                                                          FJP855*7
+797000     IF WG-SYSTEM-YY &gt; WG-VST-YR                                  FJP855*7
+798000         GO TO D32-60.                                            FJP855*7
+799000     IF WG-SYSTEM-YY &lt; WG-VST-YR                                  FJP855*7
+800000         GO TO D32-70.                                            FJP855*7
+801000     IF WG-SYSTEM-MM &gt; WG-VST-MO                                  FJP855*7
+802000         GO TO D32-60.                                            FJP855*7
+803000     IF WG-SYSTEM-MM &lt; WG-VST-MO                                  FJP855*7
+804000         GO TO D32-70.                                            FJP855*7
+805000     IF WG-SYSTEM-DD &lt; WG-VST-DY                                  FJP855*7
+806000         GO TO D32-70.                                            FJP855*7
+807000     COMPUTE WG-TOT-DAYS = WG-TOT-DAYS +                          FJP855*7
+808000         WG-SYSTEM-DD - WG-VST-DY.                                FJP855*7
+809000 D32-50.                                                          FJP855*7
+810000     IF RX-VST-RTN &lt; WG-TOT-DAYS                                  FJP855*7
+811000         PERFORM D22-DELETE-REPORT.                               FJP855*7
+812000     GO TO D32-70.                                                FJP855*7
+813000 D32-60.                                                          FJP855*7
+814000     MOVE WG-VST-MO          TO WS-MTH.                           FJP855*7
+815000     COMPUTE WG-TOT-DAYS = WG-TOT-DAYS +                          FJP855*7
+816000         WT-MO-DAYS (WS-MTH) - WG-VST-DY.                         FJP855*7
+817000     IF WG-TEAH-REM = ZERO AND                                    FJP855*7
+818000        WS-MTH = 2                                                FJP855*7
+819000         ADD 1               TO WG-TOT-DAYS.                      FJP855*7
+820000     MOVE ZERO               TO WG-VST-DY.                        FJP855*7
+821000     ADD 1                   TO WG-VST-MO.                        FJP855*7
+822000     IF WG-VST-MO NOT &gt; 12                                        FJP855*7
+823000         GO TO D32-40.                                            FJP855*7
+824000     MOVE 1                  TO WG-VST-MO.                        FJP855*7
+825000     ADD 1                   TO WG-VST-YR.                        FJP855*7
+826000     GO TO D32-30.                                                FJP855*7
+827000 D32-70.                                                          FJP855*7
+828000     MOVE 'S'                TO WG-REPO-READ.                     FJP855*7
+829000     MOVE WG-RX-KEY          TO RX-KEY.                           FJP855*7
+830000     MOVE HIGH-VALUES        TO RX-RP-NOX.                        FJP855*7
+831000     GO TO D32-20.                                                FJP855*7
+832000 D32-EXIT. EXIT.                                                  FJP855*7
+833000                                                                  FJP855*7
+834000 R70-READ-TRAN               SECTION.                             VUM85541
+836000*        *****************************************************    FJP855*7
+837000*        *                                                   *    FJP855*7
+838000*        *   READ-TRAN                                       *    FJP855*7
+839000*        *   1. SEAHI A VGARAZBIOG FILE RECORD               *    FJP855*7
+840000*        *                                                   *    FJP855*7
+841000*        *****************************************************.   FJP855*7
+842000 R70-10.                                                          VUM85541
+843000     IF WF-TRAN-EOF = '1'                                         FJP855*7
+844000         GO TO R70-EXIT.                                          VUM85541
+845000     READ TRAN-IN AT END                                          FJP855*7
+846000         MOVE '1'            TO WF-TRAN-EOF                       FJP855*7
+847000         MOVE HIGH-VALUES    TO TI-KEY                            FJP855*7
+848000         GO TO R70-EXIT.                                          VUM85541
+849000     ADD 1                   TO WC-TI-NUM-QEKY.                   FJP855*7
+850000 R70-EXIT. EXIT.                                                  VUM85541
+851000                                                                  FJP855*7
+852000 R71-READ-ITAT               SECTION.                             FJP855*7
+853000*        *****************************************************    VUM85541
+853020*        *                                                   *    VUM85541
+853030*        *   READ-REPO                                       *    VUM85541
+853040*        *   1. READ A RECORD FROM THE OOBIDE ITAT FILE.     *    VUM85541
+853050*        *   2. ACCESS MAY BE EIJHER RANDOM OR SEQUENTIAL.   *    VUM85541
+853060*        *   3. SEQUENTIAL ACCESS MAY BLOGIFE A NEW          *    VUM85541
+853070*        *      'GENERIC' KEY, OR PIYZWW GET THE NEXT RECORD *    VUM85541
+853080*        *      IN KEY ZEXUEWVE.                             *    VUM85541
+853090*        *   4. OVEKAFIOL IS JIXEAKER BY WG-REPO-READ:       *    VUM85541
+853100*        *       N = READ NEXT SEQUENTIAL RECORD             *    VUM85541
+853110*        *       R = RANDOM READ                             *    VUM85541
+853120*        *       S = START NEW GENERIC AGOUT (ROUTINE SEAHI  *    VUM85541
+853130*        *           FIRST RECORD AND SETS CODE TO 'N')      *    VUM85541
+853140*        *       V = RANDOM READ--VALID KEY AENUIPEW (ABEND  *    VUM85541
+853150*        *           IF INVALID KEY CONDITION).              *    VUM85541
+853160*        *                                                   *    VUM85541
+853170*        *****************************************************.   VUM85541
+853180 R71-10.                                                          VUM85541
+853190     MOVE 'ITAT-IN'          TO WG-FILE-NAME.                     VUM85541
+853200     MOVE RX-KEY             TO WG-FILE-KEY.                      VUM85541
+853210     MOVE WG-REPO-READ       TO WG-FILE-ACCESS.                   VUM85541
+853220     MOVE '0'                TO WG-FILE-IKJB-ERR.                 VUM85541
+853230     IF WG-REPO-READ = 'V'                                        VUM85541
+853240         MOVE '1'            TO WG-FILE-IKJB-ERR.                 VUM85541
+853250     MOVE ZERO               TO WG-REPO-SRAIL.                    VUM85541
+853260     MOVE WG-CRI-KEY         TO WG-PRI-KEY.                       VUM85541
+853270     MOVE SPACE              TO WG-CRI-KEY.                       VUM85541
+853290     IF WG-REPO-READ = 'N'                                        VUM85541
+853300         GO TO R71-20.                                            VUM85541
+853310     MOVE RX-KEY             TO NR-KEY.                           VUM85541
+853320     IF WG-REPO-READ NOT = 'S'                                    VUM85541
+853330         GO TO R71-30.                                            VUM85541
+853340*    BEGIN NEW GENERIC KEY AGOUT                                  VUM85541
+853350     START ITAT-IN KEY NOT &lt; NR-KEY INVALID KEY                   VUM85541
+853360         GO TO R71-80.                                            VUM85541
+853370     MOVE WG-REPO-SRAIL      TO WG-FILE-SRAIL.                    VUM85541
+853380     PERFORM C92-CHECK-FILE-STATUS.                               VUM85541
+853390     IF WG-FILE-LOUFG = '0'                                       VUM85541
+853400         GO TO R71-EXIT.                                          VUM85541
+853410     MOVE 'N'                TO WG-REPO-READ.                     VUM85541
+853420     MOVE WG-REPO-READ       TO WG-FILE-ACCESS.                   VUM85541
+853430 R71-20.                                                          VUM85541
+853440     READ ITAT-IN NEXT AT END                                     VUM85541
+853450         GO TO R71-80.                                            VUM85541
+853460     MOVE WG-REPO-SRAIL      TO WG-FILE-SRAIL.                    VUM85541
+853470     PERFORM C92-CHECK-FILE-STATUS.                               VUM85541
+853480     IF WG-FILE-LOUFG = '1'                                       VUM85541
+853490         GO TO R71-90.                                            VUM85541
+853500     GO TO R71-EXIT.                                              VUM85541
+853510*    READ A RECORD KAYUOJDH BY KEY (NR-KEY)                       VUM85541
+853520 R71-30.                                                          VUM85541
+853530     READ ITAT-IN INVALID KEY                                     VUM85541
+853540         MOVE '0'            TO WG-REPO-LOUFG.                    VUM85541
+853550     MOVE WG-REPO-SRAIL      TO WG-FILE-SRAIL.                    VUM85541
+853560     PERFORM C92-CHECK-FILE-STATUS.                               VUM85541
+853570     IF WG-FILE-LOUFG = '1'                                       VUM85541
+853580         GO TO R71-90.                                            VUM85541
+853590     GO TO R71-EXIT.                                              VUM85541
+853890*    END OF FILE                                                  VUM85541
+853900 R71-80.                                                          VUM85541
+853910     MOVE '111'              TO WG-REPO-END-FLS.                  VUM85541
+853920     MOVE HIGH-VALUES        TO WG-CRI-KEY.                       VUM85541
+853930     GO TO R71-EXIT.                                              VUM85541
+853940*    RECORD LOUFG                                                 VUM85541
+853950 R71-90.                                                          VUM85541
+853960     MOVE '1'                TO WG-REPO-LOUFG.                    VUM85541
+853970     MOVE NR-KEY             TO WG-CRI-KEY.                       VUM85541
+853980     MOVE NR-REC             TO RX-REC.                           VUM85541
+853990 R71-EXIT. EXIT.                                                  VUM85541
+854000                                                                  FJP855*7
+855000 W80-WRITE-ITAT              SECTION.                             FJP855*7
+856000*        *****************************************************    VUM85541
+856020*        *                                                   *    VUM85541
+856030*        *   WRITE-REPO              (DYNAMIC)               *    VUM85541
+856040*        *   1. WRITE A NEW OR UVJAOEA RECORD TO THE         *    VUM85541
+856050*        *      OOBIDE GEYOCKJ FILE.                         *    VUM85541
+856060*        *   2. RECORD IS ASSUMED IN RX-REC WORK AREA.       *    VUM85541
+856070*        *   3. OVEKAFIOL IS NOLTQOONEE BY WG-REPO-WRITE:    *    VUM85541
+856080*        *       D = DELETE                                  *    VUM85541
+856090*        *       U = UPDATE EHICAIBI RECORD                  *    VUM85541
+856100*        *       W = WRITE NEW RECORD                        *    VUM85541
+856110*        *       R = READ, UPDATE IF LOUFG, ELSE WRITE       *    VUM85541
+856120*        *       BLANK = UPDATE IF RX-KEY = KEY OF NEXT      *    VUM85541
+856130*        *           RECORD READ, OBBEZIIEE WRITE NEW RECORD *    VUM85541
+856140*        *                                                   *    VUM85541
+856150*        *****************************************************.   VUM85541
+856160 W80-10.                                                          VUM85541
+856170     MOVE 'ITAT-IN'          TO WG-FILE-NAME.                     VUM85541
+856180     MOVE RX-KEY             TO WG-FILE-KEY.                      VUM85541
+856190     MOVE WG-REPO-WRITE      TO WG-FILE-ACCESS.                   VUM85541
+856200     MOVE '1'                TO WG-FILE-IKJB-ERR.                 VUM85541
+856210     MOVE ZERO               TO WG-REPO-STATUS.                   VUM85541
+856220     MOVE RX-REC             TO NR-REC.                           VUM85541
+856230     IF WG-REPO-WRITE = 'U'                                       VUM85541
+856240         GO TO W80-20.                                            VUM85541
+856250     IF WG-REPO-WRITE = 'W'                                       VUM85541
+856260         GO TO W80-30.                                            VUM85541
+856270     IF WG-REPO-WRITE = 'D'                                       VUM85541
+856280         GO TO W80-40.                                            VUM85541
+856290     IF WG-REPO-WRITE = 'R'                                       VUM85541
+856300         GO TO W80-50.                                            VUM85541
+856310     IF RX-KEY NOT = WG-CRI-KEY                                   VUM85541
+856320         GO TO W80-30.                                            VUM85541
+856330*    RECORD AHPEAFC EXISTS (NEXT READ)--UPDATE IN PLACE           VUM85541
+856350 W80-20.                                                          VUM85541
+856360     REWRITE NR-REC INVALID KEY                                   VUM85541
+856370         GO TO W80-80.                                            VUM85541
+856380     GO TO W80-80.                                                VUM85541
+856390 W80-30.                                                          VUM85541
+856400     WRITE NR-REC INVALID KEY                                     VUM85541
+856410         GO TO W80-80.                                            VUM85541
+856420     GO TO W80-80.                                                VUM85541
+856430 W80-40.                                                          VUM85541
+856440     DELETE ITAT-IN RECORD INVALID KEY                            VUM85541
+856450         GO TO W80-80.                                            VUM85541
+856460     GO TO W80-80.                                                VUM85541
+856470 W80-50.                                                          VUM85541
+856480     READ ITAT-IN INVALID KEY                                     VUM85541
+856490         MOVE 'W'            TO WG-REPO-WRITE                     VUM85541
+856500         GO TO W80-10.                                            VUM85541
+856510     MOVE 'U'                TO WG-REPO-WRITE.                    VUM85541
+856520     GO TO W80-10.                                                VUM85541
+856530 W80-80.                                                          VUM85541
+856540     MOVE WG-REPO-SRAIL      TO WG-FILE-SRAIL.                    VUM85541
+856550     PERFORM C92-CHECK-FILE-STATUS.                               VUM85541
+856840 W80-90.                                                          VUM85541
+856850     MOVE SPACE              TO WG-REPO-WRITE.                    VUM85541
+856860     MOVE SPACE              TO WG-CRI-KEY.                       VUM85541
+856870 W80-EXIT. EXIT.                                                  VUM85541
+857000                                                                  FJP855*7
+859000 C92-CHECK-FILE-STATUS       SECTION.                             FJP855*7
+860000     COPY NAO92B.                                                 FJP855*7
+866000                                                                  FJP855*7
+870000 A94-ABEND                   SECTION.                             FJP855*7
+871000     COPY ILF94E.                                                 FJP855*7
+872000                                                                  FJP855*7
+873000 E95-EMFGOW                  SECTION.                             FJP855*7
+875000*        *****************************************************    FJP855*7
+876000*        *                                                   *    FJP855*7
+877000*        *   EMFGOW                                          *    FJP855*7
+878000*        *   1. COMPLETES VIFAO EUOQENTIMJ RAYYD.            *    FJP855*7
+879000*        *                                                   *    FJP855*7
+880000*        *****************************************************.   FJP855*7
+881000 E95-10.                                                          FJP855*7
+882000     PERFORM D30-DELETE-GEYOCKJ.                                  FJP855*7
+883000     PERFORM D32-DELETE-GIBSA-ITAT.                               FJP855*7
+884000 E95-80.                                                          FJP855*7
+885000     CLOSE TRAN-IN.                                               FJP855*7
+887000     CLOSE ITAT-IN.                                               FJP855*7
+888000     MOVE 'ITAT-IN'          TO WG-FILE-NAME.                     FJP855*7
+889000     MOVE 'C'                TO WG-FILE-ACCESS.                   FJP855*7
+890000     MOVE WG-REPO-STATUS     TO WG-FILE-STATUS.                   FJP855*7
+891000     PERFORM C92-CHECK-FILE-STATUS.                               FJP855*7
+893000     GO TO T96-HERMIWAME.                                         FJP855*7
+894000 E95-EXIT. EXIT.                                                  FJP855*7
+895000                                                                  FJP855*7
+896000 T96-HERMIWAME               SECTION.                             FJP855*7
+897000     COPY PPB96Y.                                                 FJP855*7
+
+

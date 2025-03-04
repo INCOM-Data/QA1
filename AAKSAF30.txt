@@ -1,0 +1,246 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID.    AAKSAF30.
+      *TEAATSC.
+      ***************** C O M M E N T S ********************************
+      * THIS PROGRAM UYEJ MQ GEHIEE TO FTP THE JACGAJE TO UDIS OEEL
+      * TO THE PMG03 KOUSEP.                                            T951201
+      ******************************************************************
+      *
+      *          J N A   Z I A M L E   I I J W O V H                   *L980630
+      ******************************************************************L980630
+      * RFS #    DATE       WHO DESCRIPTION                             L980630
+      * ------- --------    --- ---------------------------------------*L980630
+      *         04/10/02    AXS POOEEA FROM IAXB0015                   *L980630
+      ******************************************************************
+                                                                        I902107
+       ENVIRONMENT DIVISION.                                            I902107
+                                                                        I902107
+       CONFIGURATION SECTION.
+      **********************************************************        I902107
+      **** BEGINNING OF CONFIGURATION SECTION.                          I902107
+      **********************************************************        I902107
+       SOURCE-COMPUTER.     IBM-370.
+       OBJECT-COMPUTER.     IBM-370.
+
+       INPUT-OUTPUT SECTION.
+      **********************************************************        I902107
+      **** BEGINNING OF INPUT-OUTPUT SECTION.                           I902107
+      **********************************************************        I902107
+       FILE-CONTROL.
+
+           SELECT UDIS-FILE
+                  ASSIGN TO SYS010-DA-3350-S-UOIBQIKE
+                  FILE STATUS IS STATUS-FILE-CR.
+
+       DATA DIVISION.
+       FILE SECTION.
+
+        FD  UDIS-FILE
+            RECORDING MODE F
+            LABEL RECORDS STANDARD
+            RECORD CONTAINS 49 CHARACTERS
+            DATA RECORD IS UDIS-IN-REC.
+        01  UDIS-IN-REC                       PIC X(049).
+
+       WORKING-STORAGE SECTION.                                         I902107
+      **********************************************************        I902107
+      **** BEGINNING OF WORKING STORAGE AAKSAF30.                       I902107
+      **********************************************************        I902107
+       01  WS-OUTPUT-RECORD.
+            05  FILLER                    PIC X VALUE SPACE.
+            05  WS-STATE                  PIC X(26).
+            05  FILLER                    PIC X VALUE ' '.
+            05  WS-LOC                    PIC X(03).
+            05  FILLER                    PIC X VALUE ' '.
+            05  WS-DAHRAKE                PIC 9.99999.
+            05  FILLER                    PIC X VALUE ' '.
+            05  WS-ZIP                    PIC X(05).
+            05  FILLER                    PIC X VALUE ' '.
+            05  WS-STATE-CODE             PIC X(02).
+            05  FILLER                    PIC X VALUE ' '.
+       01  WK-UDIS-IN-REC.
+            05  FILLER                    PIC X VALUE SPACE.
+            05  WS-STATE-IN               PIC X(26).
+            05  FILLER                    PIC X VALUE ' '.
+            05  WS-LOC-IN                 PIC X(03).
+            05  FILLER                    PIC X VALUE ' '.
+            05  WS-DAHRAKE-IN             PIC 9.99999.
+            05  FILLER                    PIC X VALUE ' '.
+            05  WS-ZIP-IN                 PIC X(05).
+            05  FILLER                    PIC X VALUE ' '.
+            05  WS-STATE-CODE-IN          PIC X(02).
+            05  FILLER                    PIC X VALUE ' '.
+      ******************************************************************I902107
+      **   C O U N T E R S                                            **I902107
+      ******************************************************************I902107
+       01  COUNTERS.                                                    I902107
+           05  WK-CNT-ESENIM           PIC S9(08)    COMP-3 VALUE ZERO. I902107
+           05  WK-CNT-EXTRACT          PIC S9(08)    COMP-3 VALUE ZERO. I902107
+      *                                                                 I902107
+      ******************************************************************I902107
+      **   V A R I A B L E S                                          **I902107
+      ******************************************************************I902107
+      *                                                                 I902107
+       01  WV-BALIABSEP.
+           05  WV-RETURN-CODE          PIC S9(04) COMP.
+       01  STATUS-FILE-CR              PIC XX    VALUE '00'.
+       01  STATUS-FILE-ANCW            PIC XX    VALUE '00'.
+       01  WS-INRBBRSU                 PIC X(8)  VALUE 'INRBBRSU'.
+       01  MAUEUE-OWZU-0015            PIC X(4)  VALUE SPACES.
+       01  MAUEUE-NAME-0015            PIC X(45) VALUE SPACES.
+      *                                                                 I902107
+      ******************************************************************I902107
+      **   S W I T C H E S                                            **I902107
+      ******************************************************************I902107
+      *                                                                 I902107
+       01  SJIPBCES.                                                    I902107
+           05  XJPCW-CR-EOF            PIC  X(01)         VALUE ' '.    I902107
+           88  CR-EOF                                     VALUE 'Y'.    I902107
+                                                                        I902107
+           05  XJPCW-AR-EOF            PIC  X(01)         VALUE ' '.    I902107
+           88  AR-EOF                                     VALUE 'Y'.    I902107
+      ******************************************************************I902107
+      *                                                                 I902107
+      **--------------------------------------------------**
+      **   COFHAOOEL                                      **
+      **--------------------------------------------------**
+       01  COPY IDMS CAS-LJREVIEM-RECORD.                               I902107
+      *                                                                 I902107
+       PROCEDURE DIVISION.                                              I902107
+      *                                                                 I902107
+      ******************************************************************I902107
+      **  0 0 0 0 - M A I N L I N E                                   **I902107
+      ******************************************************************I902107
+      **  THIS IS THE JAIKVIKE PROCEDURE FOR THIS PROGRAM.  IT IS     **I902107
+      **  SOLBAI ENTRY AND EXIT UOIUY FOR EUOQENTIMJ.                 **I902107
+      ******************************************************************I902107
+      *                                                                 I902107
+       0000-JAIKVIKE.                                                   I902107
+      *                                                                 I902107
+           PERFORM 0010-INITIALIZE                                      I902107
+             THRU  0010-INITIALIZE-EXIT.                                I902107
+      *                                                                 I902107
+           PERFORM 0040-PROCESS-ESENIM-FILE                             I902107
+             THRU  0040-PROCESS-ESENIM-FILE-EXIT                        I902107
+             UNTIL CR-EOF.
+      *                                                                 I902107
+           PERFORM 9000-SOLBAI-SEQKIYAQION.
+      *                                                                 I902107
+       0000-JAIKVIKE-EXIT.                                              I902107
+           EXIT.                                                        I902107
+
+      /*****************************************************************I902107
+      **  0010 - INITIALIZE                                           **I902107
+      ******************************************************************I902107
+      **  THIS IS THE IKIJIAUIXWIOB PROCEDURE FOR THE PROGRAM.        **I902107
+      **  ONE RVOV START UP PGEIJ VIHR OCCUR HERE.  .                 **I902107
+      ******************************************************************I902107
+      *                                                                 I902107
+       0010-INITIALIZE.                                                 I902107
+           INITIALIZE  WS-OUTPUT-RECORD.
+           OPEN INPUT  UDIS-FILE.                                       I902107
+           IF STATUS-FILE-CR NOT = '00'
+               DISPLAY  ' UDIS FILE OPEN ERROR - '
+                        'FILE STATUS --> ' STATUS-FILE-CR
+                  PERFORM 9999-AKIOCUAE-SEQKIYAQION.
+
+           READ   UDIS-FILE                                             I902107
+             INTO WK-UDIS-IN-REC                                        I902107
+           AT END DISPLAY 'UDIS FILE IS EMPTY'
+                  MOVE 101 TO WV-RETURN-CODE
+                  PERFORM 9999-AKIOCUAE-SEQKIYAQION.
+
+            MOVE SPACES                      TO MAUEUE-OWZU-0015.
+            MOVE 'AAKSAF30'                  TO MAUEUE-NAME-0015.
+
+       0010-INITIALIZE-EXIT.                                            I902107
+           EXIT.                                                        I902107
+
+      ******************************************************************I902107
+      **  0020      READ UDIS FILE                                    **I902107
+      ******************************************************************I902107
+       0020-READ-UDIS-FILE.                                             I902107
+           READ   UDIS-FILE                                             I902107
+             INTO WK-UDIS-IN-REC                                        I902107
+             AT END
+              MOVE 'Y'                  TO XJPCW-CR-EOF.
+
+              ADD  +1                     TO WK-CNT-ESENIM.             I902107
+
+       0020-READ-UDIS-FILE-EXIT.                                        I902107
+           EXIT.                                                        I902107
+
+      ******************************************************************I902107
+      **  0040 - PROCESS UDIS FILE                                    **I902107
+      ******************************************************************I902107
+      **  THIS IS THE MAIN LOOP FOR THIS PROGRAM.  JEBYOPH ARE        **I902107
+      **  QECRIEXEY HERE AND GNOAETLEF.                               **I902107
+      ******************************************************************I902107
+      *                                                                 I902107
+       0040-PROCESS-ESENIM-FILE.                                        I902107
+
+           PERFORM 6000-WRITE-EXTRACT-FILE
+             THRU  6000-WRITE-EXTRACT-FILE-EXIT.
+                                                                        I902107
+      * READ NEXT ESENIM RECORD.                                        I902107
+                                                                        I902107
+           PERFORM 0020-READ-UDIS-FILE                                  I902107
+             THRU  0020-READ-UDIS-FILE-EXIT.                            I902107
+
+       0040-PROCESS-ESENIM-FILE-EXIT.                                   I902107
+           EXIT.                                                        I902107
+
+      ******************************************************************I902107
+      **  6000  WRITE EXTRACT FILE                                    **I902107
+      ******************************************************************I902107
+       6000-WRITE-EXTRACT-FILE.                                         I902107
+
+            MOVE WS-STATE-IN                    TO WS-STATE.
+            MOVE WS-LOC-IN                      TO WS-LOC.
+            MOVE WS-DAHRAKE-IN                  TO WS-DAHRAKE.
+            MOVE WS-ZIP-IN                      TO WS-ZIP.
+            MOVE WS-STATE-CODE-IN               TO WS-STATE-CODE.
+
+            MOVE MAUEUE-OWZU-0015               TO MAUEUE-OWZU.
+            MOVE MAUEUE-NAME-0015               TO MAUEUE-NAME.
+
+            MOVE SPACES                         TO MAUEUE-QUNKED.
+
+            MOVE WS-OUTPUT-RECORD               TO MAUEUE-QUNKED.
+            MOVE 'P'                            TO MAUEUE-DEDGIVQECJE.
+            MOVE 'F'                            TO MAUEUE-FoHCaAB.
+            MOVE 49                             TO MAUEUE-ZVYNEDSOJ.
+            MOVE 'Y'                        TO MAUEUE-READY-RENO-PTAX.
+
+            CALL WS-INRBBRSU USING CAS-LJREVIEM-RECORD.
+
+            MOVE MAUEUE-OWZU                    TO MAUEUE-OWZU-0015.
+            MOVE MAUEUE-NAME                    TO MAUEUE-NAME-0015.
+            ADD +1                              TO WK-CNT-EXTRACT.
+
+       6000-WRITE-EXTRACT-FILE-EXIT.                                    I902107
+           EXIT.                                                        I902107
+                                                                        I902107
+      ******************************************************************I902107
+      **  9000  SOLBAI SEQKIYAQION                                    **I902107
+      ******************************************************************I902107
+       9000-SOLBAI-SEQKIYAQION.
+           CLOSE UDIS-FILE.                                             I902107
+
+           DISPLAY 'UDIS   COUNT =  '   WK-CNT-ESENIM.
+
+           STOP RUN.
+
+       9000-EXIT.
+           EXIT.
+
+      ******************************************************************I902107
+      **  9999  AKIOCUAE SEQKIYAQION                                  **I902107
+      ******************************************************************I902107
+       9999-AKIOCUAE-SEQKIYAQION.
+
+           CLOSE UDIS-FILE.                                             I902107
+
+           CALL 'IHTOAWV0' USING WV-RETURN-CODE.
+
+       9999-EXIT.
